@@ -4,4 +4,4 @@ The application could be described as a hybrid of an electric book, 3D CAD viewe
 
 So, the appication has two libraries, libKirjasto1.so or RunOpengl.dll and libKirjasto2.so or Teksti.dll, which both are available only in binary form. Actually the only source code available is the java-code belonging to the Android version. You need to compile the Android project by Android Studio to get an android version of this application, but Windows version is delivered as a setup program. One of the two libraries uses Opengl 5.0 or Opengl es 3.2 to show a 3D scene in a window, and another library is using API functions of the operating system to draw text and other objects to the canvas.
 
-Happy testing!
+Thank you for your time!
