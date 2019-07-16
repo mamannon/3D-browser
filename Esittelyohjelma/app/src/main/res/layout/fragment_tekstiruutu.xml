@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mannonen.mikael.example.tasavalta.Aktiviteetti1">
+
+    <LinearLayout
+        android:id="@+id/nappiRiviTeksti"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/nappirivi_korkeus"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/taakseTeksti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/taakse"/>
+
+        <Button
+            android:id="@+id/eteenTeksti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/eteen"/>
+
+        <Button
+            android:id="@+id/otsikotTeksti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/otsikot"/>
+
+        <TextView
+            android:id="@+id/otsikkoTeksti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="@string/teksti_otsikko"/>
+
+    </LinearLayout>
+
+
+            <FrameLayout
+                android:id="@+id/tekstiRuutuSisalto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.mannonen.mikael.example.tasavalta.CanvasView
+                    android:id="@+id/kanvaasiTeksti"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+
+            </FrameLayout>
+
+
+
+</LinearLayout>

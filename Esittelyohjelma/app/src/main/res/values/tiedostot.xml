@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tiedostotietonimi">
+        <item>Sampo</item>
+        <item>Frame_of_Sampo</item>
+        <item>Cell</item>
+        <item>Liike</item>
+        <item>Liike2</item>
+        <item>Liike3</item>
+        <item>LiikeSampo</item>
+        <item>Pilvi1</item>
+        <item>Pilvi2</item>
+        <item>Universe</item>
+        <item>Logic</item>
+        <item>Cosmology</item>
+        <item>Mathematics</item>
+        <item>Relativity</item>
+        <item>Reality</item>
+        <item>Reality2</item>
+        <item>Viides</item>
+        <item>Test</item>
+        <item>Kokeilu</item>
+        <item>FloatTaulukko</item>
+        <item>Listat</item>
+    </string-array>
+
+    <integer-array name="tiedostotietovalikkosijainti">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>3</item>
+        <item>2</item>
+        <item>2</item>
+        <item>3</item>
+        <item>3</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+    </integer-array>
+
+    <integer-array name="tiedostotietoonkonakyva">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+
+    <integer-array name="tiedostotietoonkoasetettu">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+
+    <integer-array name="tiedostotietoonko3d">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+
+    <integer name="tiedostotietotiedostotietoja">21</integer>
+    <integer name="palstojenlukumaara">5</integer>
+</resources>

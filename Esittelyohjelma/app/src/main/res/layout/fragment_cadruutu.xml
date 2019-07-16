@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.mannonen.mikael.example.tasavalta.Aktiviteetti1">
+
+    <LinearLayout
+        android:id="@+id/nappiRiviCAD"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/nappirivi_korkeus"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/taakseCAD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/taakse"/>
+
+        <Button
+            android:id="@+id/eteenCAD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/eteen"/>
+
+        <Button
+            android:id="@+id/valintaCAD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/valinta"/>
+
+        <Button
+            android:id="@+id/kaynnistaCAD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/kaynnista"/>
+
+        <Button
+            android:id="@+id/pysaytaCAD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:textSize="12sp"
+            android:text="@string/pysayta"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/CADRuutuSisalto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+<!--
+        <com.mannonen.tasavalta.OpenGLView
+            android:id="@+id/kanvaasiCAD"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+-->
+    </FrameLayout>
+
+</LinearLayout>
