@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Ohjeet</title>
+
+</head>
+<body>
+<h1 style="text-align: center;">Tasavallan käyttöohje</h1>
+Tervetuloa käyttämään Tasavalta -ohjelmaa! Erikoisesta nimestään
+huolimatta kyseessä on sovellus, jota voisi kuvailla elektronisen
+kirjan, internetselaimen ja 3D-virtuaaliselaimen hybridiksi. Juuri nyt
+käyttämäsi sovellusversio on offline&nbsp;tyyppinen, eli tämä ei
+hae verkosta eikä lähetä verkkoon mitään dataa. Lisäksi käsillä oleva
+versio on rajoitettu niin, että se kykenee avaamaan ja käyttämään vain
+niitä tiedostoja, jotka ovat tulleet tämän Tasavalta sovelluspaketin
+mukana.<br>
+<h2>Yleiskuvaus:</h2>
+<p>Tasavalta koostuu kolmesta eri ikkunasta. Hallintapalkista
+avataan tiedostoja ja hallitaan kirjanmerkkejä, johin voi tallentaa
+muistiin, mihin kohtaan viime kerralla ohjelmaa käyttäessä jäi:</p>
+<p><img style="width: 75%;" alt="Hallintapalkki" src="Hallintapalkki.jpg"></p>
+<p>CADruutu mahdollistaa kolmiulotteisen avaruuden tarkastelun:</p>
+<p><img style="width: 50%;" alt="CADruutu" src="CADruutu.jpg"></p>
+<p>Ja tekstiruudulta voi lukea html asiakirjoja:</p>
+<p><img style="width: 50%;" alt="Tekstiruutu" src="Tekstiruutu.jpg"></p>
+<h3>Hallintapalkin toiminnot:</h3>
+<p>Hallintapalkki on erittäin yksinkertainen käyttää. Se sisältää
+kaksi perusvalikkoa, Bookmarks ja Help valikot, joista Bookmarks
+sisältää käyttäjän kannalta hyödyllisiä aputoimintoja, sekä Help
+valikon josta löytyy linkki tähän tekstiin. Kaikki muut valikot, joita
+on vaihteleva määrä, sisältävät linkkejä joko .cad tai .html -päätteisiin
+tiedostoihin, joiden katselua varten tämä Tasavalta ohjelma on tehty.&nbsp;</p>
+<p>Bookmarks sisältää toiminnot luoda, valita ja tuhota
+kirjanmerkkejä. Kirjanmerkin ideana on, että kun käyttäjä haluaa
+lopettaa Tasavalta ohjelman käytön, mutta palata joskus myöhemmin
+samaan kohtaan mihin edellisellä tai jollakin aiemalla lukukerralla
+lopetti, hän voi luoda kirjanmerkin ennen ohjelman sulkemista.
+Kirjanmerkit ovat numeoituna Bookmarks valikossa ikäjärjestyksessä ja
+käyttäjä voi luoda niitä maksimissaan 9 kappaletta. Jos käyttäjä luo
+enemmän kirjanmerkkejä, Tasavalta hävittää liiat kirjanmerkit
+ikäjärjestyksessä, vanhin kirjanmerkki ensin. Kirjanmerkkien lisäksi
+Bookmarks valikko sisältää toiminnot vaihtaa kieltä ja 3D grafiikan
+tasoa. CAD ruudulla näytettävä näkymä voi olla 'yksinkertainen',
+jolloin näkymän valaistus on staattinen, tai 'hienostunut', jolloin
+valaistus on dynaaminen ja jonka sujuva käyttö edellyttää
+suorituskykyistä tietokonetta. Kielen vaihto toimintoa ei ole vielä
+implementoitu.</p>
+<h3>CADruudun toiminnot:</h3>
+CAD ruutu on virtuaaliselain, jossa voi olla käytössä neljä eri
+virtuaalimaailmaa yhtä aikaa, ja joiden välillä käyttäjä voi vaihtaa
+klikkaamalla Back ja Forward nappeja. Ruudulla näkyvän näkymän voi myös
+tulostaa klikkaamalla Print nappia. Virtuaalimaailma saattaa sisältää
+dynaamisia objekteja, jolloin oikealla puolella olevat Play ja
+Stop/Rewind nappulat ovat käytettävissä. Virtuaalimaailmassa liikutaan
+käyttämällä hiirtä sekä tietokoneen näppäimistön w- ja s-painikkeita.
+Liikkuminen tapahtuu 'vapaassa avaruudessa' eikä siellä ole painovoimaa
+sekä avaruuden objekteihin voi vapaasti 'törmätä' vaikuttamatta
+mitenkään virtuaalimaailmaan. Käyttäjä on ikään kuin 'aave', joka on
+vapaa liikkumaan avaruudessa minne haluaa.
+<p>CAD ruudussa olevassa alasvetopalkissa on luetteloitu kaikki
+esillä olevan virtuaalimaailman objektit sekä objektiryhmät, jotka
+erottaa objekteista asteriskimerkki *. Käyttäjä voi valita, mitkä
+objektit tai objektiryhmät ovat nähtävissä alasvetopalkin
+valintaruuduilla. Aivan ylimpänä valintaruudussa ei kuitenkaan ole
+listattuna objekteja tai objektiryhmiä, vaan esillä olevan
+virtuaalimaailman katselukulmat: jos virtuaalimaailma on
+kolmiulotteinen, valittavana on 3D perspektiivinäkymä sekä X-, Y- ja
+Z-akselin suuntaiset 2D ortografinäkymät. Mutta jos ruudulla näkyvä
+virtuaalimaailma on kaksiulotteinen, tarjolla on vain 2D
+ortografinäkymä.</p>
+<p>Käyttäjän siirtäessä hiiren kursoria CAD ruudun näkymässä
+saattaa käydä, että jonkin objektin kohdalla kyseisen objektin väri
+muuttuu valkoiseksi, tai, jos se on lähtökohtaisesti valkoinen,
+punaiseksi. Tällöin kyseiseen objektiin liittyy linkki erilliseen .cad
+tai .html tiedostoon. Jos käyttäjä tällaisen objektin kohdalla klikkaa
+hiiren oikeaa nappia, avautuu pieni valikkoruutu, jonka listauksesta
+kyseisen linkin voi avata:</p>
+<p><img style="width: 50%;" alt="Linkkilistaus" src="Linkkilistaus.jpg"></p>
+<h3>Tekstiruudun toiminnot:</h3>
+<p>Tekstiruutu on internetselain, mutta offline sellainen:
+käyttäjä ei voi tehdä verkkohakuja eikä määrittää verkko-osoitetta,
+vaan ainoastaan klikata Hallintapalkin tarjoamia linkkejä. Teksti
+ruudussa voi olla käytössä rajaton määrä tekstidokumentteja yhtä aikaa,
+ja käyttäjä voi vaihtaa niiden välillä klikkaamalla Back ja Forward
+nappeja. Tekstidokumentteja voi tulostaa klikkaamalla Print nappulaa.
+&nbsp;Tekstidokumentin väliotsikot, jos sellaisia on, löytyvät
+&nbsp;alasvetovalikosta ja valikkoriviä klikkaamalla tekstinäkymä
+siirtyy kyseisen väliotsikon kohdalle. Tekstidokumentissa saattaa olla
+linkkejä, joita klikkamalla pääsee toisiin tekstidokumentteihin tai 3D
+virtuaalimaailmoihin.</p>
+</body></html>
