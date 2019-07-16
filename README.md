@@ -1,0 +1,1 @@
+This is an Android version of 3D-browser.  It is an Android Studio project and you need to download the files under Esittelyohjelma folder. Then you have to change folder names (dot)idea -> .idea and (dot)gradle -> .gradle and you are ready to compile the project.
