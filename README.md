@@ -8,4 +8,4 @@ One of the two libraries uses Opengl 5.0 and OpenCL 1.2/CUDA 5.0 or Opengl ES 3.
 
 I hope you like what you see and thank you for your time!
 
-PS. To find the files, please click the "branch" button above and choose "Windows" or "Android" instead of "Master". 
+PS. To find the files, please click the "Branch" button above and choose "Windows" or "Android" instead of "master". 
