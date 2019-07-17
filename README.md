@@ -7,3 +7,5 @@ So, the appication has two libraries, libKirjasto1.so or RunOpengl.dll and libKi
 One of the two libraries uses Opengl 5.0 and OpenCL 1.2/CUDA 5.0 or Opengl ES 3.2 and OpenCL 1.2 to show a 3D scene in a window, but if your devive doesn't support those, rollback to OpenGL 1.5 or OpenGL ES 2.0 happens. Another library is using API functions of the operating system, Windows or Android, to draw text and other objects to the canvas.
 
 I hope you like what you see and thank you for your time!
+
+PS. To find the files, please click the "branch" button above and choose "Windows" or "Android" instead of "Master". 
