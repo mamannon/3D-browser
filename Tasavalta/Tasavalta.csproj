@@ -44,18 +44,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckBoxComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CheckBoxComboBox.Designer.cs">
+      <DependentUpon>CheckBoxComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GripBounds.cs" />
     <Compile Include="Muisti.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="OpenGL.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="OpenGL.Designer.cs">
       <DependentUpon>OpenGL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Popup.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Popup.Designer.cs">
+      <DependentUpon>Popup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PopupComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PopupComboBox.Designer.cs">
+      <DependentUpon>PopupComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +91,9 @@
     <EmbeddedResource Include="OpenGL.resx">
       <DependentUpon>OpenGL.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PopupComboBox.resx">
+      <DependentUpon>PopupComboBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -80,6 +103,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Teksti.resx">
+      <DependentUpon>Teksti.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

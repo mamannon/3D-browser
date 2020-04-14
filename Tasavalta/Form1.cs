@@ -411,6 +411,10 @@ namespace Tasavalta
                 //jos kyseessä on 3D-kenttä
                 mOnko3D = true;
                 mTiedosto = siirto2 + ".cad";
+
+                //testausta...
+                mOpenGLIkkuna.Show();
+
 //                mOpenGLIkkuna.avaaCAD(this);
             }
             else
@@ -426,6 +430,10 @@ namespace Tasavalta
                 {
                     mTiedosto = siirto2 + ".fin";
                 }
+
+                //testausta...
+                mTekstiIkkuna.Show();
+
  //               mTekstiIkkuna.avaaTeksti(this);
             }
         }
