@@ -20,7 +20,9 @@
             base.Dispose(disposing);
         }
 
-        //        private CheckBoxComboBox;
+        private CheckBoxComboBox layeriLista;
+        private System.Windows.Forms.ToolStripButton kaynnista;
+        private System.Windows.Forms.ToolStripButton pysayta;
 
         #region Windows Form Designer generated code
 
@@ -100,6 +102,7 @@
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "OpenGL";
             this.Text = "OpenGL";
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NappaimistoClick);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.toolStrip2.ResumeLayout(false);

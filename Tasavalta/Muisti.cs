@@ -673,6 +673,7 @@ public class Muisti
 </root>
 	";
 
+    int mIndex = -1;
 	int kirjanMerkkeja = 9;
 	int tiedostoTietoja;
 	KIRJANMERKKI[] kirjanMerkki;
@@ -777,19 +778,163 @@ public class Muisti
 
     }
 
-    public TIEDOSTOTIETO annaTiedostoTieto(int index)
+    public TIEDOSTOTIETO AnnaTiedostoTieto(int index)
     {
         return tiedostoTieto[index];
     }
 
-    public int annaTiedostojenMaara()
+    public void AsetaTiedostoTieto(int index, TIEDOSTOTIETO tt)
+    {
+        tiedostoTieto[index] = tt;
+    }
+
+    public KIRJANMERKKI AnnaKirjanMerkki(int index)
+    {
+        return kirjanMerkki[index];
+    }
+
+    public int AnnaTiedostojenMaara()
     {
         return tiedostoTietoja;
     }
 
-    public bool onkoKirjanMerkkiAsetettu(int index)
+    public bool OnkoKirjanMerkkiAsetettu(int index)
     {
         return kirjanMerkki[index].onkoAsetettu;
+    }
+
+    public void TuhoaKirjanmerkit()
+    {
+        this.kirjanMerkki[0].onkoAsetettu = false;
+        this.kirjanMerkki[1].onkoAsetettu = false;
+        this.kirjanMerkki[2].onkoAsetettu = false;
+        this.kirjanMerkki[3].onkoAsetettu = false;
+        this.kirjanMerkki[4].onkoAsetettu = false;
+        this.kirjanMerkki[5].onkoAsetettu = false;
+        this.kirjanMerkki[6].onkoAsetettu = false;
+        this.kirjanMerkki[7].onkoAsetettu = false;
+        this.kirjanMerkki[8].onkoAsetettu = false;
+        mIndex = -1;
+    }
+
+    public void AsetaKirjanMerkkiOrientaatioD(float[] orientaatio, string tiedosto) {
+        bool alusta = false;
+
+        //jos tämä metodi on ensimmäinen, etsitään ensimmäinen vapaa paikka
+        if (mIndex==-1) 
+        {
+	        for (int i = 0; i< 9; i++) 
+            {
+	            if (!kirjanMerkki[i].onkoAsetettu) 
+                {
+		            mIndex = i;
+		            kirjanMerkkeja++;
+		            break;
+	            }
+	        }
+        } 
+        else 
+        {
+	        alusta=true;
+        }
+
+        //varmistetaan, että meillä on jotain
+        if (tiedosto.Length == 0) return;
+
+        if (mIndex != -1) 
+        {
+
+            //täytetään ensimminen vapaa paikka
+	        for (int i=0; i< 65; i++) 
+            {
+	            kirjanMerkki[mIndex].orientaatioD[i]=orientaatio[i];
+	        }
+            kirjanMerkki[mIndex].tiedostoD = tiedosto;
+	        kirjanMerkki[mIndex].onkoAsetettu=true;
+        } 
+        else 
+        {
+
+            //jos kaikki paikat ovat varatut, hylätään ensimmäinen ja siirretään muita niin,
+            //että voimme täyttää viimeisen paikan
+	        kirjanMerkki[0] = kirjanMerkki[1];
+	        kirjanMerkki[1] = kirjanMerkki[2];
+	        kirjanMerkki[2] = kirjanMerkki[3];
+	        kirjanMerkki[3] = kirjanMerkki[4];
+	        kirjanMerkki[4] = kirjanMerkki[5];
+	        kirjanMerkki[5] = kirjanMerkki[6];
+	        kirjanMerkki[6] = kirjanMerkki[7];
+	        kirjanMerkki[7] = kirjanMerkki[8];
+
+	        for (int i=0; i< 65; i++) 
+            {
+	            kirjanMerkki[8].orientaatioD[i]=orientaatio[i];
+	        }
+            kirjanMerkki[8].tiedostoD = tiedosto;
+	        mIndex=8;
+        }
+
+        if (alusta) mIndex = -1;
+    }
+
+    public void AsetaKirjanMerkkiOrientaatioT(int[] orientaatio, string tiedosto)
+    {
+        bool alusta = false;
+
+        //jos tämä metodi on ensimmäinen, etsitään ensimmäinen vapaa paikka
+        if (mIndex == -1)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                if (!kirjanMerkki[i].onkoAsetettu)
+                {
+                    mIndex = i;
+                    kirjanMerkkeja++;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            alusta = true;
+        }
+
+        //varmistetaan, että meillä on jotain
+        if (tiedosto.Length == 0) return;
+
+        if (mIndex != -1)
+        {
+
+            //täytetään ensimminen vapaa paikka
+            kirjanMerkki[mIndex].orientaatioT[0] = orientaatio[0];
+            kirjanMerkki[mIndex].orientaatioT[1] = orientaatio[1];
+            kirjanMerkki[mIndex].orientaatioT[2] = orientaatio[2];
+            kirjanMerkki[mIndex].orientaatioT[3] = orientaatio[3];
+            kirjanMerkki[mIndex].tiedostoT = tiedosto;
+            kirjanMerkki[mIndex].onkoAsetettu = true;
+        }
+        else
+        {
+
+            //jos kaikki paikat ovat varatut, hylätään ensimmäinen ja siirretään muita niin,
+            //että voimme täyttää viimeisen paikan
+            kirjanMerkki[0] = kirjanMerkki[1];
+            kirjanMerkki[1] = kirjanMerkki[2];
+            kirjanMerkki[2] = kirjanMerkki[3];
+            kirjanMerkki[3] = kirjanMerkki[4];
+            kirjanMerkki[4] = kirjanMerkki[5];
+            kirjanMerkki[5] = kirjanMerkki[6];
+            kirjanMerkki[6] = kirjanMerkki[7];
+            kirjanMerkki[7] = kirjanMerkki[8];
+
+            kirjanMerkki[8].orientaatioT[0] = orientaatio[0];
+            kirjanMerkki[8].orientaatioT[1] = orientaatio[1];
+            kirjanMerkki[8].orientaatioT[2] = orientaatio[2];
+            kirjanMerkki[8].orientaatioT[3] = orientaatio[3];
+            kirjanMerkki[8].tiedostoT = tiedosto;
+        }
+
+        if (alusta) mIndex = -1;
     }
 
     [Serializable]
