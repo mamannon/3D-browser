@@ -321,8 +321,8 @@ namespace Tasavalta
         public bool mEiValaisua = false;
         public bool mPaivitetaanko = true;
         public IntPtr mHwnd;
-        public OpenGL mOpenGLIkkuna = new OpenGL();
-        public Teksti mTekstiIkkuna = new Teksti();
+        public OpenGL mOpenGLIkkuna = null;
+        public Teksti mTekstiIkkuna = null;
 
         public Valikko()
         {
@@ -694,13 +694,24 @@ namespace Tasavalta
                 mOnko3D = true;
                 mTiedosto = siirto2 + ".cad";
 
-                //testausta...
-                //                mOpenGLIkkuna.Show();
+                //jos tarpeen, luodaan opengl ikkuna
+                if (mOpenGLIkkuna == null)
+                {
+                    mOpenGLIkkuna = new OpenGL();
+                    this.AddOwnedForm(mOpenGLIkkuna);
+                }
 
                 mOpenGLIkkuna.AvaaCAD();
             }
             else
             {
+
+                //jos tarpeen, luodaan teksti ikkuna
+                if (mTekstiIkkuna == null)
+                {
+                    mTekstiIkkuna = new Teksti();
+                    this.AddOwnedForm(mTekstiIkkuna);
+                }
 
                 //muuten kyseessä on tekstikenttä
                 mOnko3D = false;
@@ -933,6 +944,13 @@ namespace Tasavalta
         private bool AvaaCADTiedosto(int index)
         {
 
+            //jos tarpeen, luodaan opengl ikkuna
+            if (mOpenGLIkkuna == null)
+            {
+                mOpenGLIkkuna = new OpenGL();
+                this.AddOwnedForm(mOpenGLIkkuna);
+            }
+
             //katsotaan, voidaanko aloittaa
             if (mTekstiAvattu == true)
             {
@@ -967,6 +985,13 @@ namespace Tasavalta
         // avata
         private bool AvaaTekstiTiedosto(int index)
         {
+
+            //jos tarpeen, luodaan teksti ikkuna
+            if (mTekstiIkkuna == null)
+            {
+                mTekstiIkkuna = new Teksti();
+                this.AddOwnedForm(mTekstiIkkuna);
+            }
 
             //katsotaan, voidaanko aloittaa
             if (mCADAvattu == true)
@@ -1008,6 +1033,13 @@ namespace Tasavalta
             if (linkki[0] == 'C') 
             {
 
+                //jos tarpeen, luodaan opengl ikkuna
+                if (mOpenGLIkkuna == null)
+                {
+                    mOpenGLIkkuna = new OpenGL();
+                    this.AddOwnedForm(mOpenGLIkkuna);
+                }
+
                 //määritetään tiedostonimi poimimalla se # merkkien erottamasta alueesta
                 index = linkki.IndexOf("#");
                 mAnkkuri = linkki.Substring(index+1);
@@ -1030,6 +1062,13 @@ namespace Tasavalta
             //jos kyseessä on tekstitiedosto...
             if (linkki[0] == 'T') 
             {
+
+                //jos tarpeen, luodaan teksti ikkuna
+                if (mTekstiIkkuna == null)
+                {
+                    mTekstiIkkuna = new Teksti();
+                    this.AddOwnedForm(mTekstiIkkuna);
+                }
 
                 //määritetään tiedostonimi poimimalla se # merkkien rajaamasta alueesta
                 index = linkki.IndexOf("#");

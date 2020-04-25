@@ -37,12 +37,17 @@ namespace Tasavalta
     /// </summary>
     public partial class CheckBoxComboBox : PopupComboBox
     {
+        private Singleton mSing;
+        public string Otsikko;
+
         #region CONSTRUCTOR
 
         public CheckBoxComboBox()
             : base()
         {
             InitializeComponent();
+            //tämä viittaus tarvitaan
+            mSing = Singleton.AnnaIlmentyma;
             _CheckBoxProperties = new CheckBoxProperties();
             _CheckBoxProperties.PropertyChanged += new EventHandler(_CheckBoxProperties_PropertyChanged);
             // Dumps the ListControl in a(nother) Container to ensure the ScrollBar on the ListControl does not
@@ -203,20 +208,31 @@ namespace Tasavalta
             // The DropDownList style seems to require that the text
             // part of the "textbox" should match a single item.
             if (DropDownStyle != ComboBoxStyle.DropDownList)
-                Text = ListText;
+                Text = Otsikko + "                                          ";
+//                mSing.mValikko.mOpenGLIkkuna.TarkastaLayerit();
             // This refreshes the Text of the first item (which is not visible)
-            else if (DataSource == null)
+ //           else if (DataSource == null)
+            if (DataSource == null)
             {
                 Items[0] = ListText;
                 // Keep the hidden item and first checkbox item in 
                 // sync in order to ensure the Synchronise process
                 // can match the items.
                 CheckBoxItems[0].ComboBoxItem = ListText;
+
+                //Kun käyttäjä klikkaa ruksia ruudussa, pitää muutos viedä
+                //RunOpenGL.dll kirjaston tietoon, mutta ei silloin, kun
+                //kun käytetään OpenGLIkkunan TuoValinnat-metodia!
+                if (mSing.mValikko.mOpenGLIkkuna.mSaakoTarkastaaLayerit)
+                {
+                    mSing.mValikko.mOpenGLIkkuna.TarkastaLayerit();
+                }             
             }
 
             EventHandler handler = CheckBoxCheckedChanged;
             if (handler != null)
                 handler(sender, e);
+
         }
 
         /// <summary>
@@ -301,6 +317,10 @@ namespace Tasavalta
             {
                 _MustAddHiddenItem = true;
             }
+
+            //Nämä viestit pitää estää, jotta käyttäjä ei pysty kirjoittamaan EI TOIMI!!
+//            if (m.Msg == (int)WinM.WM_KEYDOWN) return;
+//            if (m.Msg == (int)WinM.WM_KEYUP) return;
 
             base.WndProc(ref m);
         }

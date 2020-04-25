@@ -42,6 +42,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckBoxComboBox.cs">
@@ -49,12 +50,6 @@
     </Compile>
     <Compile Include="CheckBoxComboBox.Designer.cs">
       <DependentUpon>CheckBoxComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Valikko.cs">
       <SubType>Form</SubType>

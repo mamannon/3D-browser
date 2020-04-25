@@ -38,6 +38,7 @@
             this.taakse = new System.Windows.Forms.ToolStripButton();
             this.eteen = new System.Windows.Forms.ToolStripButton();
             this.tulosta = new System.Windows.Forms.ToolStripButton();
+            this.paneeli = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -94,11 +95,21 @@
             this.tulosta.Size = new System.Drawing.Size(43, 24);
             this.tulosta.Text = "Print";
             // 
+            // paneeli
+            // 
+            this.paneeli.AutoSize = true;
+            this.paneeli.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.paneeli.Location = new System.Drawing.Point(0, 27);
+            this.paneeli.Name = "paneeli";
+            this.paneeli.Size = new System.Drawing.Size(800, 423);
+            this.paneeli.TabIndex = 1;
+            // 
             // OpenGL
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.paneeli);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "OpenGL";
             this.Text = "OpenGL";
@@ -119,5 +130,6 @@
         private System.Windows.Forms.ToolStripButton taakse;
         private System.Windows.Forms.ToolStripButton eteen;
         private System.Windows.Forms.ToolStripButton tulosta;
+        private System.Windows.Forms.Panel paneeli;
     }
 }
