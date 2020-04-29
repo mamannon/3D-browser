@@ -16,8 +16,13 @@ using System.Runtime.Serialization;
 namespace Tasavalta
 {
 
-    public enum WinM
+    public enum WinM : uint
     {
+
+        WS_POPUP = 0x80000000,
+        WS_BORDER = 0x00800000,
+        WS_SYSMENU = 0x00010000,
+
         WM_NULL = 0x0000,
         WM_CREATE = 0x0001,
         WM_DESTROY = 0x0002,
@@ -281,6 +286,7 @@ namespace Tasavalta
 
         WM_REFLECT = WM_USER + 0x1C00,
 
+        WM_VASENALHAALLA = WM_USER + 1,
         WM_LAHETALINKKI = WM_USER + 2
     }
 
@@ -323,6 +329,7 @@ namespace Tasavalta
         public IntPtr mHwnd;
         public OpenGL mOpenGLIkkuna = null;
         public Teksti mTekstiIkkuna = null;
+        public AlasVetoValikkoIkkuna mAlasVetoValikkoIkkuna = null;
 
         public Valikko()
         {

@@ -70,6 +70,14 @@ namespace Tasavalta
 
 	public partial class OpenGL : Form
 	{
+
+		[StructLayout(LayoutKind.Sequential)]
+		struct POINT
+		{
+			public int x;
+			public int y;
+		}
+
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		static extern int GetSystemMetrics(int numero);
 
@@ -83,8 +91,16 @@ namespace Tasavalta
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool FreeLibrary(IntPtr hModule);
 
-		//		[DllImport("user32.dll")]
-		//		static extern IntPtr GetDCEx(IntPtr hWnd, IntPtr hgrnClip, int flags);
+		[DllImport("user32.dll")]
+		static extern short GetKeyState(int nVirtKey);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool GetCursorPos(out POINT lpPoint);
+
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
 		[DllImport("user32.dll")]
 		static extern IntPtr GetWindowDC(IntPtr hWnd);
@@ -161,7 +177,7 @@ namespace Tasavalta
 		private readonly int SM_CXSCREEN = 0;
 		bool mOpenglOnkoTuettu = false;
 		bool mValmis = false;
-		bool mVieTiedot = false;
+//		bool mVieTiedot = false;
 		//		bool[] mValintaListaB1 = new bool[1000];
 		//		bool[] mValintaListaB2 = new bool[1000];
 		IntPtr mValintaListaB1;
@@ -191,6 +207,69 @@ namespace Tasavalta
 		OpenGL.PAIVITA paivita;
 
 		public bool mSaakoTarkastaaLayerit { get; private set; } = true;
+		public bool mOnkoAlhaalla { get; set; } = false;
+		public bool mSaakoKlikata2 { get; set; } = false;
+
+		//Getterit
+		public int Valintoja1
+		{
+			get { return mValintoja1; }
+		}
+
+		public int Valintoja2
+		{
+			get { return mValintoja2; }
+		}
+
+		public bool ValintaListaB1(int index)
+		{
+			byte[] siirto = new byte[mValintoja1];
+			Marshal.Copy(mValintaListaB1, siirto, 0, mValintoja1);
+			if (siirto[index] != 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+
+		}
+
+		public bool ValintaListaB2(int index)
+		{
+			byte[] siirto = new byte[mValintoja2];
+			Marshal.Copy(mValintaListaB2, siirto, 0, mValintoja2);
+			if (siirto[index] != 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+
+		}
+
+		public string ValintaListaC1(int index)
+		{
+			char[] siirto1 = new char[30];
+			Marshal.Copy(mValintaListaC1[index], siirto1, 0, 30);
+			string siirto2 = new string(siirto1, 0, siirto1.Length);
+			int loppu = siirto2.IndexOf('\0');
+			siirto2 = siirto2.Remove(loppu);
+			return siirto2;
+		}
+
+		public string ValintaListaC2(int index)
+		{
+			char[] siirto1 = new char[30];
+			Marshal.Copy(mValintaListaC2[index], siirto1, 0, 30);
+			string siirto2 = new string(siirto1, 0, siirto1.Length);
+			int loppu = siirto2.IndexOf('\0');
+			siirto2 = siirto2.Remove(loppu);
+			return siirto2;
+		}
 
 		//Vaikka C# on manageroitu, eli siinä on automaattinen roskienkerääjä, tämä luokka
 		//sisältää manageroimattomia kenttiä, jotka pitää tuhota manuaalisesti deletorissa
@@ -231,19 +310,18 @@ namespace Tasavalta
 		}
 
 
-		/*
-				//OpenGL haluaa ikkunaKahvan, joka pysyy samana koko ohjelman suorituksen ajan
-				protected override CreateParams CreateParams
-				{
-					get
-					{
-						Int32 CS_OWNDC = 0x20;
-						CreateParams cp = base.CreateParams;
-						cp.ClassStyle = cp.ClassStyle | CS_OWNDC;
-						return cp;
-					}
-				}
-		*/
+		//OpenGL haluaa ikkunaKahvan, joka pysyy samana koko ohjelman suorituksen ajan
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				Int32 CS_OWNDC = 0x20;
+				CreateParams cp = base.CreateParams;
+				cp.ClassStyle = cp.ClassStyle | CS_OWNDC;
+				return cp;
+			}
+		}
+
 		public OpenGL()
 		{
 			InitializeComponent();
@@ -272,14 +350,18 @@ namespace Tasavalta
 			this.SetBounds(ALeft, ATop, AWidth, AHeight);
 
 			//OpenGL ikkunaa luotaessa osa komponenteista pitää luoda dynaamisesti.
-			//CheckBoxComboBox:
-			layeriLista = new CheckBoxComboBox();
+			//OmaComboBox:
+			layeriLista = new OmaComboBox();
 			layeriLista.Dock = DockStyle.Top;
 			layeriLista.Width = (int)(400 * leveysSuhde);
 			layeriLista.AllowDrop = false;
 			layeriLista.AutoCompleteMode = AutoCompleteMode.None;
 //			layeriLista.DropDownStyle = ComboBoxStyle.DropDownList;
 			flowLayoutPanel1.Controls.Add(layeriLista);
+
+			//AlasVetoValikkoIkkuna:
+			mSing.mValikko.mAlasVetoValikkoIkkuna = new AlasVetoValikkoIkkuna();
+			this.AddOwnedForm(mSing.mValikko.mAlasVetoValikkoIkkuna);
 
 			//Toinen ToolStrip CheckBoxComboBoxin oikealle puolelle
 			ToolStrip ts = new ToolStrip();
@@ -310,34 +392,59 @@ namespace Tasavalta
 		//Tämä funktio kellottaa OpenGL-näkymän päivitystä
 		private void Timeri_Tick(object sender, EventArgs e)
 		{
-//			paneeli.Focus();
+			//			paneeli.Focus();
 
-			//Käsketään OpenGL:ää päivittämään näkymä
-			if (mValmis) paivita();
-
-			//jos käyttäjä on klikannut layerilistassa jotain vaihtoehtoa, 
-			//tieto välitetään RunOpenGL.dll kirjastoon 0,2 sekunnin viiveellä
-			if (mVieTiedot)
+			//toimintoja saa tehdä vain, jos OpenGLIkkuna on valmis
+			if (mValmis)
 			{
-				mVieTiedot = false;
-				var timer = new DispatcherTimer();
-				timer.Tick += delegate
+				//Käsketään OpenGL:ää päivittämään näkymä
+				paivita();
+
+				//layeriListalle pitää lähettää viesti, jos se on avoinna
+				int siirto = (short)GetKeyState(1);    //VK_LBUTTON=1
+				if (Convert.ToBoolean(siirto & 0x8000) && mOnkoAlhaalla && mSaakoKlikata2)    //KEY_PRESSED=0x8000   //ollut alunperin 0xF0000000
 				{
-					VieValinnat();
-					timer.Stop();
-				};
-				timer.Interval = TimeSpan.FromSeconds(2);
-				timer.Start();
+					//			    ::SetWindowPos(alasVetoValikkoIkkuna->Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+
+					//Täällä ollaan, jos käyttäjä on klikannut hiiren vasemalla napilla OpenGL ikkunaa ja
+					//layeriLista on esillä. Lähetetään layeriListalle viesti, että sen pitää
+					//sulkeutua.
+					POINT point;
+					GetCursorPos(out point);
+					short x = (short)point.x;
+					short y = (short)point.y;
+					siirto = (point.y << 16) | (point.x);
+					IntPtr lParam = (IntPtr)siirto;
+					IntPtr wParam = (IntPtr)1;
+					uint viesti = (uint)WinM.WM_VASENALHAALLA;
+					PostMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
+				}
+				else if (mOnkoAlhaalla)
+				{
+
+					//Täällä ollaan aina silloin, kun layeriLista on alhaalla. Täältä lähetetään viesti
+					//layeriListalle, jotta layeriLista voisi päivittää näkymänsä. Tämä toiminto
+					//on itse asiassa turha, sillä layeriListan näkymää ei tarvitse jatkuvasti päivittää
+					//niin kuin OpenGL näkymää pitää
+					//			    ::SetWindowPos(alasVetoValikkoIkkuna->Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+					POINT point;
+					GetCursorPos(out point);
+					short x = (short)point.x;
+					short y = (short)point.y;
+					siirto = (point.y << 16) | (point.x);
+					IntPtr lParam = (IntPtr)siirto;
+					IntPtr wParam = (IntPtr)0;
+					uint viesti = (uint)WinM.WM_VASENALHAALLA;
+					PostMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
+				}
 			}
+
 		}
 
 		//Layerilistan otsikkona tulee aina olla käytössä oleva ulottuvuus sekä
 		//ajantasainen tieto auki olevan CAD-tiedoston solideista ja listoista
 		private void TuoValinnat()
 		{
-
-			//ensiksi estetään layereiden tarkastus
-			mSaakoTarkastaaLayerit = false;
 
 			//tässä luetaan manageroimattoman bool-taulukon dataa kopiomalla
 			//se byte taulukkoon. Kukin 8 bitin byte vastaa yhtä bool arvoa
@@ -348,62 +455,14 @@ namespace Tasavalta
 			//nolla=false, muut arvot=true 
 			if (siirto[0] != 0)
 			{
-				layeriLista.Otsikko = "3D View";
+				layeriLista.Text = "3D View";
 			}
 			else
 			{
-				if (siirto[1] != 0) layeriLista.Otsikko = "2D X-projection";
-				if (siirto[2] != 0) layeriLista.Otsikko = "2D Y-projection";
-				if (siirto[3] != 0) layeriLista.Otsikko = "2D Z-projection";
+				if (siirto[1] != 0) layeriLista.Text = "2D X-projection";
+				if (siirto[2] != 0) layeriLista.Text = "2D Y-projection";
+				if (siirto[3] != 0) layeriLista.Text = "2D Z-projection";
 			}
-
-			//sitten pitää kopioida kaikki CAD-tiedoston listanimet
-			//sekä niiden valittuisuus manageroimattomasta muistista layeriListaan
-			layeriLista.Clear();
-			siirto = new byte[1000];
-			Marshal.Copy(mValintaListaB2, siirto, 0, mValintoja2);
-			for (int i = 0; i < mValintoja2; i++)
-			{
-				char[] siirto1 = new char[30];
-				Marshal.Copy(mValintaListaC2[i], siirto1, 0, 30);
-				string siirto2 = new string(siirto1);
-				int loppu = siirto2.IndexOf('\0');
-				siirto2 = siirto2.Remove(loppu);
-				layeriLista.Items.Add(siirto2);
-				if (siirto[i] != 0)
-				{
-					layeriLista.CheckBoxItems[i].Checked = true;
-				}
-				else
-				{
-					layeriLista.CheckBoxItems[i].Checked = false;
-				}
-			}
-
-			//Lopuksi kopioidaan kaikki CAD-tiedoston solidiNimet sekä
-			//niiden valittuisuus manageroimattomasta muistista layerilistaan
-			siirto = new byte[1000];
-			Marshal.Copy(mValintaListaB1, siirto, 0, mValintoja1);
-			for (int i = 0; i < mValintoja1; i++)
-			{
-				char[] siirto1 = new char[30];
-				Marshal.Copy(mValintaListaC1[i], siirto1, 0, 30);
-				string siirto2 = new string(siirto1, 0, siirto1.Length);
-				int loppu = siirto2.IndexOf('\0');
-				siirto2 = siirto2.Remove(loppu);
-				layeriLista.Items.Add(siirto2);
-				if (siirto[i] != 0)
-				{
-					layeriLista.CheckBoxItems[i].Checked = true;
-				}
-				else
-				{
-					layeriLista.CheckBoxItems[i].Checked = false;
-				}
-			}
-
-			//lopuksi sallitaan layereiden tarkastus
-			mSaakoTarkastaaLayerit = true;
 		}
 
 		private void VieValinnat()
@@ -424,41 +483,53 @@ namespace Tasavalta
 			//lopuksi sallitaan layereiden tarkastus
 			mSaakoTarkastaaLayerit = true;
 		}
-		public void TarkastaLayerit()
+
+		public void TarkastaLayerit(int index)
 		{
 
-			//kopioidaan kaikki valinnat manageroimattomaan muistiin.
-			//Ensin solidit
+			//kopioidaan kaikki valinnat manageroimattomasta muistista
+			//byte taulukkoon, vaihdetaan arvo indeksin kohdalla ja 
+			//kopiodaan kaikki valinnat takaisin manageroimattomaan muistiin.
+			//Ensin katsotaan osuuko indeksi solideihin
 			byte[] siirto = new byte[1000];
-			for (int i = 0; i < mValintoja1; i++)
+			if (index < mValintoja1)
 			{
-				if (layeriLista.CheckBoxItems[i].Checked == true)
+				Marshal.Copy(mValintaListaB1, siirto, 0, mValintoja1);
+				if (siirto[index] == 0)
 				{
-					siirto[i] = 1;
+					siirto[index] = 1;
 				}
 				else
 				{
-					siirto[i] = 0;
+					siirto[index] = 0;
 				}
 				Marshal.Copy(siirto, 0, mValintaListaB1, mValintoja1);
 			}
+			
 
-			//sitten listat
-			for (int i = 0; i < mValintoja2; i++)
+			//sitten katsotaan osuiko indeksi sittenkin listoihin
+			if (index >= mValintoja1)
 			{
-				if (layeriLista.CheckBoxItems[i+mValintoja1-1].Checked == true)
+				Marshal.Copy(mValintaListaB2, siirto, 0, mValintoja2);
+				if (siirto[index - mValintoja1] == 0)
 				{
-					siirto[i] = 1;
+					siirto[index - mValintoja1] = 1;
 				}
 				else
 				{
-					siirto[i] = 0;
+					siirto[index - mValintoja1] = 0;
 				}
 				Marshal.Copy(siirto, 0, mValintaListaB2, mValintoja2);
 			}
 
-			//lopuksi mahdollistetaan tietojen vienti RunOpenGL.dll:n
-			mVieTiedot = true;
+			//sitten lähetetään tiedot RunOpenGL.dll:lle
+			vieValinnat(mValintaListaB1, mValintaListaC1,
+				mValintaListaB2, mValintaListaC2,
+				ref mValintoja1, ref mValintoja2);
+
+			//koska lähetetyissä tiedoissa saattaa olla ristiriitoja, jotka korjataan vasta
+			//RunOpenGL.dll:ssä, meidän pitää tuoda valinnat takaisin
+			TuoValinnat();
 		}
 
 		public bool AvaaCAD()
@@ -652,27 +723,9 @@ namespace Tasavalta
 				paivita = (PAIVITA)
 					Marshal.GetDelegateForFunctionPointer(siirto, typeof(PAIVITA));
 			}
-			/*
-						//avataan Form1 ikkuna
-						if (Form1)
-						{
-							Form1->Show();
-						}
-						else
-						{
-							Form1 = new TForm1(this);
-							Form1->Show();
 
-							//Otetaan talteen Form1:n HWND ja HDC
-							int flags = (int)(DeviceContextValues.Window | DeviceContextValues.Cache | DeviceContextValues.LockWindowUpdate);
-							hwnd = Form1->Handle;
-							ikkunaKahva =::GetDC(Form1->Handle);
-						}
-			*/
 
 			mHwnd = paneeli.Handle;
-//			IntPtr hrgn = IntPtr.Zero;
-//			int flags = (int)(DeviceContextValues.ClipChildren);
 			mIkkunaKahva = GetWindowDC(mHwnd);
 
 		virhe:
@@ -686,29 +739,7 @@ namespace Tasavalta
 				{
 					bool siirto = mSing.mValikko.mEiValaisua;
 					mOpenglOnkoTuettu = onkoLaajennuksia(ref mIkkunaKahva, ref mSing.mValikko.mHwnd, ref mHwnd, ref siirto);
-					/*
-					//jos OpenGL laajennuksia on saatavilla, niiden käyttöönotto edellyttää "alusta alkamista"
-					if (mOpenglOnkoTuettu == true)
-					{
 
-						//hävitetään ikkunaKahva
-						ReleaseDC(hwnd, ikkunaKahva);
-
-						//tuhotaan ikkuna Form1
-						delete Form1;
-
-						//luodaan ikkuna Form1
-						Form1 = new TForm1(this);
-
-						//Otetaan talteen Form1:n HWND ja HDC
-						hwnd = Form1->Handle;
-						ikkunaKahva =::GetDC(Form1->Handle);
-
-						//avataan TForm1 ikkuna
-						Form1->Show();
-					}
-					else
-					*/
 					if (!mOpenglOnkoTuettu)
 					{
 
@@ -828,5 +859,120 @@ namespace Tasavalta
 		//Tämä metodi välittää RunOpenGL.dll:lle tiedon, että käyttäjä rullaa hiiren
 		//pyörää alaspäin
 
+	}
+
+
+	public class OmaComboBox : ComboBox
+	{
+
+		[StructLayout(LayoutKind.Sequential)]
+		struct TEXTMETRICW
+		{
+			public int tmHeight;
+			public int tmAscent;
+			public int tmDescent;
+			public int tmInternalLeading;
+			public int tmExternalLeading;
+			public int tmAveCharWidth;
+			public int tmMaxCharWidth;
+			public int tmWeight;
+			public int tmOverhang;
+			public int tmDigitizeAspectX;
+			public int tmDigitizeAspectY;
+			public ushort tmFirstChar;
+			public ushort tmLastChar;
+			public ushort tmDefaultChar;
+			public ushort tmBreakChar;
+			public byte tmItalic;
+			public byte tmUnderlined;
+			public byte tmStruckOut;
+			public byte tmPitchAndFamily;
+			public byte tmCharSet;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		struct RECT
+		{
+			public int left;
+			public int top;
+			public int right;
+			public int bottom;
+		}
+
+		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+		static extern bool GetTextMetrics(IntPtr hdc, out TEXTMETRICW lptm);
+
+		[DllImport("user32.dll")]
+		static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		static extern bool ReleaseDC(IntPtr hWnd, IntPtr hdc);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+		private IntPtr mAlasVetoValikkoHWND;
+		Singleton mSing;
+		public OmaComboBox()
+		{
+			mSing = Singleton.AnnaIlmentyma;
+		}
+
+		protected override void WndProc(ref Message Msg)
+		{
+			if (Msg.Msg == (int)WinM.WM_CTLCOLORLISTBOX)
+			{
+
+				//jos meillä ei vielä ole layeriListan alasvetovalikkoa avattu...
+				if (mSing.mValikko.mOpenGLIkkuna.mOnkoAlhaalla != true)
+				{
+					IntPtr hWnd = (IntPtr)Msg.LParam;
+					if (hWnd != IntPtr.Zero && hWnd != this.Handle)
+					{
+
+						//...niin nyt avaamme alasvetovalikkoikkunan halutun kokoiseksi
+						mAlasVetoValikkoHWND = hWnd;
+						RECT rect;
+						TEXTMETRICW tm;
+						IntPtr hdc = GetWindowDC(mAlasVetoValikkoHWND);
+						GetTextMetrics(hdc, out tm);
+						int cyChar = tm.tmHeight + tm.tmExternalLeading;
+						ReleaseDC(mAlasVetoValikkoHWND, hdc);
+						GetWindowRect(mAlasVetoValikkoHWND, out rect);
+						if (mSing.mValikko.mOpenGLIkkuna.Valintoja1 +
+							mSing.mValikko.mOpenGLIkkuna.Valintoja2 < 30)
+						{
+							rect.bottom = cyChar * (mSing.mValikko.mOpenGLIkkuna.Valintoja1 +
+								mSing.mValikko.mOpenGLIkkuna.Valintoja2);
+						}
+						else
+						{
+							rect.bottom = cyChar * 30;
+						}
+						this.Enabled = false;
+						this.Enabled = true;
+						mSing.mValikko.mOpenGLIkkuna.mOnkoAlhaalla = true;
+						mSing.mValikko.mOpenGLIkkuna.mSaakoKlikata2 = true;
+						//						Form1->saakoKlikata1 = false;
+						rect.right = rect.right - rect.left;
+						mSing.mValikko.mAlasVetoValikkoIkkuna.Left = rect.left;
+						mSing.mValikko.mAlasVetoValikkoIkkuna.Top = rect.top;
+						mSing.mValikko.mAlasVetoValikkoIkkuna.Width = rect.right;
+						mSing.mValikko.mAlasVetoValikkoIkkuna.Height = rect.bottom;
+						mSing.mValikko.mAlasVetoValikkoIkkuna.Show();
+						return;
+					}
+				}
+			}
+/*
+			if (Msg.Msg == (int)WinM.WM_LBUTTONDOWN && mSing.mValikko.mOpenGLIkkuna.mSaakoKlikata2)
+			{
+
+				//jos meillä on alasvetovalikkoikkuna jo avattuna, ei uutta avaamista pidä sallia.
+				return;
+			}
+*/
+			base.WndProc(ref Msg);
+		}
 	}
 }

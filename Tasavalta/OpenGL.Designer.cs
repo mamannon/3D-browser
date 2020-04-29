@@ -1,5 +1,6 @@
 ﻿namespace Tasavalta
 {
+
     partial class OpenGL
     {
         /// <summary>
@@ -20,7 +21,7 @@
             base.Dispose(disposing);
         }
 
-        private CheckBoxComboBox layeriLista;
+        private OmaComboBox layeriLista;
         private System.Windows.Forms.ToolStripButton kaynnista;
         private System.Windows.Forms.ToolStripButton pysayta;
 

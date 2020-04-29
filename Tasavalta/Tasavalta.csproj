@@ -45,11 +45,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CheckBoxComboBox.cs">
-      <SubType>Component</SubType>
+    <Compile Include="AlasVetoOpenGL.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CheckBoxComboBox.Designer.cs">
-      <DependentUpon>CheckBoxComboBox.cs</DependentUpon>
+    <Compile Include="AlasVetoOpenGL.Designer.cs">
+      <DependentUpon>AlasVetoOpenGL.cs</DependentUpon>
     </Compile>
     <Compile Include="Valikko.cs">
       <SubType>Form</SubType>
@@ -57,26 +57,12 @@
     <Compile Include="Valikko.Designer.cs">
       <DependentUpon>Valikko.cs</DependentUpon>
     </Compile>
-    <Compile Include="GripBounds.cs" />
     <Compile Include="Muisti.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="OpenGL.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="OpenGL.Designer.cs">
       <DependentUpon>OpenGL.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Popup.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Popup.Designer.cs">
-      <DependentUpon>Popup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PopupComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PopupComboBox.Designer.cs">
-      <DependentUpon>PopupComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,14 +72,14 @@
     <Compile Include="Teksti.Designer.cs">
       <DependentUpon>Teksti.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AlasVetoOpenGL.resx">
+      <DependentUpon>AlasVetoOpenGL.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Valikko.resx">
       <DependentUpon>Valikko.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OpenGL.resx">
       <DependentUpon>OpenGL.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PopupComboBox.resx">
-      <DependentUpon>PopupComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -103,6 +89,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Teksti.resx">
       <DependentUpon>Teksti.cs</DependentUpon>
