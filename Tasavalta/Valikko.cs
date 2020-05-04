@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 
 
@@ -290,26 +291,32 @@ namespace Tasavalta
         WM_LAHETALINKKI = WM_USER + 2
     }
 
+    public struct DPI
+    {
+        public float DpiX;
+        public float DpiY;
+    }
+
     public partial class Valikko : Form
     {
 
+        [DllImport("UxTheme.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsAppThemed();
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern int GetSystemMetrics(int numero);
-        /*
-                [DllImport("kernel32.dll")]
-                static extern uint GetModuleFileName
-                    (
-                        [In]
-                        IntPtr nulli,
 
-                        [Out]
-                        StringBuilder puskuri,
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool FreeLibrary(IntPtr hModule);
 
-                        [In]
-                        [MarshalAs(UnmanagedType.U4)]
-                        int pituus
-                    );
-        */
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+        static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string lpFileName);
+
         private readonly int SM_CXSCREEN = 0;
         bool mOnkoEng = true;
         bool mOnko3D;
@@ -326,10 +333,22 @@ namespace Tasavalta
         public string mTekstiTiedosto;
         public bool mEiValaisua = false;
         public bool mPaivitetaanko = true;
+        public bool mOnkoUXTeemaa { get; private set; } = false;
         public IntPtr mHwnd;
         public OpenGL mOpenGLIkkuna = null;
         public Teksti mTekstiIkkuna = null;
         public AlasVetoValikkoIkkuna mAlasVetoValikkoIkkuna = null;
+        public DPI Dpi = new DPI();
+
+        //Tällä funktiolla selvitetään, voiko käyttöjärjestelmä tarjota comctl32.dll 
+        //version 6, mitä tarvitaan Visual Styles tyylien käyttöön
+        bool OnkoUXTeemaa()
+        {
+            if (IsAppThemed())
+                return true;
+            else
+                return false;
+        }
 
         public Valikko()
         {
@@ -341,14 +360,31 @@ namespace Tasavalta
             mSing.asetaValikko(this);
 
             //ohjelman alkaessa pitää tehdä seuraavat aloitustoimet:
-            //(1)säätää ikkunat ruudun resoluution mukaan,
-            //(2)hakea muistitiedostosta kirjanmerkit ja tiedostotiedot sekä varmistaa niiden ajanmukaisuus
-            //(3)luoda sen mukaisesti valikkoon vaihtehtoja sekä asetukset kohdilleen
+            //(1)selvittää voimassa oleva DPI eli Device Independent Pixel 
+            //(1)selvittää, voiko tietokoneessa käyttää Visual Styles tyylejä
+            //(2)säätää ikkunat ruudun resoluution mukaan,
+            //(3)hakea muistitiedostosta kirjanmerkit ja tiedostotiedot sekä varmistaa niiden ajanmukaisuus
+            //(4)luoda sen mukaisesti valikkoon vaihtehtoja sekä asetukset kohdilleen
 
             //Tämä suorittaa Form1.Designer.cs tiedoston koodin
             InitializeComponent();
 
-            //(1): määritetään leveysSuhde, eli suhde koodauskoneen ruudun vaakaresoluution (1600) ja asennus-
+            //(1): selvitetään DPI
+            Graphics g = this.CreateGraphics();
+            try
+            {
+                Dpi.DpiX = g.DpiX;
+                Dpi.DpiY = g.DpiY;
+            }
+            finally
+            {
+                g.Dispose();
+            }
+
+            //(2): selvitetään, onko visual styles käytössä
+            mOnkoUXTeemaa = OnkoUXTeemaa();
+
+            //(3): määritetään leveysSuhde, eli suhde koodauskoneen ruudun vaakaresoluution (1600) ja asennus-
             //koneen vaakaresoluution välillä. Ikkunamitat tulee aina kertoa leveysSuhteella
             float leveysSuhde = ((float)GetSystemMetrics(SM_CXSCREEN) - 100.0f) / 1500.0f;
             this.Width = (int)(1500.0f * leveysSuhde);
@@ -358,7 +394,7 @@ namespace Tasavalta
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(50, 50);
 
-            //(2): ladataan sitten kirjanmerkit ja tiedostotiedot binääritiedostosta.
+            //(4): ladataan sitten kirjanmerkit ja tiedostotiedot binääritiedostosta.
             //Selvitetään tämän exe-tiedoston sijainti
             String puskuri = Application.ExecutablePath;
 
@@ -391,7 +427,7 @@ namespace Tasavalta
                 muisti = new Muisti();
             }
 
-        //(3): pääikkunaan pitää luoda tiedostotietojen mukaiset valikot. Aloitetaan
+        //(5): pääikkunaan pitää luoda tiedostotietojen mukaiset valikot. Aloitetaan
         //3D kentistä: palstat on luotava numerojärjestyksessä numerojärjestyksen aikaansaamiseksi
         hyppy:
             bool luotu = false;
@@ -785,8 +821,7 @@ namespace Tasavalta
                 mEiValaisua = false;
                 useElaborateGraphicsToolStripMenuItem.Text = "Use elaborate graphics";
             }
-            //TODO
-            //           openGLIkkuna->Close();
+            mOpenGLIkkuna.Close();
         }
 
         //käyttäjä haluaa sulkea Tasavalta-sovelluksen
@@ -1259,9 +1294,7 @@ namespace Tasavalta
 	                int kirjaimia = Math.Min(200, (int)Msg.WParam);
                     char[] linkki = new char[kirjaimia];
                     Marshal.Copy(Msg.LParam, linkki, 0, kirjaimia);
-                    linkki[kirjaimia]='\0';
-                    string siirto = new string(linkki);
-	                AvaaDokumentti(siirto);
+	                AvaaDokumentti(new string(linkki));
 	                return;
 	            }
             }

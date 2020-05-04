@@ -102,8 +102,15 @@ namespace Tasavalta
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
 		[DllImport("user32.dll")]
 		static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool ReleaseDC(IntPtr hWnd, IntPtr hdc);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate bool ONKOLAAJENNUKSIA(ref IntPtr ikkunaKahva, ref IntPtr hwndMain, ref IntPtr hwnd, ref bool eiValaisua);
@@ -174,9 +181,25 @@ namespace Tasavalta
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate void PAIVITA();
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void HIIRILIIKKUU(ref int X, ref int Y);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void HIIRILIIKKUUVASEN(ref int X, ref int Y, ref int vanhaHiiriX, ref int vanhaHiiriY);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void HIIRILIIKKUUOIKEA(ref int X, ref int Y);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void HIIRILIIKKUUMOLEMMAT(ref int X, ref int Y, ref int vanhaHiiriX, ref int vanhaHiiriY);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void HIIRIPOISTUU();
+
 		private readonly int SM_CXSCREEN = 0;
 		bool mOpenglOnkoTuettu = false;
 		bool mValmis = false;
+		bool mAjetaan = false;
 //		bool mVieTiedot = false;
 		//		bool[] mValintaListaB1 = new bool[1000];
 		//		bool[] mValintaListaB2 = new bool[1000];
@@ -186,6 +209,8 @@ namespace Tasavalta
 		IntPtr[] mValintaListaC2 = new IntPtr[1000];
 		int mValintoja1 = 0;
 		int mValintoja2 = 0;
+		int vanhaHiiriX = 0;
+		int vanhaHiiriY = 0;
 		Timer mTimeri;
 		IntPtr mDllKahva;
 		IntPtr mIkkunaKahva;
@@ -205,8 +230,13 @@ namespace Tasavalta
 		OpenGL.ANNAORIENTAATIO1 annaOrientaatio1;
 		OpenGL.ASETAORIENTAATIO1 asetaOrientaatio1;
 		OpenGL.PAIVITA paivita;
+		OpenGL.HIIRILIIKKUU hiiriLiikkuu;
+		OpenGL.HIIRILIIKKUUVASEN hiiriLiikkuuVasen;
+		OpenGL.HIIRILIIKKUUOIKEA hiiriLiikkuuOikea;
+		OpenGL.HIIRILIIKKUUMOLEMMAT hiiriLiikkuuMolemmat;
+		OpenGL.HIIRIPOISTUU hiiriPoistuu;
 
-		public bool mSaakoTarkastaaLayerit { get; private set; } = true;
+//		public bool mSaakoTarkastaaLayerit { get; private set; } = true;
 		public bool mOnkoAlhaalla { get; set; } = false;
 		public bool mSaakoKlikata2 { get; set; } = false;
 
@@ -270,10 +300,25 @@ namespace Tasavalta
 			siirto2 = siirto2.Remove(loppu);
 			return siirto2;
 		}
-
+/*
 		//Vaikka C# on manageroitu, eli siinä on automaattinen roskienkerääjä, tämä luokka
 		//sisältää manageroimattomia kenttiä, jotka pitää tuhota manuaalisesti deletorissa
 		~OpenGL()
+		{
+
+			//tuhotaan taulukot, joista roskienkerääjä ei huolehdi
+			for (int i = 0; i < mValintaListaC1.Length; i++)
+			{
+				Marshal.FreeHGlobal(mValintaListaC1[i]);
+				Marshal.FreeHGlobal(mValintaListaC2[i]);
+			}
+			Marshal.FreeHGlobal(mValintaListaB1);
+			Marshal.FreeHGlobal(mValintaListaB2);
+		}
+*/
+		//OpenGLIkkunaa suljettaessa on pakotettava ikkunan tuhoaminen sekä osoittimen määrittäminen
+		//null arvoiseksi, muuten ikkunan uudelleen avaaminen ei onnistu, kummallista kyllä
+		protected override void OnClosing(CancelEventArgs e)
 		{
 
 			//ennen ikkunan sulkemista RunOpenGL.dll:n pitää tehdä lopetustoimet
@@ -288,7 +333,7 @@ namespace Tasavalta
 			FreeLibrary(mDllKahva);
 			mDllKahva = IntPtr.Zero;
 
-			//tuhotaan taulukot, joista roskienkerääjä ei huolehdi
+			//tuhotaan manageroimattomat taulukot, joista roskienkerääjä ei huolehdi
 			for (int i = 0; i < mValintaListaC1.Length; i++)
 			{
 				Marshal.FreeHGlobal(mValintaListaC1[i]);
@@ -296,14 +341,11 @@ namespace Tasavalta
 			}
 			Marshal.FreeHGlobal(mValintaListaB1);
 			Marshal.FreeHGlobal(mValintaListaB2);
-		}
 
-		//OpenGLIkkunaa suljettaessa on pakotettava ikkunan tuhoaminen sekä osoittimen määrittäminen
-		//null arvoiseksi, muuten ikkunan uudelleen avaaminen ei onnistu, kummallista kyllä
-		protected override void OnClosing(CancelEventArgs e)
-		{
+			//paneelin device context pitää vapauttaa
+			ReleaseDC(mHwnd, mIkkunaKahva);
 
-			//lopetetaan OpenGLIkkuna
+			//lopetetaan OpenGLIkkuna pakottamalla ikkunan tuhoaminen ja osoitin null arvoiseksi
 			this.Dispose();
 			base.OnClosing(e);
 			mSing.mValikko.mOpenGLIkkuna = null;
@@ -335,10 +377,8 @@ namespace Tasavalta
 			}
 			mValintaListaB1 = Marshal.AllocHGlobal(1000 * sizeof(byte));
 			mValintaListaB2 = Marshal.AllocHGlobal(1000 * sizeof(byte));
-
-			//testausta...
-			byte[] lahde = new byte[1000];
-			Marshal.Copy(lahde, 0, mValintaListaB2, 1000);
+			this.MouseWheel += HiiriPyoraPyorii;
+			this.fokusaattori.Focus();
 
 			//Säädetään ikkunan sijainti ja koko oikeaksi
 			this.StartPosition = FormStartPosition.Manual;
@@ -356,7 +396,11 @@ namespace Tasavalta
 			layeriLista.Width = (int)(400 * leveysSuhde);
 			layeriLista.AllowDrop = false;
 			layeriLista.AutoCompleteMode = AutoCompleteMode.None;
-//			layeriLista.DropDownStyle = ComboBoxStyle.DropDownList;
+			layeriLista.Items.Add("3D View");
+			layeriLista.Items.Add("2D X-projection");
+			layeriLista.Items.Add("2D Y-projection");
+			layeriLista.Items.Add("2D Z-projection");
+			layeriLista.DropDownStyle = ComboBoxStyle.DropDownList;
 			flowLayoutPanel1.Controls.Add(layeriLista);
 
 			//AlasVetoValikkoIkkuna:
@@ -373,6 +417,7 @@ namespace Tasavalta
 			kaynnista.Name = "kaynnista";
 			kaynnista.Text = "Play";
 			kaynnista.Dock = DockStyle.Top;
+			kaynnista.Click += new EventHandler(this.KaynnistaClick);
 			ts.Items.Add(kaynnista);
 
 			//Stop/Rewind nappi:
@@ -380,19 +425,19 @@ namespace Tasavalta
 			pysayta.Name = "pysayta";
 			pysayta.Text = "Stop/Rewind";
 			pysayta.Dock = DockStyle.Top;
+			pysayta.Click += new EventHandler(this.PysaytaClick);
 			ts.Items.Add(pysayta);
 
 			//luodaan timeri OpenGL ikkunalle
-			mTimeri = new System.Windows.Forms.Timer();
+			mTimeri = new Timer();
 			mTimeri.Enabled = true;
 			mTimeri.Interval = 50;
-			mTimeri.Tick += new System.EventHandler(Timeri_Tick);
+			mTimeri.Tick += new EventHandler(Timeri_Tick);
 		}
 
 		//Tämä funktio kellottaa OpenGL-näkymän päivitystä
 		private void Timeri_Tick(object sender, EventArgs e)
-		{
-			//			paneeli.Focus();
+		{ 
 
 			//toimintoja saa tehdä vain, jos OpenGLIkkuna on valmis
 			if (mValmis)
@@ -400,11 +445,10 @@ namespace Tasavalta
 				//Käsketään OpenGL:ää päivittämään näkymä
 				paivita();
 
-				//layeriListalle pitää lähettää viesti, jos se on avoinna
+				//layeriListalle pitää mahdollisesti lähettää viesti
 				int siirto = (short)GetKeyState(1);    //VK_LBUTTON=1
 				if (Convert.ToBoolean(siirto & 0x8000) && mOnkoAlhaalla && mSaakoKlikata2)    //KEY_PRESSED=0x8000   //ollut alunperin 0xF0000000
 				{
-					//			    ::SetWindowPos(alasVetoValikkoIkkuna->Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 
 					//Täällä ollaan, jos käyttäjä on klikannut hiiren vasemalla napilla OpenGL ikkunaa ja
 					//layeriLista on esillä. Lähetetään layeriListalle viesti, että sen pitää
@@ -417,8 +461,14 @@ namespace Tasavalta
 					IntPtr lParam = (IntPtr)siirto;
 					IntPtr wParam = (IntPtr)1;
 					uint viesti = (uint)WinM.WM_VASENALHAALLA;
-					PostMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
+					if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
+					SendMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
+
+					//Jotta layeriListan nakymat tekstikentässä eivät vaihdu hiiren keskipyörää rullatessa,
+					//vaan keskipyörää käyttämällä OpenGL näkymässä liikutaan, asetetaan focus
+					this.fokusaattori.Focus();
 				}
+				/*
 				else if (mOnkoAlhaalla)
 				{
 
@@ -435,8 +485,10 @@ namespace Tasavalta
 					IntPtr lParam = (IntPtr)siirto;
 					IntPtr wParam = (IntPtr)0;
 					uint viesti = (uint)WinM.WM_VASENALHAALLA;
-					PostMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
+					if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
+					SendMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
 				}
+				*/
 			}
 
 		}
@@ -468,9 +520,6 @@ namespace Tasavalta
 		private void VieValinnat()
 		{
 
-			//ensiksi estetään layereiden tarkastus
-			mSaakoTarkastaaLayerit = false;
-
 			//sitten lähetetään tiedot RunOpenGL.dll:lle
 			vieValinnat(mValintaListaB1, mValintaListaC1,
 				mValintaListaB2, mValintaListaC2,
@@ -480,8 +529,6 @@ namespace Tasavalta
 			//RunOpenGL.dll:ssä, meidän pitää tuoda valinnat takaisin
 			TuoValinnat();
 
-			//lopuksi sallitaan layereiden tarkastus
-			mSaakoTarkastaaLayerit = true;
 		}
 
 		public void TarkastaLayerit(int index)
@@ -491,6 +538,7 @@ namespace Tasavalta
 			//byte taulukkoon, vaihdetaan arvo indeksin kohdalla ja 
 			//kopiodaan kaikki valinnat takaisin manageroimattomaan muistiin.
 			//Ensin katsotaan osuuko indeksi solideihin
+			index = Math.Max(index, 0);
 			byte[] siirto = new byte[1000];
 			if (index < mValintoja1)
 			{
@@ -722,6 +770,66 @@ namespace Tasavalta
 				}
 				paivita = (PAIVITA)
 					Marshal.GetDelegateForFunctionPointer(siirto, typeof(PAIVITA));
+				siirto = GetProcAddress(mDllKahva, "hiiriLiikkuu");
+				if (siirto == IntPtr.Zero)
+				{
+					siirto = GetProcAddress(mDllKahva, "_hiiriLiikkuu");
+					if (siirto == IntPtr.Zero)
+					{
+						kaikkiKunnossa = false;
+						goto virhe;
+					}
+				}
+				hiiriLiikkuu = (HIIRILIIKKUU)
+					Marshal.GetDelegateForFunctionPointer(siirto, typeof(HIIRILIIKKUU));
+				siirto = GetProcAddress(mDllKahva, "hiiriLiikkuuVasen");
+				if (siirto == IntPtr.Zero)
+				{
+					siirto = GetProcAddress(mDllKahva, "_hiiriLiikkuuVasen");
+					if (siirto == IntPtr.Zero)
+					{
+						kaikkiKunnossa = false;
+						goto virhe;
+					}
+				}
+				hiiriLiikkuuVasen = (HIIRILIIKKUUVASEN)
+					Marshal.GetDelegateForFunctionPointer(siirto, typeof(HIIRILIIKKUUVASEN));
+				siirto = GetProcAddress(mDllKahva, "hiiriLiikkuuOikea");
+				if (siirto == IntPtr.Zero)
+				{
+					siirto = GetProcAddress(mDllKahva, "_hiiriLiikkuuOikea");
+					if (siirto == IntPtr.Zero)
+					{
+						kaikkiKunnossa = false;
+						goto virhe;
+					}
+				}
+				hiiriLiikkuuOikea = (HIIRILIIKKUUOIKEA)
+					Marshal.GetDelegateForFunctionPointer(siirto, typeof(HIIRILIIKKUUOIKEA));
+				siirto = GetProcAddress(mDllKahva, "hiiriLiikkuuMolemmat");
+				if (siirto == IntPtr.Zero)
+				{
+					siirto = GetProcAddress(mDllKahva, "_hiiriLiikkuuMolemmat");
+					if (siirto == IntPtr.Zero)
+					{
+						kaikkiKunnossa = false;
+						goto virhe;
+					}
+				}
+				hiiriLiikkuuMolemmat = (HIIRILIIKKUUMOLEMMAT)
+					Marshal.GetDelegateForFunctionPointer(siirto, typeof(HIIRILIIKKUUMOLEMMAT));
+				siirto = GetProcAddress(mDllKahva, "hiiriPoistuu");
+				if (siirto == IntPtr.Zero)
+				{
+					siirto = GetProcAddress(mDllKahva, "_hiiriPoistuu");
+					if (siirto == IntPtr.Zero)
+					{
+						kaikkiKunnossa = false;
+						goto virhe;
+					}
+				}
+				hiiriPoistuu = (HIIRIPOISTUU)
+					Marshal.GetDelegateForFunctionPointer(siirto, typeof(HIIRIPOISTUU));
 			}
 
 
@@ -761,6 +869,27 @@ namespace Tasavalta
 						mDllKahva = IntPtr.Zero;
 						this.Close();
 						return false;
+					}
+					else
+					{
+
+						//Meidän on pakko saada uusi device context (hdc), jotta OpenGL näkymään saadaan 
+						//optimaaliset asetukset. Uusi hdc saadaan varmuudella vain luomalla paneeli uudestaan:
+						ReleaseDC(mHwnd, mIkkunaKahva);
+						paneeli.Dispose();
+						paneeli = new Panel();
+						this.paneeli.AutoSize = true;
+						this.paneeli.Dock = System.Windows.Forms.DockStyle.Fill;
+						this.paneeli.Location = new System.Drawing.Point(0, flowLayoutPanel1.Height);
+						this.paneeli.Margin = new System.Windows.Forms.Padding(2);
+						this.paneeli.Name = "paneeli";
+						this.paneeli.TabIndex = 1;
+						this.paneeli.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paneeliClick);
+						this.paneeli.MouseLeave += new System.EventHandler(this.HiiriPoistuu);
+						this.paneeli.MouseMove += new System.Windows.Forms.MouseEventHandler(this.HiiriLiikkuu);
+						this.Controls.Add(paneeli);
+						mHwnd = paneeli.Handle;
+						mIkkunaKahva = GetWindowDC(mHwnd);
 					}
 				}
 
@@ -844,21 +973,290 @@ namespace Tasavalta
 				case (char)83:
 					pyoraAlas(); pyoraAlas();
 					break;
-				case (char)163:
+				case (char)115:
 					pyoraAlas(); pyoraAlas();
 					break;
 				case (char)87:
-					pyoraAlas(); pyoraAlas();
+					pyoraYlos(); pyoraYlos();
 					break;
 				case (char)119:
-					pyoraAlas(); pyoraAlas();
+					pyoraYlos(); pyoraYlos();
 					break;
 			}
 		}
 
-		//Tämä metodi välittää RunOpenGL.dll:lle tiedon, että käyttäjä rullaa hiiren
-		//pyörää alaspäin
+		//Käyttäjä on klikannut OpenGLIkkunan back-nappulaa
+		private void TaakseClick(object sender, EventArgs e)
+		{
+			bool siirto1 = false, siirto2 = false;
+			int siirto3 = 0;
+			string tiedosto = string.Empty;
 
+			//käyttäjä on klikannut taakse nappia
+			if (mDllKahva != IntPtr.Zero)
+			{
+
+				taakseI(tiedosto, ref siirto1, ref siirto2, ref siirto3, mValintaListaB1, mValintaListaC1,
+							mValintaListaB2, mValintaListaC2, ref mValintoja1, ref mValintoja2);
+				this.eteen.Enabled = siirto1;
+				this.taakse.Enabled = siirto2;
+				if (tiedosto.Length != 0)
+				{
+					string siirto = "CAD view - ";
+					this.Text = siirto + tiedosto;
+				}
+				else
+				{
+					this.Text = "CAD view";
+				}
+				if (siirto3 == (int)Anim.aja)
+				{
+					this.kaynnista.Enabled = true;
+					this.pysayta.Enabled = false;
+				}
+				else if (siirto3 == (int)Anim.seis)
+				{
+					this.kaynnista.Enabled = false;
+					this.pysayta.Enabled = true;
+				}
+				else if (siirto3 == (int)Anim.alkuun)
+				{
+					this.kaynnista.Enabled = true;
+					this.pysayta.Enabled = true;
+				}
+				else
+				{
+					this.kaynnista.Enabled = false;
+					this.pysayta.Enabled = false;
+				}
+				TuoValinnat();
+					
+				//alasVetoValikkoIkkuna pitää sulkea
+				if (mSing != null && mSing.mValikko.mAlasVetoValikkoIkkuna != null)
+				mSing.mValikko.mAlasVetoValikkoIkkuna.Hide();
+				mOnkoAlhaalla = false;
+			}
+		}
+
+		private void EteenClick(object sender, EventArgs e)
+		{
+			bool siirto1 = false, siirto2 = false;
+			int siirto3 = 0;
+			string tiedosto = string.Empty;
+
+			//käyttäjä on klikannut eteen nappia
+			if (mDllKahva != IntPtr.Zero)
+			{
+
+				eteenI(tiedosto, ref siirto1, ref siirto2, ref siirto3, mValintaListaB1, mValintaListaC1,
+						   mValintaListaB2, mValintaListaC2, ref mValintoja1, ref mValintoja2);
+					this.eteen.Enabled = siirto1;
+					this.taakse.Enabled = siirto2;
+					if (tiedosto.Length != 0)
+					{
+						string siirto = "CAD view - ";
+						this.Text = siirto + tiedosto;
+					}
+					else
+					{
+						this.Text = "CAD view";
+					}
+					if (siirto3 == (int)Anim.aja)
+					{
+						this.kaynnista.Enabled = true;
+						this.pysayta.Enabled = false;
+					}
+					else if (siirto3 == (int)Anim.seis)
+					{
+						this.kaynnista.Enabled = false;
+						this.pysayta.Enabled = true;
+					}
+					else if (siirto3 == (int)Anim.alkuun)
+					{
+						this.kaynnista.Enabled = true;
+						this.pysayta.Enabled = true;
+					}
+					else
+					{
+						this.kaynnista.Enabled = false;
+						this.pysayta.Enabled = false;
+					}
+					TuoValinnat();
+
+					//alasVetoValikkoIkkuna pitää sulkea
+					if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
+					mSing.mValikko.mAlasVetoValikkoIkkuna.Hide();
+					mOnkoAlhaalla = false;
+			}
+		}
+
+		//tämä metodi välittää käyttäjän tulostuspyynnön RunOpenGL.dll kirjastoon
+		private void Tulostetaan(object sender, EventArgs e)
+		{
+			tulostaI();
+		}
+
+
+		//Tätä metodia kutsutaan, jos käyttäjä muuttaa OpenGLIkkunan kokoa
+		private void MuutaKokoa(object sender, EventArgs e)
+		{
+
+			//jos ikkunan kokoa muutetaan, pitää alasvetovalikkoikkuna sulkea
+			if (mSing != null && mSing.mValikko.mAlasVetoValikkoIkkuna != null)
+				mSing.mValikko.mAlasVetoValikkoIkkuna.Hide();
+			mOnkoAlhaalla = false;
+
+			//ilmoitetaan OpenGLIkkunan koon muutoksesta RunOpenGL.dll:lle
+			if (muutaAla != null) muutaAla(this.Width, this.Height);
+		}
+
+		//tämä metodi toimii vain, jos paneelilla tai sillä kontrollilla, jolle tämä metodi
+		//on osoitettu, on focus. Hiiren keskipyorän toiminta edellyttää focusta, toisin kuin 
+		//hiiren nappien käyttö eli klikkaukset
+		private void HiiriPyoraPyorii(object sender, MouseEventArgs e)
+		{
+
+			if (e.Delta >= 0)
+			{
+
+				//loitontaa näkymää
+				pyoraAlas();
+				pyoraAlas();
+			}
+			else
+			{
+
+				//lähentää näkymää
+				pyoraYlos();
+				pyoraYlos();
+			}
+		}
+
+		//käyttäjä haluaa käynnistää animaation CAD-näkymässä
+		private void KaynnistaClick(object sender, EventArgs e)
+		{
+			eloKuva((int)Anim.aja);
+			mAjetaan = true;
+			kaynnista.Enabled = false;
+			pysayta.Enabled = true;
+		}
+
+		//Käyttäjä haluaa pysäyttää animaation tai jos se on pysäytetty,
+		//asettaa animaation alkutilanteeseen
+		private void PysaytaClick(object sender, EventArgs e)
+		{
+			if (mAjetaan)
+			{
+				eloKuva((int)Anim.seis);
+				mAjetaan = false;
+				kaynnista.Enabled = true;
+			}
+			else
+			{
+				eloKuva((int)Anim.alkuun);
+				pysayta.Enabled = false;
+				kaynnista.Enabled = true;
+			}
+		}
+
+		//käyttäjän klikatessa paikallaan olevan hiiren nappulaa paneelin alueella tämä
+		//metodi aktivoituu
+		private void paneeliClick(object sender, MouseEventArgs e)
+		{
+			int X = e.X;
+			int Y = e.Y;
+
+			//tämä tarvitaan layeriListan alasvetovalikkoa suljettaessa. Tällöin
+			//ei tehdä muuta
+			if (mOnkoAlhaalla && mSaakoKlikata2)
+			{
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//selvitetään, kumpaa hiiren nappia käyttäjä on klikannut
+			//vasen
+			if (e.Button == MouseButtons.Left)
+			{
+				hiiriLiikkuuVasen(ref X, ref Y, ref vanhaHiiriX, ref vanhaHiiriY);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//oikea
+			if (e.Button == MouseButtons.Right)
+			{
+				hiiriLiikkuuOikea(ref X, ref Y);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+		}
+
+		//käyttäjän liikuttaessa hiirtä paneelin alueella tämä
+		//metodi aktivoituu
+		private void HiiriLiikkuu(object sender, MouseEventArgs e)
+		{
+			bool vasen = e.Button == MouseButtons.Left ? true : false;
+			bool oikea = e.Button == MouseButtons.Right ? true : false;
+			int X = e.X;
+			int Y = e.Y;
+
+			//tämä tarvitaan layeriListan alasvetovalikkoa suljettaessa. Tällöin
+			//ei tehdä muuta
+			if (mOnkoAlhaalla && mSaakoKlikata2)
+			{
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//lisäksi tähän funktioon sisältyy neljä eri RunOpenGL.dll kutsua:
+			//hiiriLiikkuu
+			if (!vasen && !oikea)
+			{
+				hiiriLiikkuu(ref X, ref Y);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//hiiriLiikkuuVasen
+			if (vasen && !oikea)
+			{
+				hiiriLiikkuuVasen(ref X, ref Y, ref vanhaHiiriX, ref vanhaHiiriY);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//hiiriLiikkuuOikea
+			if (!vasen && oikea)
+			{
+				hiiriLiikkuuOikea(ref X, ref Y);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//hiiri liikkuu vasen ja oikea pohjassa
+			if (vasen && oikea)
+			{
+				hiiriLiikkuuMolemmat(ref X, ref Y, ref vanhaHiiriX, ref vanhaHiiriY);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+		}
+
+		//tätä metodia kutsutaan silloin, kun hiiri poistuu OpenGL-näkymän eli paneelin
+		//alueelta
+		private void HiiriPoistuu(object sender, EventArgs e)
+		{
+			hiiriPoistuu();
+		}
 	}
 
 
@@ -947,7 +1345,7 @@ namespace Tasavalta
 						}
 						else
 						{
-							rect.bottom = cyChar * 30;
+							rect.bottom = cyChar * 6;
 						}
 						this.Enabled = false;
 						this.Enabled = true;
@@ -975,4 +1373,6 @@ namespace Tasavalta
 			base.WndProc(ref Msg);
 		}
 	}
+
+
 }

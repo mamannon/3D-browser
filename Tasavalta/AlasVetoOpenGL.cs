@@ -93,7 +93,7 @@ namespace Tasavalta
 			public uint lbColor;
 			public uint lbHatch;
 		}
-
+/*
 		[StructLayout(LayoutKind.Sequential)]
 		struct LOGPEN
 		{
@@ -101,7 +101,7 @@ namespace Tasavalta
 			public POINT lopnWidth;
 			public uint lopnColor;
 		}
-
+*/
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool GetTextMetrics(IntPtr hdc, out TEXTMETRICW lptm);
@@ -124,17 +124,24 @@ namespace Tasavalta
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
 		static extern IntPtr CreateFontIndirect([In, MarshalAs(UnmanagedType.LPStruct)] LOGFONT lplf);
 
+		[DllImport("user32.dll", SetLastError = true)]
+		static extern int FillRect(IntPtr hdc, [In] ref RECT lprc, IntPtr hbr);
+
 		[DllImport("gdi32.dll")]
 		static extern IntPtr CreateBrushIndirect([In] ref LOGBRUSH lplb);
 
-		[DllImport("gdi32.dll")]
-		static extern IntPtr CreatePenIndirect([In] ref LOGPEN lppn);
+//		[DllImport("gdi32.dll")]
+//		static extern IntPtr CreatePenIndirect([In] ref LOGPEN lppn);
 
 		[DllImport("user32.dll")]
 		static extern IntPtr BeginPaint(IntPtr hWnd, out PAINTSTRUCT lpPaint);
 
 		[DllImport("gdi32.dll")]
 		static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
+
+		[DllImport("gdi32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool DeleteObject(IntPtr hgdiobj);
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -158,24 +165,54 @@ namespace Tasavalta
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool Rectangle(IntPtr hdc, int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
 
+		[DllImport("UxTheme.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		static extern IntPtr OpenThemeData(IntPtr hwnd, string pszClassList);
 
+		[DllImport("UxTheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+		static extern int GetThemeSysFont(IntPtr Theme, int iFontId, [Out, MarshalAs(UnmanagedType.LPStruct)] LOGFONT lplf);
+
+		[DllImport("UxTheme.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern int GetThemeColor(IntPtr hTheme, uint iPartId, 
+			uint iStateId, int iPropId, out int pColor);
+
+		[DllImport("UxTheme.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		static extern int CloseThemeData(IntPtr hTheme);
+
+		[DllImport("UxTheme.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		static extern Int32 GetThemeTextMetrics(IntPtr hTheme, IntPtr hdc, 
+			uint iPartId, uint iStateId, out TEXTMETRICW ptm);
+
+		[DllImport("UxTheme.dll", ExactSpelling = true)]
+		static extern int DrawThemeBackground(IntPtr hTheme, IntPtr hdc, 
+			uint iPartId, uint iStateId, ref RECT pRect, ref RECT pClipRect);
+
+		[DllImport("UxTheme.dll", ExactSpelling = true)]
+		static extern int DrawThemeBackground(IntPtr hTheme, IntPtr hdc,
+			uint iPartId, uint iStateId, ref RECT pRect, IntPtr pClipRect);
+
+		[DllImport("UxTheme.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		static extern int DrawThemeText(IntPtr hTheme, IntPtr hdc,
+			uint iPartId, uint iStateId, string pszText, int iCharCount,
+			uint dwTextFlags, uint dwTextFlags2, ref RECT pRect);
 
 		[DllImport("user32.dll", SetLastError = true)]
 //		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern int SystemParametersInfo(int uiAction, uint uiParam, ref uint pvParam, int fWinIni);
 
 		Singleton mSing;
-		int kursoriRivilla = -1;
+		int kursoriRivilla = 0;
 		int cyChar;
-		uint cyClient;
+		int vari;
+//		uint cyClient;
 		int iVscrollMax;
 		int iDeltaPerLine, iAccumDelta;
 		LOGFONT lf;
 		LOGBRUSH br;
-		LOGPEN pen;
-		IntPtr sininen;
-		IntPtr fontti;
-		IntPtr reuna;
+//		LOGPEN pen;
+		IntPtr valkoinen = IntPtr.Zero;
+		IntPtr fontti = IntPtr.Zero;
+		IntPtr teema1 =IntPtr.Zero, teema2 = IntPtr.Zero;
+		//		IntPtr reuna;
 
 		protected override CreateParams CreateParams
 		{
@@ -211,13 +248,14 @@ namespace Tasavalta
 			int ii, yy, iVertPos, iPaintBeg, iPaintEnd;
 			IntPtr vanhaFontti = IntPtr.Zero;
 			IntPtr vanhaVari = IntPtr.Zero;
-			IntPtr vanhaKyna = IntPtr.Zero;
+//			IntPtr vanhaKyna = IntPtr.Zero;
 			uint vanhaTausta;
 			IntPtr hdc = IntPtr.Zero;
 			POINT point;
 			uint ulScrollLines = 0;
 			int SPI_GETWHEELSCROLLLINES = 104;
 			int WHEEL_DELTA = 120;
+			int virhe;
 
 			switch (Msg.Msg)
 			{
@@ -253,6 +291,7 @@ namespace Tasavalta
 								mSing.mValikko.mOpenGLIkkuna.mSaakoKlikata2 = false;
 							}
 						}
+						/*
 						else
 						{
 							GetWindowRect(this.Handle, out rect);
@@ -272,27 +311,13 @@ namespace Tasavalta
 								}
 							}
 						}
+						*/
 						return;
 					}
 
-				//kun valintaIkkuna luodaan, luodaan myös Tahoma fontti, sininen brush ja sininen kynä
+				//kun valintaIkkuna luodaan, luodaan myös fontti ja valkoinen brush
 				case (int)WinM.WM_CREATE:
 					{
-						hdc = GetWindowDC(this.Handle);
-						br.lbStyle = 0;   // BS_SOLID=0
-						br.lbColor = 0x000000FF;
-						sininen = CreateBrushIndirect(ref br);
-						pen.lopnStyle = 0; // BS_SOLID=0
-						pen.lopnColor = 0x000000FF;
-						reuna = CreatePenIndirect(ref pen);
-						GetTextMetrics(hdc, out tm);
-						cyChar = tm.tmHeight + tm.tmExternalLeading;
-						LOGFONT lf = new LOGFONT();
-						lf.lfHeight = tm.tmHeight;
-//						lf.lfFaceName = "Tahoma";
-						lf.lfFaceName = "Arial";
-						fontti = CreateFontIndirect(lf);
-						ReleaseDC(this.Handle, hdc);
 
 						//tämä on hiiren keskipyörää varten
 						SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, ref ulScrollLines, 0);
@@ -305,6 +330,35 @@ namespace Tasavalta
 							iDeltaPerLine = 0;
 						}
 
+						//käytetään joko tyylejä...
+						hdc = GetWindowDC(this.Handle);
+						if (mSing.mValikko.mOnkoUXTeemaa)
+						{
+							teema1 = OpenThemeData(this.Handle, "TEXTSTYLE");   //"TEXTSTYLE;BUTTON"
+							teema2 = OpenThemeData(this.Handle, "BUTTON");
+							if (teema1 == IntPtr.Zero) goto hyppy;
+							if (teema2 == IntPtr.Zero) goto hyppy;
+							if (GetThemeTextMetrics(teema1, hdc, 4, 1, out tm) != 0) goto hyppy;   // TEXT_BODYTEXT = 4
+							cyChar = tm.tmHeight + tm.tmExternalLeading;
+							ReleaseDC(this.Handle, hdc);
+							break;
+						}
+						
+						//...tai käytetään klassista näkymää
+						hyppy:
+						{
+							br.lbStyle = 0;   // BS_SOLID=0
+							br.lbColor = 0x00FFFFFF;
+							valkoinen = CreateBrushIndirect(ref br);
+							GetTextMetrics(hdc, out tm);
+							cyChar = tm.tmHeight + tm.tmExternalLeading;
+							LOGFONT lf = new LOGFONT();
+							lf.lfHeight = tm.tmHeight;
+							lf.lfFaceName = "Arial";
+							fontti = CreateFontIndirect(lf);
+							ReleaseDC(this.Handle, hdc);
+						}
+
 						break;
 					}
 
@@ -315,110 +369,200 @@ namespace Tasavalta
 						//selvitetään vierityspalkin asento
 						iVertPos = vScrollBar1.Value;
 
-						//valitaan Tahoma fontti
-						if (fontti != IntPtr.Zero)
+						if (mSing.mValikko.mOnkoUXTeemaa)
 						{
-							vanhaFontti = SelectObject(hdc, fontti);
-						}
 
-						//piirretään vain se alue, joka on näkyvissä ikkunassa
-						iPaintBeg = (int)Math.Max(0, iVertPos + (int)ps.rcPaint.top / cyChar);
-						iPaintEnd = (int)Math.Min(mSing.mValikko.mOpenGLIkkuna.Valintoja1 + 
-							mSing.mValikko.mOpenGLIkkuna.Valintoja2,
-												iVertPos + (int)ps.rcPaint.bottom / cyChar);
+							//piirretään vain se alue, joka on näkyvissä ikkunassa
+							iPaintBeg = (int)Math.Max(0, iVertPos + (int)ps.rcPaint.top / cyChar);
+							iPaintEnd = (int)Math.Min(mSing.mValikko.mOpenGLIkkuna.Valintoja1 +
+								mSing.mValikko.mOpenGLIkkuna.Valintoja2,
+													iVertPos + (int)ps.rcPaint.bottom / cyChar);
 
-						//piirretään listan 1 valinnat, jos niitä on näkyvissä
-						if (iPaintBeg <= mSing.mValikko.mOpenGLIkkuna.Valintoja1)
-						{
-							for (int i = iPaintBeg; i < Math.Min(mSing.mValikko.mOpenGLIkkuna.Valintoja1, iPaintEnd); i++)
+							//väritetään tausta
+							GetClientRect(this.Handle, out rect);
+							DrawThemeBackground(teema1, hdc, 4, 1, ref rect, ref rect);
+
+							//piirretään listan 1 valinnat, jos niitä on näkyvissä
+							if (iPaintBeg <= mSing.mValikko.mOpenGLIkkuna.Valintoja1)
 							{
-								int pituus = mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i).Length;
-								uint tila;
-								if (i - iVertPos == kursoriRivilla)
+								for (int i = iPaintBeg; i < Math.Min(mSing.mValikko.mOpenGLIkkuna.Valintoja1, iPaintEnd); i++)
 								{
-									vanhaVari =SelectObject(hdc, sininen);
-									vanhaKyna =SelectObject(hdc, reuna);
-									Rectangle(hdc, 0, (i - iVertPos) * cyChar, 254, 16 + (i - iVertPos) * cyChar);
-									SelectObject(hdc, vanhaVari);
-									SelectObject(hdc, vanhaKyna);
+
+									//piirretään checkbox
+									rect.left = 0;
+									rect.top = (i - iVertPos) * cyChar;
+									rect.right = cyChar;
+									rect.bottom = cyChar + (i - iVertPos) * cyChar;
+									if (mSing.mValikko.mOpenGLIkkuna.ValintaListaB1(i) == true)
+									{
+										DrawThemeBackground(teema2, hdc, 3, 5, ref rect, IntPtr.Zero);  // BP_CHECKBOX = 3  CBS_CHECKEDNORMAL = 5
+									}
+									else
+									{
+										DrawThemeBackground(teema2, hdc, 3, 1, ref rect, IntPtr.Zero);  // BP_CHECKBOX = 3  CBS_UNCHECKEDNORMAL = 1
+									}
+
+									//piirretään teksti
+									int pituus = mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i).Length;
+									rect.left = cyChar;
+									rect.top = (i - iVertPos) * cyChar;
+									rect.right = this.Width-cyChar;
+									rect.bottom = cyChar + (i - iVertPos) * cyChar;
+									DrawThemeText(teema1, hdc, 0, 1, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus, 0, 0, ref rect);
 								}
-								if (mSing.mValikko.mOpenGLIkkuna.ValintaListaB1(i) == true)
+							}
+
+							//piirretään listan 2 valinnat, jos niitä on näkyvissä
+							if (iPaintEnd >= mSing.mValikko.mOpenGLIkkuna.Valintoja1)
+							{
+								for (int i = mSing.mValikko.mOpenGLIkkuna.Valintoja1; i < iPaintEnd; i++)
 								{
-									tila = 0 | 1024;   //DFCS_BUTTONCHECK=0   DFCS_CHECKED=1024
-								}
-								else
-								{
-									tila = 0;    //DFCS_BUTTONCHECK=0
-								}
-								rect.left = 0;
-								rect.top = (i - iVertPos) * cyChar;
-								rect.right = 16;
-								rect.bottom = 16 + (i - iVertPos) * cyChar;
-//								DrawFrameControl(hdc, in rect, 4, tila);     //DFC_BUTTON = 4
-								if (i - iVertPos == kursoriRivilla)
-								{
-									vanhaTausta = SetBkColor(hdc, 0x000000FF);
-									TextOut(hdc, 20, (i - iVertPos) * cyChar, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus);
-									SetBkColor(hdc, vanhaTausta);
-								}
-								else
-								{
-									TextOut(hdc, 20, (i - iVertPos) * cyChar, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus);
+
+									//piirretään checkbox
+									rect.left = 0;
+									rect.top = (i - iVertPos) * cyChar;
+									rect.right = cyChar;
+									rect.bottom = cyChar + (i - iVertPos) * cyChar;
+									if (mSing.mValikko.mOpenGLIkkuna.ValintaListaB2(i -
+										mSing.mValikko.mOpenGLIkkuna.Valintoja1) == true)
+									{
+										DrawThemeBackground(teema2, hdc, 3, 5, ref rect, IntPtr.Zero);  // BP_CHECKBOX = 3  CBS_CHECKEDNORMAL = 5
+									}
+									else
+									{
+										DrawThemeBackground(teema2, hdc, 3, 1, ref rect, IntPtr.Zero);  // BP_CHECKBOX = 3  CBS_UNCHECKEDNORMAL = 1
+									}
+
+									//piirretään teksti
+									int pituus = mSing.mValikko.mOpenGLIkkuna.ValintaListaC2(i -
+										mSing.mValikko.mOpenGLIkkuna.Valintoja1).Length + 1;
+									string siirto = "*" + mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i -
+										mSing.mValikko.mOpenGLIkkuna.Valintoja1);
+									rect.left = cyChar;
+									rect.top = (i - iVertPos) * cyChar;
+									rect.right = this.Width - cyChar;
+									rect.bottom = cyChar + (i - iVertPos) * cyChar;
+									DrawThemeText(teema1, hdc, 0, 1, siirto, pituus, 0, 0, ref rect);
 								}
 							}
 						}
-
-						//piirretään listan 2 valinnat, jos niitä on näkyvissä
-						if (iPaintEnd >= mSing.mValikko.mOpenGLIkkuna.Valintoja1)
+						else
 						{
 
-							for (int i = mSing.mValikko.mOpenGLIkkuna.Valintoja1; i < iPaintEnd; i++)
+							//valitaan fontti
+							if (fontti != IntPtr.Zero)
 							{
-								int pituus = mSing.mValikko.mOpenGLIkkuna.ValintaListaC2(i - 
-									mSing.mValikko.mOpenGLIkkuna.Valintoja1).Length + 1;
-								string siirto = "*" + mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i -
-									mSing.mValikko.mOpenGLIkkuna.Valintoja1);
-								uint tila;
-								if (i - iVertPos == kursoriRivilla)
+								vanhaFontti = SelectObject(hdc, fontti);
+							}
+
+							//piirretään vain se alue, joka on näkyvissä ikkunassa
+							iPaintBeg = (int)Math.Max(0, iVertPos + (int)ps.rcPaint.top / cyChar);
+							iPaintEnd = (int)Math.Min(mSing.mValikko.mOpenGLIkkuna.Valintoja1 +
+								mSing.mValikko.mOpenGLIkkuna.Valintoja2,
+													iVertPos + (int)ps.rcPaint.bottom / cyChar);
+
+							//väritetään tausta
+							GetClientRect(this.Handle, out rect);
+							FillRect(hdc, ref rect, valkoinen);
+
+							//piirretään listan 1 valinnat, jos niitä on näkyvissä
+							if (iPaintBeg <= mSing.mValikko.mOpenGLIkkuna.Valintoja1)
+							{
+								for (int i = iPaintBeg; i < Math.Min(mSing.mValikko.mOpenGLIkkuna.Valintoja1, iPaintEnd); i++)
 								{
-									vanhaVari = SelectObject(hdc, sininen);
-									vanhaKyna = SelectObject(hdc, reuna);
-									Rectangle(hdc, 0, (i - iVertPos) * cyChar, 300, 16 + (i - iVertPos) * cyChar);
-									SelectObject(hdc, vanhaVari);
-									SelectObject(hdc, vanhaKyna);
+									int pituus = mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i).Length;
+									uint tila;
+									if (i - iVertPos == kursoriRivilla)
+									{
+										vanhaVari = SelectObject(hdc, valkoinen);
+										Rectangle(hdc, 0, (i - iVertPos) * cyChar, 254, 16 + (i - iVertPos) * cyChar);
+										SelectObject(hdc, vanhaVari);
+									}
+
+									//piirretään checkbox
+									if (mSing.mValikko.mOpenGLIkkuna.ValintaListaB1(i) == true)
+									{
+										tila = 0 | 1024;   //DFCS_BUTTONCHECK=0   DFCS_CHECKED=1024
+									}
+									else
+									{
+										tila = 0;    //DFCS_BUTTONCHECK=0
+									}
+									rect.left = 0;
+									rect.top = (i - iVertPos) * cyChar;
+									rect.right = cyChar;
+									rect.bottom = cyChar + (i - iVertPos) * cyChar;
+									DrawFrameControl(hdc, in rect, 4, tila);     //DFC_BUTTON = 4
+
+									//piirretään teksti
+									if (i - iVertPos == kursoriRivilla)
+									{
+										vanhaTausta = SetBkColor(hdc, 0x00FFFFFF);
+										TextOut(hdc, 20, (i - iVertPos) * cyChar, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus);
+										SetBkColor(hdc, vanhaTausta);
+									}
+									else
+									{
+										TextOut(hdc, 20, (i - iVertPos) * cyChar, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus);
+									}
 								}
-								if (mSing.mValikko.mOpenGLIkkuna.ValintaListaB2(i - 
-									mSing.mValikko.mOpenGLIkkuna.Valintoja1) == true)
+							}
+
+							//piirretään listan 2 valinnat, jos niitä on näkyvissä
+							if (iPaintEnd >= mSing.mValikko.mOpenGLIkkuna.Valintoja1)
+							{
+
+								for (int i = mSing.mValikko.mOpenGLIkkuna.Valintoja1; i < iPaintEnd; i++)
 								{
-									tila = 0 | 1024;  // DFCS_BUTTONCHECK=0 DFCS_CHECKED=1024
+									int pituus = mSing.mValikko.mOpenGLIkkuna.ValintaListaC2(i -
+										mSing.mValikko.mOpenGLIkkuna.Valintoja1).Length + 1;
+									string siirto = "*" + mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i -
+										mSing.mValikko.mOpenGLIkkuna.Valintoja1);
+									uint tila;
+									if (i - iVertPos == kursoriRivilla)
+									{
+										vanhaVari = SelectObject(hdc, valkoinen);
+										Rectangle(hdc, 0, (i - iVertPos) * cyChar, 300, 16 + (i - iVertPos) * cyChar);
+										SelectObject(hdc, vanhaVari);
+									}
+
+									//piirretään checkbox
+									if (mSing.mValikko.mOpenGLIkkuna.ValintaListaB2(i -
+										mSing.mValikko.mOpenGLIkkuna.Valintoja1) == true)
+									{
+										tila = 0 | 1024;  // DFCS_BUTTONCHECK=0 DFCS_CHECKED=1024
+									}
+									else
+									{
+										tila = 0;   //DFCS_BUTTONCHECK=0
+									}
+									rect.left = 0;
+									rect.top = (i - iVertPos) * cyChar;
+									rect.right = cyChar;
+									rect.bottom = cyChar + (i - iVertPos) * cyChar;
+									DrawFrameControl(hdc, in rect, 4, tila);  //DFC_BUTTON=4
+
+									//piirretään teksti
+									if (i - iVertPos == kursoriRivilla)
+									{
+										vanhaTausta = SetBkColor(hdc, 0x00FFFFFF);
+										TextOut(hdc, 20, (i - iVertPos) * cyChar, siirto, pituus);
+										SetBkColor(hdc, vanhaTausta);
+									}
+									else
+									{
+										TextOut(hdc, 20, (i - iVertPos) * cyChar, siirto, pituus);
+									}
 								}
-								else
-								{
-									tila = 0;   //DFCS_BUTTONCHECK=0
-								}
-								rect.left = 0;
-								rect.top = (i - iVertPos) * cyChar;
-								rect.right = 16;
-								rect.bottom = 16 + (i - iVertPos) * cyChar;
-//								DrawFrameControl(hdc, in rect, 4, tila);  //DFC_BUTTON=4
-								if (i - iVertPos == kursoriRivilla)
-								{
-									vanhaTausta = SetBkColor(hdc, 0x000000FF);
-									TextOut(hdc, 20, (i - iVertPos) * cyChar, siirto, pituus);
-									SetBkColor(hdc, vanhaTausta);
-								}
-								else
-								{
-									TextOut(hdc, 20, (i - iVertPos) * cyChar, siirto, pituus);
-								}
+							}
+
+							//palautetaan vanha fontti
+							if (fontti != IntPtr.Zero)
+							{
+								SelectObject(hdc, vanhaFontti);
 							}
 						}
 
-						//palautetaan vanha fontti
-						if (fontti != IntPtr.Zero)
-						{
-							SelectObject(hdc, vanhaFontti);
-						}
 						EndPaint(this.Handle, ref ps);
 						break;
 					}
@@ -426,18 +570,14 @@ namespace Tasavalta
 				case (int)WinM.WM_SIZE:
 					{
 
-						//asetetaan vierintäpalkin alue ja sivukoko
-						hdc =GetWindowDC(this.Handle);
-						GetTextMetrics(hdc, out tm);
-						cyChar = tm.tmHeight + tm.tmExternalLeading;
-						cyClient = (uint)Msg.LParam;
-
-						//otetaan win32 HIWORD
-						cyClient = cyClient >> 16;
 						this.vScrollBar1.Minimum = 0;
+						this.vScrollBar1.Value = 0;
+						this.vScrollBar1.LargeChange = (int)3;
+						this.vScrollBar1.SmallChange = (int)2;
 						this.vScrollBar1.Maximum = Math.Max((mSing.mValikko.mOpenGLIkkuna.Valintoja1 +
-							mSing.mValikko.mOpenGLIkkuna.Valintoja2) * cyChar - (int)cyClient, 0);
+													mSing.mValikko.mOpenGLIkkuna.Valintoja2 - 8), 0);
 						this.vScrollBar1.Maximum += this.vScrollBar1.LargeChange;
+						iVscrollMax = this.vScrollBar1.Maximum;
 						break;
 					}
 
@@ -473,22 +613,22 @@ namespace Tasavalta
 						switch (siirto)
 						{
 							case 0:     //SB_LINEUP=0
-								this.vScrollBar1.Value = this.vScrollBar1.Value - 1;
+								this.vScrollBar1.Value = Math.Max(this.vScrollBar1.Value - 1, 0);
 								break;
 							case 1:  //SB_LINEDOWN=1
-								this.vScrollBar1.Value = this.vScrollBar1.Value + 1;
+								this.vScrollBar1.Value = Math.Min(this.vScrollBar1.Value + 1, iVscrollMax);
 								break;
 							case 6:  //SB_TOP=6
-								this.vScrollBar1.Value = this.vScrollBar1.Minimum;
+								this.vScrollBar1.Value = 0;
 								break;
 							case 7:  //SB_BOTTOM=7
-								this.vScrollBar1.Value = this.vScrollBar1.Maximum;
+								this.vScrollBar1.Value = iVscrollMax;
 								break;
 							case 2:   //SB_PAGEUP=2
-								this.vScrollBar1.Value = this.vScrollBar1.Value - (int)cyClient;
+								this.vScrollBar1.Value = Math.Max(this.vScrollBar1.Value - 1, 0);
 								break;
 							case 3:    //SB_PAGEDOWN=3
-								this.vScrollBar1.Value = this.vScrollBar1.Value + (int)cyClient;
+								this.vScrollBar1.Value = Math.Min(this.vScrollBar1.Value + 2, iVscrollMax);
 								break;
 							case 4:  //SB_THUMBPOSITION=4
 								siirto = (int)Msg.WParam;
@@ -529,6 +669,31 @@ namespace Tasavalta
 					{
 						mSing.mValikko.mOpenGLIkkuna.TarkastaLayerit(kursoriRivilla + this.vScrollBar1.Value);
 						Invalidate();
+						break;
+					}
+
+				case (int)WinM.WM_THEMECHANGED:
+					{
+						if (teema1 != IntPtr.Zero)
+						{
+							CloseThemeData(teema1);
+							teema1 = OpenThemeData(this.Handle, "TEXTSTYLE");
+						}
+						if (teema2 != IntPtr.Zero)
+						{
+							CloseThemeData(teema2);
+							teema2 = OpenThemeData(this.Handle, "BUTTON");
+						}
+						Invalidate();
+						break;
+					}
+
+				case (int)WinM.WM_DESTROY:
+					{
+						CloseThemeData(teema1);
+						CloseThemeData(teema2);
+						DeleteObject(fontti);
+						DeleteObject(valkoinen);
 						break;
 					}
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace Tasavalta
 {
@@ -48,12 +49,30 @@ namespace Tasavalta
     }
     static class Program
     {
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct INITCOMMONCONTROLSEX
+        {
+            public int dwSize;
+            public uint dwICC;
+        }
+
+        [DllImport("comctl32.dll", EntryPoint = "InitCommonControlsEx", CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool InitCommonControlsEx(ref INITCOMMONCONTROLSEX iccex);
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
+            INITCOMMONCONTROLSEX icc;
+            icc.dwICC = 0x00004000; //ICC_STANDARD_CLASSES = 0x00004000
+            icc.dwSize = Marshal.SizeOf(typeof(INITCOMMONCONTROLSEX));
+
+            //Visual Styles pitää erikseen ladata alla olevalla funktiolla
+            InitCommonControlsEx(ref icc);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Valikko());
