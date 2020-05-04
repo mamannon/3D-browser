@@ -203,16 +203,14 @@ namespace Tasavalta
 		int kursoriRivilla = 0;
 		int cyChar;
 		int vari;
-//		uint cyClient;
 		int iVscrollMax;
 		int iDeltaPerLine, iAccumDelta;
 		LOGFONT lf;
 		LOGBRUSH br;
-//		LOGPEN pen;
 		IntPtr valkoinen = IntPtr.Zero;
+		IntPtr sininen = IntPtr.Zero;
 		IntPtr fontti = IntPtr.Zero;
 		IntPtr teema1 =IntPtr.Zero, teema2 = IntPtr.Zero;
-		//		IntPtr reuna;
 
 		protected override CreateParams CreateParams
 		{
@@ -315,7 +313,8 @@ namespace Tasavalta
 						return;
 					}
 
-				//kun valintaIkkuna luodaan, luodaan myös fontti ja valkoinen brush
+				//kun valintaIkkuna luodaan, luodaan myös fontti, sininen brush ja valkoinen brush tai 
+				//sitten vain luodaan visual styles tyylit
 				case (int)WinM.WM_CREATE:
 					{
 
@@ -334,11 +333,11 @@ namespace Tasavalta
 						hdc = GetWindowDC(this.Handle);
 						if (mSing.mValikko.mOnkoUXTeemaa)
 						{
-							teema1 = OpenThemeData(this.Handle, "TEXTSTYLE");   //"TEXTSTYLE;BUTTON"
+							teema1 = OpenThemeData(this.Handle, "LISTVIEW");  
 							teema2 = OpenThemeData(this.Handle, "BUTTON");
 							if (teema1 == IntPtr.Zero) goto hyppy;
 							if (teema2 == IntPtr.Zero) goto hyppy;
-							if (GetThemeTextMetrics(teema1, hdc, 4, 1, out tm) != 0) goto hyppy;   // TEXT_BODYTEXT = 4
+							if (GetThemeTextMetrics(teema1, hdc, 1, 1, out tm) != 0) goto hyppy;   // LVP_LISTVIEW = 1    LISS_NORMAL = 1
 							cyChar = tm.tmHeight + tm.tmExternalLeading;
 							ReleaseDC(this.Handle, hdc);
 							break;
@@ -350,6 +349,8 @@ namespace Tasavalta
 							br.lbStyle = 0;   // BS_SOLID=0
 							br.lbColor = 0x00FFFFFF;
 							valkoinen = CreateBrushIndirect(ref br);
+							br.lbColor = 0x00FF0000;
+							sininen = CreateBrushIndirect(ref br);
 							GetTextMetrics(hdc, out tm);
 							cyChar = tm.tmHeight + tm.tmExternalLeading;
 							LOGFONT lf = new LOGFONT();
@@ -406,9 +407,15 @@ namespace Tasavalta
 									int pituus = mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i).Length;
 									rect.left = cyChar;
 									rect.top = (i - iVertPos) * cyChar;
-									rect.right = this.Width-cyChar;
+									rect.right = this.Width - cyChar;
 									rect.bottom = cyChar + (i - iVertPos) * cyChar;
-									DrawThemeText(teema1, hdc, 0, 1, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus, 0, 0, ref rect);
+									if (i - iVertPos == kursoriRivilla)
+									{
+										DrawThemeBackground(teema1, hdc, 1, 3, ref rect, ref rect);
+										DrawThemeText(teema1, hdc, 1, 3, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus, 0, 0, ref rect);  // LVP_LISTITEM = 1;  LISS_SELECTED = 3
+									}
+									else
+										DrawThemeText(teema1, hdc, 1, 1, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus, 0, 0, ref rect);   //LVP_LISTITEM = 1;  LISS_NORMAL = 1								}
 								}
 							}
 
@@ -442,7 +449,13 @@ namespace Tasavalta
 									rect.top = (i - iVertPos) * cyChar;
 									rect.right = this.Width - cyChar;
 									rect.bottom = cyChar + (i - iVertPos) * cyChar;
-									DrawThemeText(teema1, hdc, 0, 1, siirto, pituus, 0, 0, ref rect);
+									if (i - iVertPos == kursoriRivilla)
+									{
+										DrawThemeBackground(teema1, hdc, 1, 3, ref rect, ref rect);
+										DrawThemeText(teema1, hdc, 1, 3, siirto, pituus, 0, 0, ref rect);    //  LVP_LISTITEM = 1;  LISS_SELECTED = 3
+									}
+									else
+										DrawThemeText(teema1, hdc, 1, 1, siirto, pituus, 0, 0, ref rect);    //  LVP_LISTITEM = 1;  LISS_NORMAL = 1
 								}
 							}
 						}
@@ -474,8 +487,8 @@ namespace Tasavalta
 									uint tila;
 									if (i - iVertPos == kursoriRivilla)
 									{
-										vanhaVari = SelectObject(hdc, valkoinen);
-										Rectangle(hdc, 0, (i - iVertPos) * cyChar, 254, 16 + (i - iVertPos) * cyChar);
+										vanhaVari = SelectObject(hdc, sininen);
+										Rectangle(hdc, 0, (i - iVertPos) * cyChar, this.Width, cyChar + (i - iVertPos) * cyChar);
 										SelectObject(hdc, vanhaVari);
 									}
 
@@ -497,7 +510,7 @@ namespace Tasavalta
 									//piirretään teksti
 									if (i - iVertPos == kursoriRivilla)
 									{
-										vanhaTausta = SetBkColor(hdc, 0x00FFFFFF);
+										vanhaTausta = SetBkColor(hdc, 0x00FF0000);
 										TextOut(hdc, 20, (i - iVertPos) * cyChar, mSing.mValikko.mOpenGLIkkuna.ValintaListaC1(i), pituus);
 										SetBkColor(hdc, vanhaTausta);
 									}
@@ -521,8 +534,8 @@ namespace Tasavalta
 									uint tila;
 									if (i - iVertPos == kursoriRivilla)
 									{
-										vanhaVari = SelectObject(hdc, valkoinen);
-										Rectangle(hdc, 0, (i - iVertPos) * cyChar, 300, 16 + (i - iVertPos) * cyChar);
+										vanhaVari = SelectObject(hdc, sininen);
+										Rectangle(hdc, 0, (i - iVertPos) * cyChar, this.Width, cyChar + (i - iVertPos) * cyChar);
 										SelectObject(hdc, vanhaVari);
 									}
 
@@ -545,7 +558,7 @@ namespace Tasavalta
 									//piirretään teksti
 									if (i - iVertPos == kursoriRivilla)
 									{
-										vanhaTausta = SetBkColor(hdc, 0x00FFFFFF);
+										vanhaTausta = SetBkColor(hdc, 0x00FF0000);
 										TextOut(hdc, 20, (i - iVertPos) * cyChar, siirto, pituus);
 										SetBkColor(hdc, vanhaTausta);
 									}
@@ -694,6 +707,7 @@ namespace Tasavalta
 						CloseThemeData(teema2);
 						DeleteObject(fontti);
 						DeleteObject(valkoinen);
+						DeleteObject(sininen);
 						break;
 					}
 

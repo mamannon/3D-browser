@@ -464,7 +464,7 @@ namespace Tasavalta
 					if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
 					SendMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
 
-					//Jotta layeriListan nakymat tekstikentässä eivät vaihdu hiiren keskipyörää rullatessa,
+					//Jotta layeriListan näkymät tekstikentässä eivät vaihdu hiiren keskipyörää rullatessa,
 					//vaan keskipyörää käyttämällä OpenGL näkymässä liikutaan, asetetaan focus
 					this.fokusaattori.Focus();
 				}
