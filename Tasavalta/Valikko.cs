@@ -821,7 +821,7 @@ namespace Tasavalta
                 mEiValaisua = false;
                 useElaborateGraphicsToolStripMenuItem.Text = "Use elaborate graphics";
             }
-            mOpenGLIkkuna.Close();
+            if (mOpenGLIkkuna != null) mOpenGLIkkuna.Close();
         }
 
         //käyttäjä haluaa sulkea Tasavalta-sovelluksen
@@ -882,7 +882,7 @@ namespace Tasavalta
                         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-                mOpenGLIkkuna.AnnaOrientaatio(siirto);
+                if (mOpenGLIkkuna != null) mOpenGLIkkuna.AnnaOrientaatio(siirto);
                 muisti.AsetaKirjanMerkkiOrientaatioD(siirto, mCADTiedosto);
             }
             else

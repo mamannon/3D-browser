@@ -69,6 +69,7 @@
     <Compile Include="AlasVetoOpenGL.Designer.cs">
       <DependentUpon>AlasVetoOpenGL.cs</DependentUpon>
     </Compile>
+    <Compile Include="Looperi.cs" />
     <Compile Include="Valikko.cs">
       <SubType>Form</SubType>
     </Compile>

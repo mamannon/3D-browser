@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.IO;
-using System.Windows.Threading;
-
-
 
 namespace Tasavalta
 {
@@ -200,9 +191,6 @@ namespace Tasavalta
 		bool mOpenglOnkoTuettu = false;
 		bool mValmis = false;
 		bool mAjetaan = false;
-//		bool mVieTiedot = false;
-		//		bool[] mValintaListaB1 = new bool[1000];
-		//		bool[] mValintaListaB2 = new bool[1000];
 		IntPtr mValintaListaB1;
 		IntPtr mValintaListaB2;
 		IntPtr[] mValintaListaC1 = new IntPtr[1000];
@@ -214,6 +202,7 @@ namespace Tasavalta
 		Timer mTimeri;
 		IntPtr mDllKahva;
 		IntPtr mIkkunaKahva;
+		IntPtr mSammutaCad = IntPtr.Zero;
 		IntPtr mHwnd;
 		Singleton mSing;
 		OpenGL.ONKOLAAJENNUKSIA onkoLaajennuksia;
@@ -236,9 +225,9 @@ namespace Tasavalta
 		OpenGL.HIIRILIIKKUUMOLEMMAT hiiriLiikkuuMolemmat;
 		OpenGL.HIIRIPOISTUU hiiriPoistuu;
 
-//		public bool mSaakoTarkastaaLayerit { get; private set; } = true;
 		public bool mOnkoAlhaalla { get; set; } = false;
 		public bool mSaakoKlikata2 { get; set; } = false;
+		public Looperi mLooperi = null;
 
 		//Getterit
 		public int Valintoja1
@@ -300,22 +289,7 @@ namespace Tasavalta
 			siirto2 = siirto2.Remove(loppu);
 			return siirto2;
 		}
-/*
-		//Vaikka C# on manageroitu, eli siinä on automaattinen roskienkerääjä, tämä luokka
-		//sisältää manageroimattomia kenttiä, jotka pitää tuhota manuaalisesti deletorissa
-		~OpenGL()
-		{
 
-			//tuhotaan taulukot, joista roskienkerääjä ei huolehdi
-			for (int i = 0; i < mValintaListaC1.Length; i++)
-			{
-				Marshal.FreeHGlobal(mValintaListaC1[i]);
-				Marshal.FreeHGlobal(mValintaListaC2[i]);
-			}
-			Marshal.FreeHGlobal(mValintaListaB1);
-			Marshal.FreeHGlobal(mValintaListaB2);
-		}
-*/
 		//OpenGLIkkunaa suljettaessa on pakotettava ikkunan tuhoaminen sekä osoittimen määrittäminen
 		//null arvoiseksi, muuten ikkunan uudelleen avaaminen ei onnistu, kummallista kyllä
 		protected override void OnClosing(CancelEventArgs e)
@@ -327,7 +301,7 @@ namespace Tasavalta
 
 			//...ja sitten lähetetään pyyntö säikeiden lopettamiseksi ja muistin 
 			//vapauttamiseksi...
-			sammutaCad();
+			mLooperi.RunAndWait(this.SammutaCad);
 
 			//...ja lopuksi suljetaan RunOpenGL.dll
 			FreeLibrary(mDllKahva);
@@ -379,6 +353,8 @@ namespace Tasavalta
 			mValintaListaB2 = Marshal.AllocHGlobal(1000 * sizeof(byte));
 			this.MouseWheel += HiiriPyoraPyorii;
 			this.fokusaattori.Focus();
+			mLooperi = new Looperi();
+			mLooperi.Reset();
 
 			//Säädetään ikkunan sijainti ja koko oikeaksi
 			this.StartPosition = FormStartPosition.Manual;
@@ -395,7 +371,7 @@ namespace Tasavalta
 			layeriLista.Dock = DockStyle.Top;
 			layeriLista.Width = (int)(400 * leveysSuhde);
 			layeriLista.AllowDrop = false;
-			layeriLista.AutoCompleteMode = AutoCompleteMode.None;
+//			layeriLista.AutoCompleteMode = AutoCompleteMode.None;
 			layeriLista.Items.Add("3D View");
 			layeriLista.Items.Add("2D X-projection");
 			layeriLista.Items.Add("2D Y-projection");
@@ -435,6 +411,18 @@ namespace Tasavalta
 			mTimeri.Tick += new EventHandler(Timeri_Tick);
 		}
 
+		//Tällä metodilla OpenGL näkymää päivitetään
+		private void Paivita()
+		{
+			paivita();
+		}
+
+		//Tätä metodia kutsutaan kun RunOpenGL halutaan lopettaa
+		private void SammutaCad()
+		{
+			if (mSammutaCad != IntPtr.Zero) sammutaCad();
+		}
+
 		//Tämä funktio kellottaa OpenGL-näkymän päivitystä
 		private void Timeri_Tick(object sender, EventArgs e)
 		{ 
@@ -443,7 +431,7 @@ namespace Tasavalta
 			if (mValmis)
 			{
 				//Käsketään OpenGL:ää päivittämään näkymä
-				paivita();
+				mLooperi.Run(this.Paivita);
 
 				//layeriListalle pitää mahdollisesti lähettää viesti
 				int siirto = (short)GetKeyState(1);    //VK_LBUTTON=1
@@ -468,29 +456,7 @@ namespace Tasavalta
 					//vaan keskipyörää käyttämällä OpenGL näkymässä liikutaan, asetetaan focus
 					this.fokusaattori.Focus();
 				}
-				/*
-				else if (mOnkoAlhaalla)
-				{
-
-					//Täällä ollaan aina silloin, kun layeriLista on alhaalla. Täältä lähetetään viesti
-					//layeriListalle, jotta layeriLista voisi päivittää näkymänsä. Tämä toiminto
-					//on itse asiassa turha, sillä layeriListan näkymää ei tarvitse jatkuvasti päivittää
-					//niin kuin OpenGL näkymää pitää
-					//			    ::SetWindowPos(alasVetoValikkoIkkuna->Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
-					POINT point;
-					GetCursorPos(out point);
-					short x = (short)point.x;
-					short y = (short)point.y;
-					siirto = (point.y << 16) | (point.x);
-					IntPtr lParam = (IntPtr)siirto;
-					IntPtr wParam = (IntPtr)0;
-					uint viesti = (uint)WinM.WM_VASENALHAALLA;
-					if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
-					SendMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
-				}
-				*/
 			}
-
 		}
 
 		//Layerilistan otsikkona tulee aina olla käytössä oleva ulottuvuus sekä
@@ -580,7 +546,9 @@ namespace Tasavalta
 			TuoValinnat();
 		}
 
-		public bool AvaaCAD()
+		//Tällä funktiolla avataan CAD-tiedosto, joka ei ole valmiiksi avattu. Lisäksi
+		//tämä funktio ottaa käyttöön RunOpenGL.dll kirjaston, jollei sitä ole jo ennestään tehty
+		public void AvaaCAD()
 		{
 			bool siirto1 = false, siirto2 = false, kaikkiKunnossa = true;
 			int siirto3, siirto4, siirto5;
@@ -722,18 +690,18 @@ namespace Tasavalta
 				}
 				eloKuva = (ELOKUVA)
 					Marshal.GetDelegateForFunctionPointer(siirto, typeof(ELOKUVA));
-				siirto = GetProcAddress(mDllKahva, "sammutaCad");
-				if (siirto == IntPtr.Zero)
+				mSammutaCad = GetProcAddress(mDllKahva, "sammutaCad");
+				if (mSammutaCad == IntPtr.Zero)
 				{
-					siirto = GetProcAddress(mDllKahva, "_sammutaCad");
-					if (siirto == IntPtr.Zero)
+					mSammutaCad = GetProcAddress(mDllKahva, "_sammutaCad");
+					if (mSammutaCad == IntPtr.Zero)
 					{
 						kaikkiKunnossa = false;
 						goto virhe;
 					}
 				}
 				sammutaCad = (SAMMUTACAD)
-					Marshal.GetDelegateForFunctionPointer(siirto, typeof(SAMMUTACAD));
+					Marshal.GetDelegateForFunctionPointer(mSammutaCad, typeof(SAMMUTACAD));
 				siirto = GetProcAddress(mDllKahva, "annaOrientaatio1");
 				if (siirto == IntPtr.Zero)
 				{
@@ -868,7 +836,6 @@ namespace Tasavalta
 						FreeLibrary(mDllKahva);
 						mDllKahva = IntPtr.Zero;
 						this.Close();
-						return false;
 					}
 					else
 					{
@@ -905,11 +872,7 @@ namespace Tasavalta
 					FreeLibrary(mDllKahva);
 					mDllKahva = IntPtr.Zero;
 					this.Close();
-					return false;
 				}
-
-				//nyt voimme mahdollistaa OpenGL piirtämisen
-				mValmis = true;
 
 				//avattu tiedosto pitää tallentaa, esittää otsikkopalkissa ja merkitä, että se
 				//on suoraan saatavilla päävalikosta
@@ -938,7 +901,9 @@ namespace Tasavalta
 				pysayta.Enabled = false;
 				TuoValinnat();
 				mSing.mValikko.mPaivitetaanko = true;
-				return true;
+
+				//nyt voimme mahdollistaa OpenGL piirtämisen
+				mValmis = true;
 			}
 			else
 			{
@@ -948,7 +913,6 @@ namespace Tasavalta
 
 							"or some other dependency library.");
 				this.Close();
-				return false;
 			}
 		}
 
