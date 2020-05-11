@@ -23,6 +23,12 @@ namespace Tasavalta
         WS_POPUP = 0x80000000,
         WS_BORDER = 0x00800000,
         WS_SYSMENU = 0x00010000,
+        WS_CLIPCHILDREN = 0x02000000,
+        WS_OVERLAPPED = 0x00000000,
+        WS_CAPTION = 0x00C00000,
+        WS_THICKFRAME = 0x00040000,
+        WS_MINIMIZEBOX = 0x00020000,
+        WS_MAXIMIZEBOX = 0x00010000,
 
         WM_NULL = 0x0000,
         WM_CREATE = 0x0001,
@@ -756,7 +762,7 @@ namespace Tasavalta
                     this.AddOwnedForm(mTekstiIkkuna);
                 }
 
-                //muuten kyseessä on tekstikenttä
+                //kyseessä on tekstikenttä
                 mOnko3D = false;
                 if (mOnkoEng)
                 {
@@ -767,11 +773,8 @@ namespace Tasavalta
                     mTiedosto = siirto2 + ".fin";
                 }
 
-                //testausta...
-                mTekstiIkkuna.Show();
-
-                mAnkkuri = mAnkkuri.Remove(0);
-                //               mTekstiIkkuna.avaaTeksti(this);
+                if (mAnkkuri != null) mAnkkuri = mAnkkuri.Remove(0);
+                mTekstiIkkuna.AvaaTeksti();
             }
         }
 
@@ -898,8 +901,8 @@ namespace Tasavalta
             if (mTekstiTiedosto.Length != 0)
             {
                 int[] siirto = { -1, -1, -1, -1 };
-                //               mTekstiIkkuna.annaOrientaatio(siirto);
-                //               muisti.AsetaKirjanMerkkiOrientaatioT(siirto, mTekstiTiedosto);
+                if (mTekstiIkkuna != null) mTekstiIkkuna.AnnaOrientaatio(siirto);
+                muisti.AsetaKirjanMerkkiOrientaatioT(siirto, mTekstiTiedosto);
             }
             else
             {
@@ -1053,8 +1056,8 @@ namespace Tasavalta
 
                 //Avataan olemassa oleva HTML tiedosto halutusta kohdasta
                 mTiedosto = km.tiedostoT;
-                //                mTekstiIkkuna.AvaaTeksti();
-                //                mTekstiIkkuna.AsetaOrientaatio(km.orientaatioT);
+                mTekstiIkkuna.AvaaTeksti();
+                mTekstiIkkuna.AsetaOrientaatio(km.orientaatioT);
                 mTekstiAvattu = true;
             }
             else
@@ -1170,7 +1173,7 @@ namespace Tasavalta
                 mTiedosto = mTiedosto + mAnkkuri;
                 mAnkkuri.Remove(0);
             }
- //           mTekstiIkkuna.AvaaTeksti(this);
+            mTekstiIkkuna.AvaaTeksti();
         }
 
 
@@ -1248,45 +1251,7 @@ namespace Tasavalta
         protected override void WndProc(ref Message Msg) {
 
             switch (Msg.Msg) {
-/*
-	            case (int)WinM.WM_TIMER: {
 
-                    //tämä erikoistapaus on RunOpenGL.dll:n timeria varten. Jos RunOpenGL.dll tai
-                    //openGLIkkuna hoitaisi päivityksen itsenäisesti, tulee ikkunaa suljettaessa virhe
-	                if (Msg.WParam==TIMER1) {
-
-		                if (paivita && paivitetaanko) {
-		                    paivita();
-                            unsigned int siirto =::GetKeyState(VK_LBUTTON);
-		                    if ((siirto & 0xF0000000) && openGLIkkuna->onkoAlhaalla && openGLIkkuna->saakoKlikata2) {
-			                    ::SetWindowPos(alasVetoValikkoIkkuna->Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
-                                POINT point;
-			                    ::GetCursorPos(&point);
-                                short x = point.x;
-                                short y = point.y;
-                                int siirto = (point.y << 16) | (point.x);
-			                    ::PostMessageW(alasVetoValikkoIkkuna->Handle, WM_VASENALHAALLA, 1, siirto);
-                            } else if (openGLIkkuna->onkoAlhaalla) {
-			                    ::SetWindowPos(alasVetoValikkoIkkuna->Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
-                                POINT point;
-			                    ::GetCursorPos(&point);
-                                short x = point.x;
-                                short y = point.y;
-                                int siirto = (point.y << 16) | (point.x);
-			                    ::PostMessageW(alasVetoValikkoIkkuna->Handle, WM_VASENALHAALLA, 0, siirto);
-                            }
-		                }
-		                return;
-	                }
-
-                    //tämä erikoistapaus on Teksti.dll:n linkkeja varten: linkkiä klikattaessa ei saa
-                    //hetkeen avata uusia linkkejä
-	                if (Msg.WParam==TIMER2) {
-		                tekstiIkkuna->salliKlikkaus();
-	                }
-	                break;
-	            }
-                */
 	            case (int)WinM.WM_LAHETALINKKI: {
 
                     //tämä erikoistapaus tuo RunOpenGL.dll:stä tai Teksti.dll:stä käyttäjän

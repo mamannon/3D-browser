@@ -851,7 +851,7 @@ namespace Tasavalta
 						this.paneeli.Margin = new System.Windows.Forms.Padding(2);
 						this.paneeli.Name = "paneeli";
 						this.paneeli.TabIndex = 1;
-						this.paneeli.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paneeliClick);
+						this.paneeli.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaneeliClick);
 						this.paneeli.MouseLeave += new System.EventHandler(this.HiiriPoistuu);
 						this.paneeli.MouseMove += new System.Windows.Forms.MouseEventHandler(this.HiiriLiikkuu);
 						this.Controls.Add(paneeli);
@@ -1002,6 +1002,7 @@ namespace Tasavalta
 			}
 		}
 
+		//Käyttäjä on klikannut OpenGL ikkunan eteen-nappulaa
 		private void EteenClick(object sender, EventArgs e)
 		{
 			bool siirto1 = false, siirto2 = false;
@@ -1123,42 +1124,6 @@ namespace Tasavalta
 			}
 		}
 
-		//käyttäjän klikatessa paikallaan olevan hiiren nappulaa paneelin alueella tämä
-		//metodi aktivoituu
-		private void paneeliClick(object sender, MouseEventArgs e)
-		{
-			int X = e.X;
-			int Y = e.Y;
-
-			//tämä tarvitaan layeriListan alasvetovalikkoa suljettaessa. Tällöin
-			//ei tehdä muuta
-			if (mOnkoAlhaalla && mSaakoKlikata2)
-			{
-				vanhaHiiriX = X;
-				vanhaHiiriY = Y;
-				return;
-			}
-
-			//selvitetään, kumpaa hiiren nappia käyttäjä on klikannut
-			//vasen
-			if (e.Button == MouseButtons.Left)
-			{
-				hiiriLiikkuuVasen(ref X, ref Y, ref vanhaHiiriX, ref vanhaHiiriY);
-				vanhaHiiriX = X;
-				vanhaHiiriY = Y;
-				return;
-			}
-
-			//oikea
-			if (e.Button == MouseButtons.Right)
-			{
-				hiiriLiikkuuOikea(ref X, ref Y);
-				vanhaHiiriX = X;
-				vanhaHiiriY = Y;
-				return;
-			}
-		}
-
 		//käyttäjän liikuttaessa hiirtä paneelin alueella tämä
 		//metodi aktivoituu
 		private void HiiriLiikkuu(object sender, MouseEventArgs e)
@@ -1220,6 +1185,42 @@ namespace Tasavalta
 		private void HiiriPoistuu(object sender, EventArgs e)
 		{
 			hiiriPoistuu();
+		}
+
+		//käyttäjän klikatessa paikallaan olevan hiiren nappulaa paneelin alueella tämä
+		//metodi aktivoituu
+		private void PaneeliClick(object sender, MouseEventArgs e)
+		{
+			int X = e.X;
+			int Y = e.Y;
+
+			//tämä tarvitaan layeriListan alasvetovalikkoa suljettaessa. Tällöin
+			//ei tehdä muuta
+			if (mOnkoAlhaalla && mSaakoKlikata2)
+			{
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//selvitetään, kumpaa hiiren nappia käyttäjä on klikannut
+			//vasen
+			if (e.Button == MouseButtons.Left)
+			{
+				hiiriLiikkuuVasen(ref X, ref Y, ref vanhaHiiriX, ref vanhaHiiriY);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
+
+			//oikea
+			if (e.Button == MouseButtons.Right)
+			{
+				hiiriLiikkuuOikea(ref X, ref Y);
+				vanhaHiiriX = X;
+				vanhaHiiriY = Y;
+				return;
+			}
 		}
 	}
 

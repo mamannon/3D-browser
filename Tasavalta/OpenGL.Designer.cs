@@ -40,7 +40,7 @@
             this.eteen = new System.Windows.Forms.ToolStripButton();
             this.tulosta = new System.Windows.Forms.ToolStripButton();
             this.fokusaattori = new System.Windows.Forms.TextBox();
-            this.paneeli = new System.Windows.Forms.Panel();
+            this.paneeli = new Paneeli();
             this.flowLayoutPanel1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -120,7 +120,7 @@
             this.paneeli.Name = "paneeli";
             this.paneeli.Size = new System.Drawing.Size(800, 423);
             this.paneeli.TabIndex = 1;
-            this.paneeli.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paneeliClick);
+            this.paneeli.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaneeliClick);
             this.paneeli.MouseLeave += new System.EventHandler(this.HiiriPoistuu);
             this.paneeli.MouseMove += new System.Windows.Forms.MouseEventHandler(this.HiiriLiikkuu);
             // 
