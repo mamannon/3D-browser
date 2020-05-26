@@ -10,7 +10,7 @@ public class Muisti
 {
 
     [NonSerialized]
-	static string xml = @"
+    static string xml = @"
 <root>
     <string-array name =""tiedostotietonimi"" >
         <!--3D 1-->
@@ -674,21 +674,21 @@ public class Muisti
 	";
 
     int mIndex = -1;
-	int kirjanMerkkeja = 9;
-	int tiedostoTietoja;
-	KIRJANMERKKI[] kirjanMerkki;
-	TIEDOSTOTIETO[] tiedostoTieto;
+    int kirjanMerkkeja = 9;
+    int tiedostoTietoja;
+    KIRJANMERKKI[] kirjanMerkki;
+    TIEDOSTOTIETO[] tiedostoTieto;
 
-	public Muisti()
-	{
-   
+    public Muisti()
+    {
+
         //ensiksi pitää selvittää, kuinka monta tiedostoa käyttäjällä on avattavissa
         //Tasavalta-sovelluksessa. Luetaan sitä varten XML listaus, josta etsitään 
         //kohta tiedostotietotiedostotietoja
         var doc = XElement.Parse(xml, LoadOptions.None);
-        var tulos = from tiedostoja in doc.Elements("integer") 
-                               where (string)tiedostoja.Attribute("name") == "tiedostotietotiedostotietoja" 
-                               select tiedostoja;
+        var tulos = from tiedostoja in doc.Elements("integer")
+                    where (string)tiedostoja.Attribute("name") == "tiedostotietotiedostotietoja"
+                    select tiedostoja;
 
         //löydetystä kohdasta eristetään lukumäärä ja tallennetaan int lukuna
         string siirto = tulos.First().Value;
@@ -709,8 +709,8 @@ public class Muisti
         //lopuksi täytetään tiedostoTieto taulukko XML listauksen datalla
         //tiedostojen nimet:
         tulos = from nimet in doc.Elements("string-array")
-                               from items in nimet.Elements("item")
-                               select items;
+                from items in nimet.Elements("item")
+                select items;
 
         int j = 0;
         foreach (var nimi in tulos)
@@ -817,61 +817,62 @@ public class Muisti
         mIndex = -1;
     }
 
-    public void AsetaKirjanMerkkiOrientaatioD(float[] orientaatio, string tiedosto) {
+    public void AsetaKirjanMerkkiOrientaatioD(float[] orientaatio, string tiedosto)
+    {
         bool alusta = false;
 
         //jos tämä metodi on ensimmäinen, etsitään ensimmäinen vapaa paikka
-        if (mIndex==-1) 
+        if (mIndex == -1)
         {
-	        for (int i = 0; i< 9; i++) 
+            for (int i = 0; i < 9; i++)
             {
-	            if (!kirjanMerkki[i].onkoAsetettu) 
+                if (!kirjanMerkki[i].onkoAsetettu)
                 {
-		            mIndex = i;
-		            kirjanMerkkeja++;
-		            break;
-	            }
-	        }
-        } 
-        else 
+                    mIndex = i;
+                    kirjanMerkkeja++;
+                    break;
+                }
+            }
+        }
+        else
         {
-	        alusta=true;
+            alusta = true;
         }
 
         //varmistetaan, että meillä on jotain
         if (tiedosto.Length == 0) return;
 
-        if (mIndex != -1) 
+        if (mIndex != -1)
         {
 
             //täytetään ensimminen vapaa paikka
-	        for (int i=0; i< 65; i++) 
+            for (int i = 0; i < 65; i++)
             {
-	            kirjanMerkki[mIndex].orientaatioD[i]=orientaatio[i];
-	        }
+                kirjanMerkki[mIndex].orientaatioD[i] = orientaatio[i];
+            }
             kirjanMerkki[mIndex].tiedostoD = tiedosto;
-	        kirjanMerkki[mIndex].onkoAsetettu=true;
-        } 
-        else 
+            kirjanMerkki[mIndex].onkoAsetettu = true;
+        }
+        else
         {
 
             //jos kaikki paikat ovat varatut, hylätään ensimmäinen ja siirretään muita niin,
             //että voimme täyttää viimeisen paikan
-	        kirjanMerkki[0] = kirjanMerkki[1];
-	        kirjanMerkki[1] = kirjanMerkki[2];
-	        kirjanMerkki[2] = kirjanMerkki[3];
-	        kirjanMerkki[3] = kirjanMerkki[4];
-	        kirjanMerkki[4] = kirjanMerkki[5];
-	        kirjanMerkki[5] = kirjanMerkki[6];
-	        kirjanMerkki[6] = kirjanMerkki[7];
-	        kirjanMerkki[7] = kirjanMerkki[8];
+            kirjanMerkki[0] = kirjanMerkki[1];
+            kirjanMerkki[1] = kirjanMerkki[2];
+            kirjanMerkki[2] = kirjanMerkki[3];
+            kirjanMerkki[3] = kirjanMerkki[4];
+            kirjanMerkki[4] = kirjanMerkki[5];
+            kirjanMerkki[5] = kirjanMerkki[6];
+            kirjanMerkki[6] = kirjanMerkki[7];
+            kirjanMerkki[7] = kirjanMerkki[8];
 
-	        for (int i=0; i< 65; i++) 
+            for (int i = 0; i < 65; i++)
             {
-	            kirjanMerkki[8].orientaatioD[i]=orientaatio[i];
-	        }
+                kirjanMerkki[8].orientaatioD[i] = orientaatio[i];
+            }
             kirjanMerkki[8].tiedostoD = tiedosto;
-	        mIndex=8;
+            mIndex = 8;
         }
 
         if (alusta) mIndex = -1;
@@ -938,22 +939,22 @@ public class Muisti
     }
 
     [Serializable]
-	public class KIRJANMERKKI
-	{
-		public float[] orientaatioD = new float[65];
-		public string tiedostoD = null;
-		public int[] orientaatioT = new int[4];
-		public string tiedostoT = null;
-		public bool onkoAsetettu = false;
-	};
+    public class KIRJANMERKKI
+    {
+        public float[] orientaatioD = new float[65];
+        public string tiedostoD = null;
+        public int[] orientaatioT = new int[4];
+        public string tiedostoT = null;
+        public bool onkoAsetettu = false;
+    };
 
     [Serializable]
-	public class TIEDOSTOTIETO
-	{
-		public string nimi = null;
-		public int valikkoSijainti = 0;
-		public bool onkoNakyva = false;
-		public bool onkoAsetettu = false;
-		public bool onko3D = false;
-	}
+    public class TIEDOSTOTIETO
+    {
+        public string nimi = null;
+        public int valikkoSijainti = 0;
+        public bool onkoNakyva = false;
+        public bool onkoAsetettu = false;
+        public bool onko3D = false;
+    }
 }

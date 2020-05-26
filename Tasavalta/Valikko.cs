@@ -29,6 +29,8 @@ namespace Tasavalta
         WS_THICKFRAME = 0x00040000,
         WS_MINIMIZEBOX = 0x00020000,
         WS_MAXIMIZEBOX = 0x00010000,
+        WS_VSCROLL = 0x00200000,
+        WS_HSCROLL = 0x00100000,
 
         WM_NULL = 0x0000,
         WM_CREATE = 0x0001,
@@ -303,6 +305,15 @@ namespace Tasavalta
         public float DpiY;
     }
 
+    static class Globaalit
+    {
+        public static float[] float65 = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+        public static int[] int4 = { -1, -1, -1, -1 };
+    }
+
     public partial class Valikko : Form
     {
 
@@ -414,7 +425,8 @@ namespace Tasavalta
             mMuistiTiedosto = mSijaintiPolku.Insert(mSijaintiPolku.Length, lisaa);
 
             //ja avataan tiedosto Muistitiedosto.ini lukemista varten
-            try {
+            try
+            {
                 FileStream sisaanVirta = File.OpenRead(mMuistiTiedosto);
 
                 //luetaan tiedoston sisältö luokkaan muisti
@@ -705,8 +717,8 @@ namespace Tasavalta
             menuStrip1.Items.Add(Apua);
 
             ToolStripMenuItem siirto1 = new ToolStripMenuItem();
-            siirto1.Text = "Ohjeet";
-            siirto1.Name = "Ohjeet";
+            siirto1.Text = "Help";
+            siirto1.Name = "Help";
             siirto1.ToolTipText = "Read";
             siirto1.Click += KlikattuValikkoa;
             siirto1.Enabled = true;
@@ -879,35 +891,29 @@ namespace Tasavalta
         {
 
             //varmistetaan, että CADruutu on olemassa
-            if (mCADTiedosto.Length != 0)
+            if (mCADTiedosto != null && mCADTiedosto.Length != 0)
             {
-                float[] siirto = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-                if (mOpenGLIkkuna != null) mOpenGLIkkuna.AnnaOrientaatio(siirto);
-                muisti.AsetaKirjanMerkkiOrientaatioD(siirto, mCADTiedosto);
+                for (int i = 0; i < 65; i++) Globaalit.float65[i] = -1;
+                if (mOpenGLIkkuna != null) mOpenGLIkkuna.AnnaOrientaatio(Globaalit.float65);
+                muisti.AsetaKirjanMerkkiOrientaatioD(Globaalit.float65, mCADTiedosto);
             }
             else
             {
-                float[] siirto = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-                muisti.AsetaKirjanMerkkiOrientaatioD(siirto, "\0");
+                for (int i = 0; i < 65; i++) Globaalit.float65[i] = -1;
+                muisti.AsetaKirjanMerkkiOrientaatioD(Globaalit.float65, "\0");
             }
 
             //varmistetaan, että TekstiRuutu on olemassa
-            if (mTekstiTiedosto.Length != 0)
+            if (mTekstiTiedosto != null && mTekstiTiedosto.Length != 0)
             {
-                int[] siirto = { -1, -1, -1, -1 };
-                if (mTekstiIkkuna != null) mTekstiIkkuna.AnnaOrientaatio(siirto);
-                muisti.AsetaKirjanMerkkiOrientaatioT(siirto, mTekstiTiedosto);
+                for (int i = 0; i < 4; i++) Globaalit.int4[i] = -1;
+                if (mTekstiIkkuna != null) mTekstiIkkuna.AnnaOrientaatio(Globaalit.int4);
+                muisti.AsetaKirjanMerkkiOrientaatioT(Globaalit.int4, mTekstiTiedosto);
             }
             else
             {
-                int[] siirto = { -1, -1, -1, -1 };
-                muisti.AsetaKirjanMerkkiOrientaatioT(siirto, "\0");
+                for (int i = 0; i < 4; i++) Globaalit.int4[i] = -1;
+                muisti.AsetaKirjanMerkkiOrientaatioT(Globaalit.int4, "\0");
             }
 
             //annetaan käyttäjälle ilmoitus
@@ -1015,7 +1021,15 @@ namespace Tasavalta
                 //avataan olemassa oleva CAD-tiedosto ja asetetaan orientaatio
                 mTiedosto = km.tiedostoD;
                 mOpenGLIkkuna.AvaaCAD();
-                mOpenGLIkkuna.AsetaOrientaatio(km.orientaatioD);
+
+                //orientaatio data pitää kopioida globaaliin muuttujaan ja käyttää sitä
+                for (int i = 0; i < 65; i++)
+                {
+                    Globaalit.float65[i] = km.orientaatioD[i];
+                }
+
+                //sitten siirretään tieto RunOpenGL.dll:een
+                mOpenGLIkkuna.AsetaOrientaatio(Globaalit.float65);
                 mCADAvattu = true;
             }
             else
@@ -1075,7 +1089,7 @@ namespace Tasavalta
             int index;
 
             //jos kyseessä on CAD tiedosto...
-            if (linkki[0] == 'C') 
+            if (linkki[0] == 'C')
             {
 
                 //jos tarpeen, luodaan opengl ikkuna
@@ -1087,7 +1101,7 @@ namespace Tasavalta
 
                 //määritetään tiedostonimi poimimalla se # merkkien erottamasta alueesta
                 index = linkki.IndexOf("#");
-                mAnkkuri = linkki.Substring(index+1);
+                mAnkkuri = linkki.Substring(index + 1);
                 index = mAnkkuri.IndexOf("#");
                 if (index != -1) mAnkkuri = mAnkkuri.Remove(index);
                 mTiedosto = mAnkkuri;
@@ -1105,7 +1119,7 @@ namespace Tasavalta
             }
 
             //jos kyseessä on tekstitiedosto...
-            if (linkki[0] == 'T') 
+            if (linkki[0] == 'T')
             {
 
                 //jos tarpeen, luodaan teksti ikkuna
@@ -1127,53 +1141,53 @@ namespace Tasavalta
 
                 mTiedosto = mAnkkuri;
                 mAnkkuri = mAnkkuri.Remove(0);
-            }
 
-            //lisätään tarkenne käyttäjän kielivalinnan mukaan
-            if (mOnkoEng)
-            {
-                mTiedosto = mTiedosto + ".Eng";
-            }
-            else
-            {
-                mTiedosto = mTiedosto + ".fin";
-            }
-            mOnko3D = false;
+                //lisätään tarkenne käyttäjän kielivalinnan mukaan
+                if (mOnkoEng)
+                {
+                    mTiedosto = mTiedosto + ".Eng";
+                }
+                else
+                {
+                    mTiedosto = mTiedosto + ".fin";
+                }
+                mOnko3D = false;
 
-            //määritetään ankkuri käyttäjän kielivalinnan mukaan
-            index = linkki.IndexOf("#");
-            mAnkkuri = linkki.Substring(index + 1);
-            index = mAnkkuri.IndexOf("#");
-            if (index != -1) mAnkkuri = mAnkkuri.Substring(index + 1);
-            if (!mOnkoEng)
-            {
+                //määritetään ankkuri käyttäjän kielivalinnan mukaan
+                index = linkki.IndexOf("#");
+                mAnkkuri = linkki.Substring(index + 1);
                 index = mAnkkuri.IndexOf("#");
                 if (index != -1) mAnkkuri = mAnkkuri.Substring(index + 1);
+                if (!mOnkoEng)
+                {
+                    index = mAnkkuri.IndexOf("#");
+                    if (index != -1) mAnkkuri = mAnkkuri.Substring(index + 1);
+                }
+                else
+                {
+                    index = mAnkkuri.IndexOf("#");
+                    if (index != -1) mAnkkuri = mAnkkuri.Remove(index);
+                }
+
+                //jos saatiin ankkuri...
+                if (mAnkkuri.Length != 0)
+                {
+                    mAnkkuri = "#" + mAnkkuri;
+
+                    //alaviivat sekä + merkit pitää ankkurissa muuttaa välilyönneiksi
+                    mAnkkuri.Replace('_', ' ');
+                    mAnkkuri.Replace('+', ' ');
+
+                    //jos ankkurissa on välilyönti merkitty %20 -merkinnällä, se pitää muuttaa
+                    //välilyönniksi
+                    mAnkkuri.Replace("%20", " ");
+
+                    //liitetään ankkuri tiedostonimen perään
+                    mTiedosto = mTiedosto + mAnkkuri;
+                    mAnkkuri.Remove(0);
+                }
+                mTekstiIkkuna.AvaaTeksti();
             }
-            else
-            {
-                index = mAnkkuri.IndexOf("#");
-                if (index != -1) mAnkkuri = mAnkkuri.Remove(index);
-            }
-
-            //jos saatiin ankkuri...
-            if (mAnkkuri.Length != 0)
-            {
-                mAnkkuri = "#" + mAnkkuri;
-
-                //alaviivat sekä + merkit pitää ankkurissa muuttaa välilyönneiksi
-                mAnkkuri.Replace('_', ' ');
-                mAnkkuri.Replace('+', ' ');
-
-                //jos ankkurissa on välilyönti merkitty %20 -merkinnällä, se pitää muuttaa
-                //välilyönniksi
-                mAnkkuri.Replace("%20", " ");
-
-                //liitetään ankkuri tiedostonimen perään
-                mTiedosto = mTiedosto + mAnkkuri;
-                mAnkkuri.Remove(0);
-            }
-            mTekstiIkkuna.AvaaTeksti();
         }
 
 
@@ -1248,20 +1262,23 @@ namespace Tasavalta
 
 
         //Tämä metodi käsittelee Tasavaltaan osoitetut Windows viestit
-        protected override void WndProc(ref Message Msg) {
+        protected override void WndProc(ref Message Msg)
+        {
 
-            switch (Msg.Msg) {
+            switch (Msg.Msg)
+            {
 
-	            case (int)WinM.WM_LAHETALINKKI: {
+                case (int)WinM.WM_LAHETALINKKI:
+                    {
 
-                    //tämä erikoistapaus tuo RunOpenGL.dll:stä tai Teksti.dll:stä käyttäjän
-                    //valitseman linkin avattavaksi
-	                int kirjaimia = Math.Min(200, (int)Msg.WParam);
-                    char[] linkki = new char[kirjaimia];
-                    Marshal.Copy(Msg.LParam, linkki, 0, kirjaimia);
-	                AvaaDokumentti(new string(linkki));
-	                return;
-	            }
+                        //tämä erikoistapaus tuo RunOpenGL.dll:stä tai Teksti.dll:stä käyttäjän
+                        //valitseman linkin avattavaksi
+                        int kirjaimia = Math.Min(200, (int)Msg.WParam);
+                        char[] linkki = new char[kirjaimia];
+                        Marshal.Copy(Msg.LParam, linkki, 0, kirjaimia);
+                        AvaaDokumentti(new string(linkki));
+                        return;
+                    }
             }
 
             //Erikoistapausten jälkeen käsitellään muut viestit normaalisti lähettämällä eteenpäin:

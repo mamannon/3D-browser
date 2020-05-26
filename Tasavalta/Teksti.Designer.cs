@@ -37,7 +37,10 @@
             this.otsikkoLista = new System.Windows.Forms.ToolStripComboBox();
             this.fokusaattori = new System.Windows.Forms.ToolStripTextBox();
             this.paneeli = new Tasavalta.Paneeli();
+            this.kanvaasi = new System.Windows.Forms.PictureBox();
             this.toolStrip1.SuspendLayout();
+            this.paneeli.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.kanvaasi)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -87,7 +90,8 @@
             this.otsikkoLista.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.otsikkoLista.Name = "otsikkoLista";
             this.otsikkoLista.Size = new System.Drawing.Size(400, 28);
-            this.otsikkoLista.Click += new System.EventHandler(this.ValittuOtsikko);
+            this.otsikkoLista.DropDown += new System.EventHandler(this.PoistaOtsikko);
+            this.otsikkoLista.SelectedIndexChanged += new System.EventHandler(this.ValittuOtsikko);
             this.otsikkoLista.MouseEnter += new System.EventHandler(this.PaivitaOtsikot);
             // 
             // fokusaattori
@@ -98,14 +102,23 @@
             // paneeli
             // 
             this.paneeli.AutoScroll = true;
+            this.paneeli.Controls.Add(this.kanvaasi);
             this.paneeli.Dock = System.Windows.Forms.DockStyle.Fill;
             this.paneeli.Location = new System.Drawing.Point(0, 28);
             this.paneeli.Name = "paneeli";
             this.paneeli.Size = new System.Drawing.Size(800, 422);
             this.paneeli.TabIndex = 1;
-            this.paneeli.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaneeliClick);
-            this.paneeli.MouseLeave += new System.EventHandler(this.HiiriPoistuu);
-            this.paneeli.MouseMove += new System.Windows.Forms.MouseEventHandler(this.HiiriLiikkuu);
+            // 
+            // kanvaasi
+            // 
+            this.kanvaasi.Location = new System.Drawing.Point(0, 0);
+            this.kanvaasi.Name = "kanvaasi";
+            this.kanvaasi.Size = new System.Drawing.Size(100, 50);
+            this.kanvaasi.TabIndex = 0;
+            this.kanvaasi.TabStop = false;
+            this.kanvaasi.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaneeliClick);
+            this.kanvaasi.MouseLeave += new System.EventHandler(this.HiiriPoistuu);
+            this.kanvaasi.MouseMove += new System.Windows.Forms.MouseEventHandler(this.HiiriLiikkuu);
             // 
             // Teksti
             // 
@@ -119,6 +132,8 @@
             this.Resize += new System.EventHandler(this.MuutaKokoa);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.paneeli.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.kanvaasi)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -133,5 +148,6 @@
         private System.Windows.Forms.ToolStripComboBox otsikkoLista;
  //       private System.Windows.Forms.Panel paneeli;
         private System.Windows.Forms.ToolStripTextBox fokusaattori;
+        private System.Windows.Forms.PictureBox kanvaasi;
     }
 }

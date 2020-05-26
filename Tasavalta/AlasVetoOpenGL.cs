@@ -10,8 +10,8 @@ using System.Runtime.InteropServices;
 
 namespace Tasavalta
 {
-    public partial class AlasVetoValikkoIkkuna : Form
-    {
+	public partial class AlasVetoValikkoIkkuna : Form
+	{
 
 		[StructLayout(LayoutKind.Sequential)]
 		struct TEXTMETRICW
@@ -93,15 +93,7 @@ namespace Tasavalta
 			public uint lbColor;
 			public uint lbHatch;
 		}
-/*
-		[StructLayout(LayoutKind.Sequential)]
-		struct LOGPEN
-		{
-			public uint lopnStyle;
-			public POINT lopnWidth;
-			public uint lopnColor;
-		}
-*/
+
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool GetTextMetrics(IntPtr hdc, out TEXTMETRICW lptm);
@@ -130,9 +122,6 @@ namespace Tasavalta
 		[DllImport("gdi32.dll")]
 		static extern IntPtr CreateBrushIndirect([In] ref LOGBRUSH lplb);
 
-//		[DllImport("gdi32.dll")]
-//		static extern IntPtr CreatePenIndirect([In] ref LOGPEN lppn);
-
 		[DllImport("user32.dll")]
 		static extern IntPtr BeginPaint(IntPtr hWnd, out PAINTSTRUCT lpPaint);
 
@@ -145,7 +134,7 @@ namespace Tasavalta
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool DrawFrameControl(IntPtr hdc, in RECT lpRect, uint uType, uint uState);
+		static extern bool DrawFrameControl(IntPtr hdc, RECT lpRect, uint uType, uint uState);
 
 		[DllImport("gdi32.dll")]
 		static extern uint SetBkColor(IntPtr hdc, uint crColor);
@@ -172,18 +161,18 @@ namespace Tasavalta
 		static extern int GetThemeSysFont(IntPtr Theme, int iFontId, [Out, MarshalAs(UnmanagedType.LPStruct)] LOGFONT lplf);
 
 		[DllImport("UxTheme.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern int GetThemeColor(IntPtr hTheme, uint iPartId, 
+		public static extern int GetThemeColor(IntPtr hTheme, uint iPartId,
 			uint iStateId, int iPropId, out int pColor);
 
 		[DllImport("UxTheme.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 		static extern int CloseThemeData(IntPtr hTheme);
 
 		[DllImport("UxTheme.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		static extern Int32 GetThemeTextMetrics(IntPtr hTheme, IntPtr hdc, 
+		static extern Int32 GetThemeTextMetrics(IntPtr hTheme, IntPtr hdc,
 			uint iPartId, uint iStateId, out TEXTMETRICW ptm);
 
 		[DllImport("UxTheme.dll", ExactSpelling = true)]
-		static extern int DrawThemeBackground(IntPtr hTheme, IntPtr hdc, 
+		static extern int DrawThemeBackground(IntPtr hTheme, IntPtr hdc,
 			uint iPartId, uint iStateId, ref RECT pRect, ref RECT pClipRect);
 
 		[DllImport("UxTheme.dll", ExactSpelling = true)]
@@ -196,7 +185,6 @@ namespace Tasavalta
 			uint dwTextFlags, uint dwTextFlags2, ref RECT pRect);
 
 		[DllImport("user32.dll", SetLastError = true)]
-//		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern int SystemParametersInfo(int uiAction, uint uiParam, ref uint pvParam, int fWinIni);
 
 		Singleton mSing;
@@ -210,7 +198,7 @@ namespace Tasavalta
 		IntPtr valkoinen = IntPtr.Zero;
 		IntPtr sininen = IntPtr.Zero;
 		IntPtr fontti = IntPtr.Zero;
-		IntPtr teema1 =IntPtr.Zero, teema2 = IntPtr.Zero;
+		IntPtr teema1 = IntPtr.Zero, teema2 = IntPtr.Zero;
 
 		protected override CreateParams CreateParams
 		{
@@ -225,8 +213,8 @@ namespace Tasavalta
 		}
 
 		public AlasVetoValikkoIkkuna()
-        {
-            InitializeComponent();
+		{
+			InitializeComponent();
 
 			//ilmoittaudutaan valikkoon
 			mSing = Singleton.AnnaIlmentyma;
@@ -246,7 +234,6 @@ namespace Tasavalta
 			int ii, yy, iVertPos, iPaintBeg, iPaintEnd;
 			IntPtr vanhaFontti = IntPtr.Zero;
 			IntPtr vanhaVari = IntPtr.Zero;
-//			IntPtr vanhaKyna = IntPtr.Zero;
 			uint vanhaTausta;
 			IntPtr hdc = IntPtr.Zero;
 			POINT point;
@@ -261,15 +248,15 @@ namespace Tasavalta
 				//tämä on oma windows viesti. Ilman tätä ei alasVetoValikkoIkkunaa voisi sulkea
 				case (int)WinM.WM_VASENALHAALLA:
 					{
-						var xPos = (int) Msg.LParam;
+						var xPos = (int)Msg.LParam;
 
 						//otetaan win32 LOWORD
 						xPos = xPos & 0x0000FFFF;
-						int yPos = (int) Msg.LParam;
+						int yPos = (int)Msg.LParam;
 
 						//otetaan win32 HIWORD
 						yPos = yPos >> 16;
-						if ((int) Msg.WParam == 1)
+						if ((int)Msg.WParam == 1)
 						{
 							GetWindowRect(this.Handle, out rect);
 							if (rect.left <= xPos && xPos <= rect.right && rect.top <= yPos && yPos <= rect.bottom)
@@ -289,27 +276,6 @@ namespace Tasavalta
 								mSing.mValikko.mOpenGLIkkuna.mSaakoKlikata2 = false;
 							}
 						}
-						/*
-						else
-						{
-							GetWindowRect(this.Handle, out rect);
-							if (rect.left <= xPos && xPos <= rect.right - 16 && rect.top <= yPos && yPos <= rect.bottom)
-							{
-
-								//ei koodia täällä
-							}
-							else
-							{
-
-								//tämä tarvitaan sinisen taustavärin poistamiseen
-								if (kursoriRivilla != -1)
-								{
-									kursoriRivilla = -1;
-									this.Invalidate();
-								}
-							}
-						}
-						*/
 						return;
 					}
 
@@ -333,7 +299,7 @@ namespace Tasavalta
 						hdc = GetWindowDC(this.Handle);
 						if (mSing.mValikko.mOnkoUXTeemaa)
 						{
-							teema1 = OpenThemeData(this.Handle, "LISTVIEW");  
+							teema1 = OpenThemeData(this.Handle, "LISTVIEW");
 							teema2 = OpenThemeData(this.Handle, "BUTTON");
 							if (teema1 == IntPtr.Zero) goto hyppy;
 							if (teema2 == IntPtr.Zero) goto hyppy;
@@ -342,9 +308,9 @@ namespace Tasavalta
 							ReleaseDC(this.Handle, hdc);
 							break;
 						}
-						
-						//...tai käytetään klassista näkymää
-						hyppy:
+
+					//...tai käytetään klassista näkymää
+					hyppy:
 						{
 							br.lbStyle = 0;   // BS_SOLID=0
 							br.lbColor = 0x00FFFFFF;
@@ -365,7 +331,7 @@ namespace Tasavalta
 
 				case (int)WinM.WM_PAINT:
 					{
-						hdc =BeginPaint(this.Handle, out ps);
+						hdc = BeginPaint(this.Handle, out ps);
 
 						//selvitetään vierityspalkin asento
 						iVertPos = vScrollBar1.Value;
@@ -505,7 +471,7 @@ namespace Tasavalta
 									rect.top = (i - iVertPos) * cyChar;
 									rect.right = cyChar;
 									rect.bottom = cyChar + (i - iVertPos) * cyChar;
-									DrawFrameControl(hdc, in rect, 4, tila);     //DFC_BUTTON = 4
+									DrawFrameControl(hdc, rect, 4, tila);     //DFC_BUTTON = 4
 
 									//piirretään teksti
 									if (i - iVertPos == kursoriRivilla)
@@ -553,7 +519,7 @@ namespace Tasavalta
 									rect.top = (i - iVertPos) * cyChar;
 									rect.right = cyChar;
 									rect.bottom = cyChar + (i - iVertPos) * cyChar;
-									DrawFrameControl(hdc, in rect, 4, tila);  //DFC_BUTTON=4
+									DrawFrameControl(hdc, rect, 4, tila);  //DFC_BUTTON=4
 
 									//piirretään teksti
 									if (i - iVertPos == kursoriRivilla)

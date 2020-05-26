@@ -36,6 +36,10 @@ namespace Tasavalta
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool ReleaseDC(IntPtr hWnd, IntPtr hdc);
 
+        //testausta...
+        [DllImport("kernel32.dll")]
+        static extern uint GetLastError();
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void ANNAKORKEUSLEVEYS(ref int xIncrement, ref int yIncrement,
             ref int xPosition, ref int yPostition,
@@ -43,16 +47,18 @@ namespace Tasavalta
             ref int leveys, ref int korkeus);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         delegate bool AVAAHTML([MarshalAs(UnmanagedType.LPWStr)]string tiedosto,
-            IntPtr hwndMain, IntPtr hdc, IntPtr hwnd, ref int xRange, ref int yRange,
+            ref IntPtr hwndMain, ref IntPtr hdc, ref IntPtr hwnd, ref int xRange, ref int yRange,
             ref int xPosition, ref int yPosition, ref uint vari,
-            [MarshalAs(UnmanagedType.LPWStr)]string otsikko,
+            IntPtr otsikko,
             IntPtr[] otsikkoLista, ref int listanPituus);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void ASETAFONTIT(ref char[] normal_face);
+        delegate void SAMMUTATEKSTI();
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         delegate bool ONMOUSEEVENT(ref int X, ref int Y, ref int vent, bool vasen, bool oikea,
             ref int xRange, ref int yRange, ref int xPosition, ref int yPosition, ref uint vari);
 
@@ -60,17 +66,21 @@ namespace Tasavalta
         delegate void PIIRRA();
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         delegate bool HISTORYBACK(ref int yPosition, ref int yRange, ref int xPosition, ref int xRange,
-            ref uint vari, [MarshalAs(UnmanagedType.LPWStr)]string otsikko, IntPtr[] otsikkoLista, ref int listanPituus);
+            ref uint vari, IntPtr otsikko, IntPtr[] otsikkoLista, ref int listanPituus);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         delegate bool HISTORYFORWARD(ref int yPosition, ref int yRange, ref int xPosition, ref int xRange,
-            ref uint vari, [MarshalAs(UnmanagedType.LPWStr)]string otsikko, IntPtr[] otsikkoLista, ref int listanPituus);
+            ref uint vari, IntPtr otsikko, IntPtr[] otsikkoLista, ref int listanPituus);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         delegate bool HISTORYCANBACK();
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         delegate bool HISTORYCANFORWARD();
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -87,19 +97,19 @@ namespace Tasavalta
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void PAIVITAOTSIKKOLISTA(IntPtr[] otsikkoLista, ref int listanPituus);
 
-        Teksti.ANNAKORKEUSLEVEYS annaKorkeusLeveys;//
-        Teksti.ASETAFONTIT asetaFontit;//
-        Teksti.AVAAHTML avaaHtml;//
-        Teksti.HISTORYBACK historyBack;//
-        Teksti.HISTORYCANBACK historyCanBack;//
-        Teksti.HISTORYFORWARD historyForward;//
-        Teksti.HISTORYCANFORWARD historyCanForward;//
-        Teksti.LATAAUUDESTAAN lataaUudestaan;//
-        Teksti.ONMOUSEEVENT onMouseEvent;//
-        Teksti.PAIVITAOTSIKKOLISTA paivitaOtsikkoLista;//
-        Teksti.PIIRRA piirra;//
-        Teksti.SIIRRYANKKURIIN siirryAnkkuriin;//
+        Teksti.ANNAKORKEUSLEVEYS annaKorkeusLeveys;
+        Teksti.AVAAHTML avaaHtml;
+        Teksti.HISTORYBACK historyBack;
+        Teksti.HISTORYCANBACK historyCanBack;
+        Teksti.HISTORYFORWARD historyForward;
+        Teksti.HISTORYCANFORWARD historyCanForward;
+        Teksti.LATAAUUDESTAAN lataaUudestaan;
+        Teksti.ONMOUSEEVENT onMouseEvent;
+        Teksti.PAIVITAOTSIKKOLISTA paivitaOtsikkoLista;
+        Teksti.PIIRRA piirra;
+        Teksti.SIIRRYANKKURIIN siirryAnkkuriin;
         Teksti.TULOSTETAAN tulostetaan;
+        Teksti.SAMMUTATEKSTI sammutaTeksti;
         private readonly int SM_CXSCREEN = 0;
         Singleton mSing;
         IntPtr mHwnd = IntPtr.Zero;
@@ -113,21 +123,6 @@ namespace Tasavalta
         bool onkoVasenAlhaalla = false;
         int startY, uusiY, skaalaY;
 
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-
-                //määritetään ikkuna sellaiseksi, että se ei puutu lapsi-ikkunoiden piirtämiseen
-                cp.Style = unchecked((int)WinM.WS_OVERLAPPED | (int)WinM.WS_CAPTION | (int)WinM.WS_SYSMENU |
-                    (int)WinM.WS_THICKFRAME | (int)WinM.WS_MINIMIZEBOX |
-                    (int)WinM.WS_MINIMIZEBOX | (int)WinM.WS_CLIPCHILDREN);
-                return cp;
-            }
-
-        }
-
         protected override void OnClosing(CancelEventArgs e)
         {
 
@@ -138,11 +133,16 @@ namespace Tasavalta
             }
 
             //siltä varalta, että käyttäjä edelleen käyttää CAD näkymää
-            if (mSing.mValikko.mTekstiTiedosto != null) 
+            if (mSing.mValikko.mTekstiTiedosto != null)
                 mSing.mValikko.mTekstiTiedosto.Remove(0);
 
             //Kun teksti ikkuna suljetaan, on Teksti.dll vapautettava
-            FreeLibrary(mDllKahva);
+            if (mDllKahva != IntPtr.Zero)
+            {
+                sammutaTeksti();
+                FreeLibrary(mDllKahva);
+                mDllKahva = IntPtr.Zero;
+            }
 
             //Samoin ikkunakahva (hdc) pitää vapauttaa
             ReleaseDC(mHwnd, mHdc);
@@ -171,10 +171,14 @@ namespace Tasavalta
 
                         //jo ladattu sivu pitää ladata uudestaan, jotta tekstin ja kuvien kokoa voidaan muuttaa
                         lataaUudestaan(ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref vasenOikea);
-                        this.paneeli.Width = siirto1;
-                        this.paneeli.Height = siirto2;
+                        SuspendLayout();
+                        this.kanvaasi.Size = new Size(siirto1, siirto2);
+                        this.kanvaasi.PerformLayout();
                         this.paneeli.HorizontalScroll.Value = siirto3;
+                        this.paneeli.PerformLayout();
                         this.paneeli.VerticalScroll.Value = siirto4;
+                        this.paneeli.PerformLayout();
+                        ResumeLayout();
 
                         //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
                         MuutaKokoa(this, EventArgs.Empty);
@@ -189,10 +193,14 @@ namespace Tasavalta
 
                             //jo ladattu sivu pitää ladata uudestaan, jotta tekstin ja kuvien kokoa voidaan muuttaa
                             lataaUudestaan(ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref vasenOikea);
-                            this.paneeli.Width = siirto1;
-                            this.paneeli.Height = siirto2;
+                            SuspendLayout();
+                            this.kanvaasi.Size = new Size(siirto1, siirto2);
+                            this.kanvaasi.PerformLayout();
                             this.paneeli.HorizontalScroll.Value = siirto3;
+                            this.paneeli.PerformLayout();
                             this.paneeli.VerticalScroll.Value = siirto4;
+                            this.paneeli.PerformLayout();
+                            ResumeLayout();
 
                             //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
                             MuutaKokoa(this, EventArgs.Empty);
@@ -203,10 +211,14 @@ namespace Tasavalta
 
                             //jo ladattu sivu pitää ladata uudestaan, jotta tekstin ja kuvien kokoa voidaan muuttaa
                             lataaUudestaan(ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref vasenOikea);
-                            this.paneeli.Width = siirto1;
-                            this.paneeli.Height = siirto2;
+                            SuspendLayout();
+                            this.kanvaasi.Size = new Size(siirto1, siirto2);
+                            this.kanvaasi.PerformLayout();
                             this.paneeli.HorizontalScroll.Value = siirto3;
+                            this.paneeli.PerformLayout();
                             this.paneeli.VerticalScroll.Value = siirto4;
+                            this.paneeli.PerformLayout();
+                            ResumeLayout();
 
                             //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
                             MuutaKokoa(this, EventArgs.Empty);
@@ -220,7 +232,7 @@ namespace Tasavalta
             {
                 this.taakse.Enabled = false;
                 this.eteen.Enabled = false;
-            }  
+            }
         }
 
         public Teksti()
@@ -231,11 +243,10 @@ namespace Tasavalta
             mSing = Singleton.AnnaIlmentyma;
             for (int i = 0; i < mOtsikot.Length; i++)
             {
-                mOtsikot[i] = Marshal.AllocHGlobal(200 * sizeof(byte));
+                mOtsikot[i] = Marshal.AllocHGlobal(200 * sizeof(char));
             }
-            mHwnd = this.paneeli.Handle;
-            mHdc = GetWindowDC(mHwnd);
             this.MouseWheel += HiiriPyoraPyorii;
+            this.kanvaasi.MouseWheel += HiiriPyoraPyorii;
             this.fokusaattori.Focus();
 
             //Säädetään ikkunan sijainti ja koko oikeaksi
@@ -246,7 +257,6 @@ namespace Tasavalta
             int ALeft = 50 + (int)(500 * leveysSuhde);
             int ATop = 100;
             this.SetBounds(ALeft, ATop, AWidth, AHeight);
-
         }
 
         //Tämä metodi avaa HTML-tiedoston ja tarvittaessa ottaa käyttöön Teksti.dll 
@@ -255,7 +265,7 @@ namespace Tasavalta
         {
             int siirto1, siirto2, siirto3, siirto4, siirto5, siirto6, siirto7, siirto8;
             IntPtr[] otsikot;
-            string otsikko = string.Empty;
+            IntPtr otsikko = Marshal.AllocHGlobal(200 * sizeof(char));
             bool kaikkiKunnossa = true;
             uint taustaVari;
 
@@ -295,22 +305,10 @@ namespace Tasavalta
                 }
                 annaKorkeusLeveys = (ANNAKORKEUSLEVEYS)
                     Marshal.GetDelegateForFunctionPointer(siirto, typeof(ANNAKORKEUSLEVEYS));
-                siirto = GetProcAddress(mDllKahva, "_asetaFontit");
+                siirto = GetProcAddress(mDllKahva, "_HistoryBack");
                 if (siirto == IntPtr.Zero)
                 {
-                    siirto = GetProcAddress(mDllKahva, "asetaFontit");
-                    if (siirto == IntPtr.Zero)
-                    {
-                        kaikkiKunnossa = false;
-                        goto virhe;
-                    }
-                }
-                asetaFontit = (ASETAFONTIT)
-                    Marshal.GetDelegateForFunctionPointer(siirto, typeof(ASETAFONTIT));
-                siirto = GetProcAddress(mDllKahva, "_historyBack");
-                if (siirto == IntPtr.Zero)
-                {
-                    siirto = GetProcAddress(mDllKahva, "historyBack");
+                    siirto = GetProcAddress(mDllKahva, "HistoryBack");
                     if (siirto == IntPtr.Zero)
                     {
                         kaikkiKunnossa = false;
@@ -319,10 +317,10 @@ namespace Tasavalta
                 }
                 historyBack = (HISTORYBACK)
                     Marshal.GetDelegateForFunctionPointer(siirto, typeof(HISTORYBACK));
-                siirto = GetProcAddress(mDllKahva, "_historyCanBack");
+                siirto = GetProcAddress(mDllKahva, "_HistoryCanBack");
                 if (siirto == IntPtr.Zero)
                 {
-                    siirto = GetProcAddress(mDllKahva, "historyCanBack");
+                    siirto = GetProcAddress(mDllKahva, "HistoryCanBack");
                     if (siirto == IntPtr.Zero)
                     {
                         kaikkiKunnossa = false;
@@ -331,10 +329,10 @@ namespace Tasavalta
                 }
                 historyCanBack = (HISTORYCANBACK)
                     Marshal.GetDelegateForFunctionPointer(siirto, typeof(HISTORYCANBACK));
-                siirto = GetProcAddress(mDllKahva, "_historyForward");
+                siirto = GetProcAddress(mDllKahva, "_HistoryForward");
                 if (siirto == IntPtr.Zero)
                 {
-                    siirto = GetProcAddress(mDllKahva, "historyForward");
+                    siirto = GetProcAddress(mDllKahva, "HistoryForward");
                     if (siirto == IntPtr.Zero)
                     {
                         kaikkiKunnossa = false;
@@ -343,10 +341,10 @@ namespace Tasavalta
                 }
                 historyForward = (HISTORYFORWARD)
                     Marshal.GetDelegateForFunctionPointer(siirto, typeof(HISTORYFORWARD));
-                siirto = GetProcAddress(mDllKahva, "_historyCanForward");
+                siirto = GetProcAddress(mDllKahva, "_HistoryCanForward");
                 if (siirto == IntPtr.Zero)
                 {
-                    siirto = GetProcAddress(mDllKahva, "historyCanForward");
+                    siirto = GetProcAddress(mDllKahva, "HistoryCanForward");
                     if (siirto == IntPtr.Zero)
                     {
                         kaikkiKunnossa = false;
@@ -367,10 +365,10 @@ namespace Tasavalta
                 }
                 lataaUudestaan = (LATAAUUDESTAAN)
                     Marshal.GetDelegateForFunctionPointer(siirto, typeof(LATAAUUDESTAAN));
-                siirto = GetProcAddress(mDllKahva, "_onMouseEvent");
+                siirto = GetProcAddress(mDllKahva, "_OnMouseEvent");
                 if (siirto == IntPtr.Zero)
                 {
-                    siirto = GetProcAddress(mDllKahva, "onMouseEvent");
+                    siirto = GetProcAddress(mDllKahva, "OnMouseEvent");
                     if (siirto == IntPtr.Zero)
                     {
                         kaikkiKunnossa = false;
@@ -379,10 +377,10 @@ namespace Tasavalta
                 }
                 onMouseEvent = (ONMOUSEEVENT)
                     Marshal.GetDelegateForFunctionPointer(siirto, typeof(ONMOUSEEVENT));
-                siirto = GetProcAddress(mDllKahva, "_paivitaOtsikkoLista");
+                siirto = GetProcAddress(mDllKahva, "_paivitaOtsikot");
                 if (siirto == IntPtr.Zero)
                 {
-                    siirto = GetProcAddress(mDllKahva, "paivitaOtsikkoLista");
+                    siirto = GetProcAddress(mDllKahva, "paivitaOtsikot");
                     if (siirto == IntPtr.Zero)
                     {
                         kaikkiKunnossa = false;
@@ -427,19 +425,31 @@ namespace Tasavalta
                 }
                 tulostetaan = (TULOSTETAAN)
                     Marshal.GetDelegateForFunctionPointer(siirto, typeof(TULOSTETAAN));
+                siirto = GetProcAddress(mDllKahva, "_sammutaTeksti");
+                if (siirto == IntPtr.Zero)
+                {
+                    siirto = GetProcAddress(mDllKahva, "sammutaTeksti");
+                    if (siirto == IntPtr.Zero)
+                    {
+                        kaikkiKunnossa = false;
+                        goto virhe;
+                    }
+                }
+                sammutaTeksti = (SAMMUTATEKSTI)
+                    Marshal.GetDelegateForFunctionPointer(siirto, typeof(SAMMUTATEKSTI));
 
             virhe:
 
                 if (kaikkiKunnossa)
                 {
 
-                    //koska VCL-muuttujien käyttö suoraan on onglemallista, täytyy käyttää siirtoa
+                    //koska VCL-muuttujien käyttö suoraan on ongelmallista, täytyy käyttää siirtoa
                     siirto1 = 1;
                     siirto2 = 1;
                     siirto3 = this.paneeli.HorizontalScroll.Value;
                     siirto4 = this.paneeli.VerticalScroll.Value;
-                    siirto5 = this.paneeli.Width;
-                    siirto6 = this.paneeli.Height;
+                    siirto5 = this.Width;
+                    siirto6 = this.Height;
                     siirto7 = this.Width;
                     siirto8 = this.Height;
 
@@ -448,14 +458,18 @@ namespace Tasavalta
                         ref siirto5, ref siirto6, ref siirto7, ref siirto8);
 
                     //tallennetaan takaisin mahdollisesti muutetut arvot
-                    this.paneeli.HorizontalScroll.Value = siirto3;
-                    this.paneeli.VerticalScroll.Value = siirto4;
-                    this.paneeli.Width = siirto5;
-                    this.paneeli.Height = siirto6;
+                    SuspendLayout();
+                    this.kanvaasi.Size = new Size(siirto5, siirto6);
+                    this.kanvaasi.PerformLayout();
+                    ResumeLayout();
 
                     //Sitten ladataan haluttu HTML sivu ja samalla Teksti.dll kertoo ladattavan sivun mitat
                     taustaVari = 0xFF000000;
-                    if (avaaHtml(mSing.mValikko.mTiedosto, mSing.mValikko.Handle, mHdc, mHwnd,
+                    mHwnd = this.kanvaasi.Handle;
+                    mHdc = GetWindowDC(mHwnd);
+
+                    IntPtr handle = mSing.mValikko.Handle;
+                    if (avaaHtml(mSing.mValikko.mTiedosto, ref handle, ref mHdc, ref mHwnd,
                         ref siirto5, ref siirto6, ref siirto3, ref siirto4,
                                  ref taustaVari, otsikko, mOtsikot, ref mListanPituus))
                     {
@@ -464,32 +478,34 @@ namespace Tasavalta
                         mSing.mValikko.mTekstiTiedosto = mSing.mValikko.mTiedosto;
                         mSing.mValikko.TuoEsille(mSing.mValikko.mTiedosto, 'T');
 
-                        this.paneeli.Width = siirto5;
-                        this.paneeli.Height = siirto6;
+                        SuspendLayout();
+                        this.kanvaasi.Size = new Size(siirto5, siirto6);
+                        this.kanvaasi.PerformLayout();
                         this.paneeli.HorizontalScroll.Value = siirto3;
+                        this.paneeli.PerformLayout();
                         this.paneeli.VerticalScroll.Value = siirto4;
-                        /*
-                                                //Suurennetaan tekstiKentta1:n ala ladattavan sivun kokoiseksi, jos se on tarpeen
-                                                if (tekstiIkkuna->ScrollBox1->Width < tekstiIkkuna->ScrollBox1->HorzScrollBar->Range)
-                                                {
-                                                    tekstiKentta1->Width = tekstiIkkuna->ScrollBox1->HorzScrollBar->Range + 20;
-                                                }
-                                                if (tekstiIkkuna->ScrollBox1->Height < tekstiIkkuna->ScrollBox1->VertScrollBar->Range)
-                                                {
-                                                    tekstiKentta1->Height = tekstiIkkuna->ScrollBox1->VertScrollBar->Range;
-                                                }
-                        */
+                        this.paneeli.PerformLayout();
+                        ResumeLayout();
+
                         //Asetetaan haluttu taustaväri ja sivun otsikko tässä välillä, kun taustavärin ja
                         //otsikon tietokin on saatu Teksti.dll:ltä
                         if (taustaVari != 0xFF000000)
                         {
-                            this.paneeli.BackColor = AnnaVari(taustaVari);
+                            this.kanvaasi.BackColor = AnnaVari(taustaVari);
                         }
-                        this.Invalidate();
-                        if (otsikko.Length != 0)
+                        else
+                        {
+                            this.kanvaasi.BackColor = Color.White;
+                        }
+                        char[] ots = new char[200];
+                        Marshal.Copy(otsikko, ots, 0, 200);
+                        string otsi = new string(ots, 0, ots.Length);
+                        int loppu = otsi.IndexOf('\0');
+                        otsi = otsi.Remove(loppu);
+                        if (otsi.Length != 0)
                         {
                             string ot = "Text view - ";
-                            this.Text = ot + otsikko;
+                            this.Text = ot + otsi;
                         }
                         else
                         {
@@ -500,7 +516,12 @@ namespace Tasavalta
                         TuoOtsikot();
 
                         //Pyydetään Teksti.dll:ää päivittämään näkymä
+                        //                        piirra();
+                        //                        MuutaKokoa(this, EventArgs.Empty);
+                        //                        piirra();
+                        //                        this.kanvaasi.Invalidate();
                         piirra();
+                        //                        this.kanvaasi.Update();
 
                         //Lopuksi pitää vielä varmistaa, voiko klikata eteen tai taakse nappia
                         this.taakse.Enabled = historyCanBack();
@@ -510,6 +531,7 @@ namespace Tasavalta
                     {
                         this.Close();
                     }
+
                 }
                 else
                 {
@@ -522,15 +544,18 @@ namespace Tasavalta
                 MessageBox.Show("Unable to load Teksti.dll or some other dependency library.");
                 this.Close();
             }
+
+            //otsikko pitää deletoida manuaalisesti
+            Marshal.FreeHGlobal(otsikko);
         }
 
         //Tällä funktiolla saadaan uint luvusta Color ilmentymä
         private Color AnnaVari(uint argb)
         {
-            return Color.FromArgb((byte)((argb & 0xff000000) >> 0x18),
-                (byte)((argb & 0x00ff0000) >> 0x10),
+            return Color.FromArgb((byte)(255),
+                (byte)((argb & 0x000000ff)),
                 (byte)((argb & 0x0000ff00) >> 0x08),
-                (byte)(argb & 0x000000ff));
+                (byte)(argb & 0x00ff0000) >> 0x16);
         }
 
         //Apumetodi otsikoiden lataamiseksi otsikkolistaan
@@ -542,7 +567,6 @@ namespace Tasavalta
 
             //tämän funktion tehtävänä on ladata uudet valinnat otsikkoListaan. Tyhjennetään ensin lista
             otsikkoLista.Items.Clear();
-            otsikkoLista.Text = "Paragraphs";
 
             //sitten tallennetaan kaikki tekstit otsikkoListaan
             for (int i = 0; i < mListanPituus; i++)
@@ -554,46 +578,56 @@ namespace Tasavalta
                 siirto2 = siirto2.Remove(loppu);
                 otsikkoLista.Items.Add(siirto2);
             }
+
+
+            //annetaan otsikkoListalle vakio-otsikko. Se on pakko lisätä listaan DropDownList-moodissa
+            otsikkoLista.Items.Add("Paragraphs");
+            otsikkoLista.Text = "Paragraphs";
         }
+
+
 
         //Käyttäjä on klikannut eteen nappulaa
         private void EteenClick(object sender, EventArgs e)
         {
             int siirto1 = 0, siirto2 = 0, siirto3 = 0, siirto4 = 0;
-            string otsikko = string.Empty;
+            IntPtr otsikko = Marshal.AllocHGlobal(200 * sizeof(char));
             uint taustaVari = 0xFF000000;
 
             //Taakse nappia on klikattu. Pyydetään Teksti.dll:ää avaamaan aiempi HTML näkymä
             historyForward(ref siirto1, ref siirto2, ref siirto3, ref siirto4,
                 ref taustaVari, otsikko, mOtsikot, ref mListanPituus);
 
-            //Siirretään uuden HTML sivun mittatiedot VCL:lle
-            this.paneeli.Width = siirto4;
-            this.paneeli.Height = siirto2;
+            //Siirretään uuden HTML sivun mittatiedot käyttöön
+            SuspendLayout();
+            this.kanvaasi.Size = new Size(siirto4, siirto2);
+            this.kanvaasi.PerformLayout();
             this.paneeli.HorizontalScroll.Value = siirto3;
+            this.paneeli.PerformLayout();
             this.paneeli.VerticalScroll.Value = siirto1;
-            /*
-                        //Suurennetaan tekstiKentta1:n ala ladattavan sivun kokoiseksi, jos se on tarpeen
-                        if (tekstiIkkuna->ScrollBox1->Width < tekstiIkkuna->ScrollBox1->HorzScrollBar->Range)
-                        {
-                            tekstiKentta1->Width = tekstiIkkuna->ScrollBox1->HorzScrollBar->Range + 20;
-                        }
-                        if (tekstiIkkuna->ScrollBox1->Height < tekstiIkkuna->ScrollBox1->VertScrollBar->Range)
-                        {
-                            tekstiKentta1->Height = tekstiIkkuna->ScrollBox1->VertScrollBar->Range;
-                        }
-            */
+            this.paneeli.PerformLayout();
+            ResumeLayout();
+
             //Asetetaan haluttu taustaväri ja sivun otsikko tässä välillä, kun taustavärin ja
             //otsikon tietokin on saatu Teksti.dll:ltä
             if (taustaVari != 0xFF000000)
             {
                 this.paneeli.BackColor = AnnaVari(taustaVari);
             }
+            else
+            {
+                this.paneeli.BackColor = Color.White;
+            }
             this.Invalidate();
-            if (otsikko.Length != 0)
+            char[] ots = new char[200];
+            Marshal.Copy(otsikko, ots, 0, 200);
+            string otsi = new string(ots, 0, ots.Length);
+            int loppu = otsi.IndexOf('\0');
+            otsi = otsi.Remove(loppu);
+            if (otsi.Length != 0)
             {
                 string ot = "Text view - ";
-                this.Text = ot + otsikko;
+                this.Text = ot + otsi;
             }
             else
             {
@@ -604,11 +638,16 @@ namespace Tasavalta
             TuoOtsikot();
 
             //Pyydetään Teksti.dll:ää päivittämään näkymä
+            //            MuutaKokoa(sender, EventArgs.Empty);
             piirra();
 
             //Lopuksi pitää vielä varmistaa, voiko klikata eteen tai taakse nappia
             this.taakse.Enabled = historyCanBack();
             this.eteen.Enabled = historyCanForward();
+
+            //otsikko pitää deletoida manuaalisesti
+            Marshal.FreeHGlobal(otsikko);
+
         }
 
         //käyttäjä on klikannut tulosta nappulaa
@@ -621,55 +660,62 @@ namespace Tasavalta
         private void TaakseClick(object sender, EventArgs e)
         {
             int siirto1 = 0, siirto2 = 0, siirto3 = 0, siirto4 = 0;
-            string otsikko = string.Empty;
+            IntPtr otsikko = Marshal.AllocHGlobal(200 * sizeof(char));
             uint taustaVari = 0xFF000000;
 
             //Taakse nappia on klikattu. Pyydetään Teksti.dll:ää avaamaan aiempi HTML näkymä
             historyBack(ref siirto1, ref siirto2, ref siirto3, ref siirto4,
                 ref taustaVari, otsikko, mOtsikot, ref mListanPituus);
 
+
+            //otetaan otsikkolista talteen
+            TuoOtsikot();
+
             //Siirretään uuden HTML sivun mittatiedot TekstiIkkunalle
-            this.paneeli.Width = siirto4;
-            this.paneeli.Height = siirto2;
+            SuspendLayout();
+            this.kanvaasi.Size = new Size(siirto4, siirto2);
+            this.kanvaasi.PerformLayout();
             this.paneeli.HorizontalScroll.Value = siirto3;
+            this.paneeli.PerformLayout();
             this.paneeli.VerticalScroll.Value = siirto1;
-            /*
-                        //Suurennetaan tekstiKentta1:n ala ladattavan sivun kokoiseksi, jos se on tarpeen
-                        if (tekstiIkkuna->ScrollBox1->Width < tekstiIkkuna->ScrollBox1->HorzScrollBar->Range)
-                        {
-                            tekstiKentta1->Width = tekstiIkkuna->ScrollBox1->HorzScrollBar->Range + 20;
-                        }
-                        if (tekstiIkkuna->ScrollBox1->Height < tekstiIkkuna->ScrollBox1->VertScrollBar->Range)
-                        {
-                            tekstiKentta1->Height = tekstiIkkuna->ScrollBox1->VertScrollBar->Range;
-                        }
-            */
+            this.paneeli.PerformLayout();
+            ResumeLayout();
+
             //Asetetaan haluttu taustaväri ja sivun otsikko tässä välillä, kun taustavärin ja
             //otsikon tietokin on saatu Teksti.dll:ltä
             if (taustaVari != 0xFF000000)
             {
                 this.paneeli.BackColor = AnnaVari(taustaVari);
             }
-            this.Invalidate();
-            if (otsikko.Length != 0)
+            else
+            {
+                this.paneeli.BackColor = Color.White;
+            }
+            char[] ots = new char[200];
+            Marshal.Copy(otsikko, ots, 0, 200);
+            string otsi = new string(ots, 0, ots.Length);
+            int loppu = otsi.IndexOf('\0');
+            otsi = otsi.Remove(loppu);
+            if (otsi.Length != 0)
             {
                 string ot = "Text view - ";
-                this.Text = ot + otsikko;
+                this.Text = ot + otsi;
             }
             else
             {
                 this.Text = "Text view";
             }
 
-            //otetaan otsikkolista talteen
-            TuoOtsikot();
-
             //Pyydetään Teksti.dll:ää päivittämään näkymä
+            //            MuutaKokoa(sender, EventArgs.Empty);
             piirra();
 
             //Lopuksi pitää vielä varmistaa, voiko klikata eteen tai taakse nappia
             this.taakse.Enabled = historyCanBack();
             this.eteen.Enabled = historyCanForward();
+
+            //otsikko pitää deletoida manuaalisesti
+            Marshal.FreeHGlobal(otsikko);
         }
 
         //käyttäjä muuttaa TekstiIkkunan kokoa
@@ -678,30 +724,19 @@ namespace Tasavalta
 
             //koska Ikkunaa luotaessa windows kutsuu tätä funktiota ennen kuin
             //tätä funktiota on luotu tarvitaan ehdollistus
-            if (mSing.mValikko.mTekstiIkkuna != null)
+            if (mSing != null && mSing.mValikko.mTekstiIkkuna != null)
             {
 
                 //alustetaan paikalliset muuttujat
                 int siirto1, siirto2, siirto3, siirto4, siirto5, siirto6, siirto7, siirto8;
-                /*
-                            //kun tekstiIkkunan kokoa muutetaan, pitää muuttaa myös komponenttien koot
-                            ControlBar1->Width = tekstiIkkuna->ClientWidth;
-                            ScrollBox1->Height = tekstiIkkuna->ClientHeight - ControlBar1->Height;
-                            ScrollBox1->Width = tekstiIkkuna->ClientWidth;
 
-                            //Ikkunan client-alueen sisältö on pyyhittävä pois uuden tieltä
-                            if (tekstiKentta1)
-                            {
-                                tekstiKentta1->Repaint();
-                            }
-                */
                 //koska VCL-muuttujien käyttö suoraan on onglemallista, täytyy käyttää siirtoa
                 siirto1 = 1;
                 siirto2 = 1;
                 siirto3 = this.paneeli.HorizontalScroll.Value;
                 siirto4 = this.paneeli.VerticalScroll.Value;
-                siirto5 = this.paneeli.Width;
-                siirto6 = this.paneeli.Height;
+                siirto5 = this.kanvaasi.Width;
+                siirto6 = this.kanvaasi.Height;
                 siirto7 = this.Width;
                 siirto8 = this.Height;
 
@@ -709,27 +744,22 @@ namespace Tasavalta
                 annaKorkeusLeveys(ref siirto1, ref siirto2, ref siirto3, ref siirto4,
                     ref siirto5, ref siirto6, ref siirto7, ref siirto8);
 
+                //sitten pyydetään lataamaan uudelleen
+                //               bool vasenOikea=true;
+                //                lataaUudestaan(ref siirto5, ref siirto6, ref siirto3, ref siirto4, ref vasenOikea);
+
                 //tallennetaan takaisin mahdollisesti muutetut arvot
+                SuspendLayout();
+                this.kanvaasi.Size = new Size(siirto5, siirto6);
+                this.kanvaasi.PerformLayout();
                 this.paneeli.HorizontalScroll.Value = siirto3;
+                this.paneeli.PerformLayout();
                 this.paneeli.VerticalScroll.Value = siirto4;
-                this.paneeli.Width = siirto5;
-                this.paneeli.Height = siirto6;
-                /*
-                            //Sovitetaan tekstiKentta1:n ala ladattavan sivun kokoiseksi, jos se on tarpeen
-                            if (tekstiIkkuna->ScrollBox1->Width > tekstiKentta1->Width)
-                            {
-                                tekstiKentta1->Width = tekstiIkkuna->ScrollBox1->HorzScrollBar->Range + 20;
-                            }
-                            if (tekstiIkkuna->ScrollBox1->Width < tekstiIkkuna->ScrollBox1->HorzScrollBar->Range)
-                            {
-                                tekstiKentta1->Width = tekstiIkkuna->ScrollBox1->HorzScrollBar->Range + 20;
-                            }
-                            if (tekstiIkkuna->ScrollBox1->Height < tekstiIkkuna->ScrollBox1->VertScrollBar->Range)
-                            {
-                                tekstiKentta1->Height = tekstiIkkuna->ScrollBox1->VertScrollBar->Range;
-                            }
-                */
+                this.paneeli.PerformLayout();
+                ResumeLayout();
+
                 //Pyydetään Teksti.dll:ää päivittämään näkymä
+                this.Invalidate();
                 piirra();
             }
         }
@@ -742,40 +772,16 @@ namespace Tasavalta
             int siirto1, siirto2, siirto3, siirto4, siirto5, siirto6, siirto7, siirto8;
 
             //ensin selvitetään, kumpaan suuntaan käyttäjä rullaa keskipyörää
-            if (e.Delta >= 0)
+            if (e.Delta <= 0)
             {
-                this.paneeli.VerticalScroll.Value += 20;
+                this.paneeli.ScrollaaAlas();
+                MuutaKokoa(sender, EventArgs.Empty);
             }
             else
             {
-                this.paneeli.VerticalScroll.Value -= 20;
+                this.paneeli.ScrollaaYlos();
+                MuutaKokoa(sender, EventArgs.Empty);
             }
-
-            //koska muuttujien käyttö suoraan on onglemallista, täytyy käyttää siirtoa
-            siirto1 = 1;
-            siirto2 = 1;
-            siirto3 = this.paneeli.HorizontalScroll.Value;
-            siirto4 = this.paneeli.VerticalScroll.Value;
-            siirto5 = this.paneeli.Width;
-            siirto6 = this.paneeli.Height;
-            siirto7 = this.Width;
-            siirto8 = this.Height;
-
-            //Ensiksi Teksti.dll:lle pitää kertoa ikkunan mitat
-            annaKorkeusLeveys(ref siirto1, ref siirto2, ref siirto3, ref siirto4,
-                ref siirto5, ref siirto6, ref siirto7, ref siirto8);
-
-            //tallennetaan takaisin mahdollisesti muutetut arvot
-            this.paneeli.HorizontalScroll.Value = siirto3;
-            this.paneeli.VerticalScroll.Value = siirto4;
-            this.paneeli.Width = siirto5;
-            this.paneeli.Height = siirto6;
-
-            //Ikkunan client-alueen sisältö on pyyhittävä pois uuden tieltä
-            this.Invalidate();
-
-            //Pyydetään Teksti.dll:ää päivittämään näkymä
-            piirra();
         }
 
         //käyttäjän klikatessa paikallaan olevan hiiren nappulaa paneelin alueella tämä
@@ -796,8 +802,11 @@ namespace Tasavalta
             if (e.Button == MouseButtons.Right)
             {
                 int siirto = 104;  //EVT_RIGHT_DOWN = 104
-                onMouseEvent(ref x, ref y, ref siirto, false, true, 
+                onMouseEvent(ref x, ref y, ref siirto, false, true,
                     ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref taustaVari);
+
+                //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
+                MuutaKokoa(this, EventArgs.Empty);
             }
 
             //Jos vasenta hiiren nappia klikataan
@@ -805,24 +814,23 @@ namespace Tasavalta
             {
 
                 int siirto = 100;    //EVT_LEFT_DOWN = 100
-                siirto1 = this.paneeli.Width;
-                siirto2 = this.paneeli.Height;
+                siirto1 = this.kanvaasi.Width;
+                siirto2 = this.kanvaasi.Height;
                 siirto3 = this.paneeli.HorizontalScroll.Value;
                 siirto4 = this.paneeli.VerticalScroll.Value;
-                onMouseEvent(ref x, ref y, ref siirto, true, false, 
+                onMouseEvent(ref x, ref y, ref siirto, true, false,
                     ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref taustaVari);
-                this.paneeli.Width = siirto1;
-                this.paneeli.Height = siirto2;
+                SuspendLayout();
+                this.kanvaasi.Size = new Size(siirto1, siirto2);
+                this.kanvaasi.PerformLayout();
                 this.paneeli.HorizontalScroll.Value = siirto3;
+                this.paneeli.PerformLayout();
                 this.paneeli.VerticalScroll.Value = siirto4;
-/*
-                //jos klikattiin linkkiä, jäädytetään uusien linkkien avaaminen hetkeksi
-                if (siirto == 1)
-                {
-                    saakoKlikata = false;
-                    timerKahva =::SetTimer(paaIkkuna->hwndMain, TIMER2, 800, NULL);
-                }
-*/
+                this.paneeli.PerformLayout();
+                ResumeLayout();
+
+                //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
+                MuutaKokoa(this, EventArgs.Empty);
             }
         }
 
@@ -832,18 +840,25 @@ namespace Tasavalta
             int siirto1 = -1, siirto2 = -1, siirto3 = -1, siirto4 = -1;
 
             var otsikko = otsikkoLista.ComboBox.GetItemText(otsikkoLista.ComboBox.SelectedItem);
-            siirryAnkkuriin(otsikko, ref siirto1, ref siirto2, ref siirto3, ref siirto4);
-            this.paneeli.Width = siirto1;
-            this.paneeli.Height = siirto2;
-            this.paneeli.HorizontalScroll.Value = siirto3;
-            this.paneeli.VerticalScroll.Value = siirto4;
-/*
-            //focus jää kiinni otsikkoListaan ja se pitää poistaa siitä
-            otsikkoLista->Enabled = false;
-            otsikkoLista->Enabled = true;
-*/
-            //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
-            MuutaKokoa(this, EventArgs.Empty);
+            if (otsikko != "Paragraphs")
+            {
+                siirryAnkkuriin(otsikko, ref siirto1, ref siirto2, ref siirto3, ref siirto4);
+                SuspendLayout();
+                this.kanvaasi.Size = new Size(siirto1, siirto2);
+                this.kanvaasi.PerformLayout();
+                this.paneeli.HorizontalScroll.Value = siirto3;
+                this.paneeli.PerformLayout();
+                this.paneeli.VerticalScroll.Value = siirto4;
+                this.paneeli.PerformLayout();
+                ResumeLayout();
+                /*
+                            //focus jää kiinni otsikkoListaan ja se pitää poistaa siitä
+                            otsikkoLista->Enabled = false;
+                            otsikkoLista->Enabled = true;
+                */
+                //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
+                MuutaKokoa(this, EventArgs.Empty);
+            }
         }
 
 
@@ -862,7 +877,7 @@ namespace Tasavalta
             if (e.Button != MouseButtons.Left && e.Button != MouseButtons.Right)
             {
                 int siirto = 106;   //  EVT_MOTION = 106
-                vastaus = onMouseEvent(ref x, ref y, ref siirto, false, false, 
+                vastaus = onMouseEvent(ref x, ref y, ref siirto, false, false,
                     ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref taustaVari);
             }
 
@@ -886,8 +901,8 @@ namespace Tasavalta
                     }
 
                     int siirto = 100;    //  EVT_LEFT_DOWN = 100
-                    siirto1 = this.paneeli.Width;
-                    siirto2 = this.paneeli.Height;
+                    siirto1 = this.kanvaasi.Width;
+                    siirto2 = this.kanvaasi.Height;
                     siirto3 = this.paneeli.HorizontalScroll.Value;
 
                     if (uusiY > 0 && uusiY < skaalaY)
@@ -900,30 +915,26 @@ namespace Tasavalta
                         siirto4 = this.paneeli.VerticalScroll.Value;
                     }
 
-                    vastaus = onMouseEvent(ref x, ref y, ref siirto, true, false, 
+                    vastaus = onMouseEvent(ref x, ref y, ref siirto, true, false,
                         ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref taustaVari);
-                    this.paneeli.Width = siirto1;
-                    this.paneeli.Height = siirto2;
+                    SuspendLayout();
+                    this.kanvaasi.Size = new Size(siirto1, siirto2);
+                    this.kanvaasi.PerformLayout();
                     this.paneeli.HorizontalScroll.Value = siirto3;
+                    this.paneeli.PerformLayout();
                     this.paneeli.VerticalScroll.Value = siirto4;
+                    this.paneeli.PerformLayout();
+                    ResumeLayout();
 
                     //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
                     MuutaKokoa(sender, e);
-                    /*
-                    //jos klikattiin linkkiä, jäädytetään uusien linkkien avaaminen hetkeksi
-                    if (siirto == 1)
-                    {
-                        saakoKlikata = false;
-                        timerKahva =::SetTimer(paaIkkuna->hwndMain, TIMER2, 800, NULL);
-                    }
-                    */
                 }
 
                 //Jos hiiri liikkuu oikea painettuna
                 if (e.Button != MouseButtons.Left && e.Button == MouseButtons.Right)
                 {
                     int siirto = 104;      //   EVT_RIGHT_DOWN 104
-                    vastaus = onMouseEvent(ref x, ref y, ref siirto, false, true, 
+                    vastaus = onMouseEvent(ref x, ref y, ref siirto, false, true,
                         ref siirto1, ref siirto2, ref siirto3, ref siirto4, ref taustaVari);
                 }
 
@@ -932,11 +943,11 @@ namespace Tasavalta
             //jos vastaus on true, kursori on etusormikämmen, false on nuoli
             if (vastaus)
             {
-                Cursor.Current = Cursors.Hand;
+                this.Cursor = Cursors.Hand;
             }
             else
             {
-                Cursor.Current = Cursors.Arrow;
+                this.Cursor = Cursors.Arrow;
             }
 
             //Lopuksi pitää vielä varmistaa, voiko klikata eteen tai taakse nappia
@@ -947,7 +958,7 @@ namespace Tasavalta
         //hiiri poistuu paneelin alueelta
         private void HiiriPoistuu(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.Arrow;
+            //            Cursor.Current = Cursors.Arrow;
         }
 
         //otsikkoListan otsikot pitää päivittää, kun käyttäjä selailee HTML-sivuja
@@ -962,14 +973,14 @@ namespace Tasavalta
         //kirjanmerkki tarvitsee muistiinsa HTML-tiedoston näkymän
         public void AnnaOrientaatio(int[] orientaatio)
         {
-            orientaatio[0] = this.paneeli.Width;
-            orientaatio[1] = this.paneeli.Height;
+            orientaatio[0] = this.kanvaasi.Width;
+            orientaatio[1] = this.kanvaasi.Height;
             orientaatio[2] = this.paneeli.HorizontalScroll.Value;
             orientaatio[3] = this.paneeli.VerticalScroll.Value;
         }
 
         //kun kirjanmerkki avataan, tämä funktio tuo muistista edellisen näkymän
-        public void AsetaOrientaatio(in int[] orientaatio)
+        public void AsetaOrientaatio(int[] orientaatio)
         {
             bool vasenOikea = true;
             int siirto0 = orientaatio[0];
@@ -977,23 +988,35 @@ namespace Tasavalta
             int siirto2 = orientaatio[2];
             int siirto3 = orientaatio[3];
             lataaUudestaan(ref siirto0, ref siirto1, ref siirto2, ref siirto3, ref vasenOikea);
-            this.paneeli.Width = siirto0;
-            this.paneeli.Height = siirto1;
+            SuspendLayout();
+            this.kanvaasi.Size = new Size(siirto0, siirto1);
+            this.kanvaasi.PerformLayout();
             this.paneeli.HorizontalScroll.Value = siirto2;
+            this.paneeli.PerformLayout();
             this.paneeli.VerticalScroll.Value = siirto3;
+            this.paneeli.PerformLayout();
+            ResumeLayout();
             if (!vasenOikea)
             {
-                    this.taakse.Enabled = false;
-                    this.eteen.Enabled = false;
+                this.taakse.Enabled = false;
+                this.eteen.Enabled = false;
             }
         }
 
+        //tämä apumetodi tarvitaan poistamaan otsikkoListan otsikko valittavien listasta
+        private void PoistaOtsikko(object sender, EventArgs e)
+        {
+            if (otsikkoLista.Items.Contains("Paragraphs"))
+                otsikkoLista.Items.Remove("Paragraphs");
+        }
     }
+
 
     public class Paneeli : Panel
     {
         Singleton mSing;
         int hiword, loword;
+        int pos = 0;
 
         public Paneeli()
         {
@@ -1007,14 +1030,57 @@ namespace Tasavalta
 
         }
 
+        //Teksti.dll haluaa ikkunaKahvan, joka pysyy samana koko ohjelman suorituksen ajan
+        //Lisäksi halutaan, että vierintäpalkit ovat aina näkyvissä
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                Int32 CS_OWNDC = 0x20;
+                var cp = base.CreateParams;
+                cp.ClassStyle = cp.ClassStyle | CS_OWNDC;
+                cp.Style = cp.Style | unchecked((int)WinM.WM_HSCROLL | (int)WinM.WM_VSCROLL);
+                return cp;
+            }
+        }
+
+        //tällä metodilla paneelia voi scrollata alas
+        public void ScrollaaAlas()
+        {
+            if (pos < 0) pos = 0;
+            pos++;
+            using (Control c = new Control() { Parent = this, Height = 1, Top = this.ClientSize.Height + pos })
+            {
+                this.ScrollControlIntoView(c);
+            }
+            this.PerformLayout();
+        }
+
+        //tällä metodilla paneelia voi scrollata ylös
+        public void ScrollaaYlos()
+        {
+            if (pos >= 0) pos = -1;
+            pos--;
+            using (Control c = new Control() { Parent = this, Height = 1, Top = pos })
+            {
+                this.ScrollControlIntoView(c);
+            }
+            this.PerformLayout();
+        }
+
+
+        //Tämä funktio käsittelee scrollboxiin osoitetut Windows viestit
         protected override void WndProc(ref Message m)
         {
 
-            //Tämä funktio käsittelee scrollboxiin osoitetut Windows viestit
+            //tehdään ensin kaikki normaalisti
+            base.WndProc(ref m);
+
+            //sitten omat jutut
             switch (m.Msg)
             {
                 case (int)WinM.WM_HSCROLL:
-                    /* horizontal scrolling */
+                    // horizontal scrolling 
                     loword = (int)m.WParam;
 
                     //otetaan win32 LOWORD
@@ -1022,49 +1088,27 @@ namespace Tasavalta
                     switch (loword)
                     {
                         case 6:   //  SB_TOP = 6
-                            this.HorizontalScroll.Value = 0;
+
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 0:   //  SB_LINEUP = 0
-                            if (this.HorizontalScroll.Value > 0)
-                            {
-                                this.HorizontalScroll.Value =
-                                    this.HorizontalScroll.Value - 1;
-                                mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
-                            }
+                            mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 4:    //  SB_THUMBPOSITION = 4
-                            hiword = (int)m.WParam;
-
-                            //otetaan win32 HIWORD
-                            hiword = hiword >> 16;
-                            this.HorizontalScroll.Value = hiword;
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 5:   //  SB_THUMBTRACK = 5
-                            hiword = (int)m.WParam;
-
-                            //otetaan win32 HIWORD
-                            hiword = hiword >> 16;
-                            this.HorizontalScroll.Value = hiword;
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 1:    //  SB_LINEDOWN = 1
-                            if (this.HorizontalScroll.Value <
-                                this.Width - mSing.mValikko.mTekstiIkkuna.Width)
-                            {
-                                this.HorizontalScroll.Value =
-                                    this.HorizontalScroll.Value + 1;
-                                mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
-                            }
+                            mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 7:   // SB_BOTTOM = 7
-                            this.HorizontalScroll.Value = this.HorizontalScroll.Maximum;
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
@@ -1073,7 +1117,7 @@ namespace Tasavalta
                     }
                     break;
                 case (int)WinM.WM_VSCROLL:
-                    /* vertical scrolling */
+                    // vertical scrolling 
                     loword = (int)m.WParam;
 
                     //otetaan win32 LOWORD
@@ -1081,49 +1125,26 @@ namespace Tasavalta
                     switch (loword)
                     {
                         case 6:   //  SB_TOP = 6
-                            this.VerticalScroll.Value = 0;
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 0:   //  SB_LINEUP = 0
-                            if (this.VerticalScroll.Value > 0)
-                            {
-                                this.VerticalScroll.Value =
-                                    this.VerticalScroll.Value - 1;
-                                mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
-                            }
+                            mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 4:    //  SB_THUMBPOSITION = 4
-                            hiword = (int)m.WParam;
-
-                            //otetaan win32 HIWORD
-                            hiword = hiword >> 16;
-                            this.VerticalScroll.Value = hiword;
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 5:   //  SB_THUMBTRACK = 5
-                            hiword = (int)m.WParam;
-
-                            //otetaan win32 HIWORD
-                            hiword = hiword >> 16;
-                            this.VerticalScroll.Value = hiword;
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 1:    //  SB_LINEDOWN = 1
-                            if (this.VerticalScroll.Value <
-                                this.Width - mSing.mValikko.mTekstiIkkuna.Width)
-                            {
-                                this.VerticalScroll.Value =
-                                    this.VerticalScroll.Value + 1;
-                                mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
-                            }
+                            mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
                         case 7:   // SB_BOTTOM = 7
-                            this.VerticalScroll.Value = this.VerticalScroll.Maximum;
                             mSing.mValikko.mTekstiIkkuna.MuutaKokoa(this, EventArgs.Empty);
                             break;
 
@@ -1131,25 +1152,8 @@ namespace Tasavalta
                             break;
                     }
                     break;
-                    /*
-                                    //tämä on välttämätön osa ohjelmaa, se käydään läpi jokaisessa ruudunpäivityksessä
-                                    case WM_DESTROY:
-                                        {
-                                            ScrollBox1->WindowProc = OldScrollBoxWP;
-                                            if (!ScrollBox1->ComponentState.Contains(csDestroying))
-                                            {
-                                                OldScrollBoxWP(AMsg);
-                                                OldScrollBoxWP = ScrollBox1->WindowProc;
-                                                ScrollBox1->WindowProc = NewScrollBoxWP;
-                                                return;
-                                            }
-                                        }
-                                        */
             }
-            //           OldScrollBoxWP(AMsg);
-
-            base.WndProc(ref m);
         }
     }
-
 }
+

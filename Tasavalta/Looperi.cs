@@ -19,6 +19,7 @@ namespace Tasavalta
         void toiminta()
         {
 
+            //tästä silmukasta poistuminen lopettaa säikeen
             while (!this.lopetus)
             {
 
@@ -130,6 +131,12 @@ namespace Tasavalta
         public bool OnkoPysäytetty()
         {
             return sammutus;
+        }
+
+        //tällä metodilla voidaan tyhjentää looperin funktiojono
+        public void TyhjennaJono()
+        {
+            delegaatit.Clear();
         }
     }
 }

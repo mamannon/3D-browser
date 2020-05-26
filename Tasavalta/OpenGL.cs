@@ -6,8 +6,6 @@ using System.Runtime.InteropServices;
 namespace Tasavalta
 {
 
-	/// <summary>Values to pass to the GetDCEx method.</summary>
-//	[Flags()]
 	public enum DeviceContextValues : uint
 	{
 		/// <summary>DCX_WINDOW: Returns a DC that corresponds to the window rectangle rather
@@ -51,7 +49,7 @@ namespace Tasavalta
 		Validate = 0x00200000,
 	}
 
-	public enum Anim :int
+	public enum Anim : int
 	{
 		aja,
 		seis,
@@ -104,9 +102,11 @@ namespace Tasavalta
 		static extern bool ReleaseDC(IntPtr hWnd, IntPtr hdc);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		delegate bool ONKOLAAJENNUKSIA(ref IntPtr ikkunaKahva, ref IntPtr hwndMain, ref IntPtr hwnd, ref bool eiValaisua);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		delegate bool ETEEN(
 			[MarshalAs(UnmanagedType.LPWStr)]string tiedosto,
 			ref bool eteen, ref bool taakse, ref int animaatioTila,
@@ -117,6 +117,7 @@ namespace Tasavalta
 			ref int valintoja1, ref int valintoja2);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		delegate bool TAAKSE(
 			[MarshalAs(UnmanagedType.LPWStr)]string tiedosto,
 			ref bool eteen, ref bool taakse, ref int animaatioTila,
@@ -130,6 +131,7 @@ namespace Tasavalta
 		delegate void TULOSTA();
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		delegate bool KAYNNISTACAD(
 			[MarshalAs(UnmanagedType.LPWStr)]string tiedosto,
 			 ref IntPtr ikkunaKahva, ref int leveys, ref int korkeus,
@@ -164,10 +166,10 @@ namespace Tasavalta
 		delegate void ELOKUVA(int kytkimet);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate void ANNAORIENTAATIO1(out float[] orientaatio);
+		delegate void ANNAORIENTAATIO1(IntPtr orientaatio);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate void ASETAORIENTAATIO1(float[] orientaatio);
+		delegate void ASETAORIENTAATIO1(IntPtr orientaatio);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate void PAIVITA();
@@ -301,6 +303,7 @@ namespace Tasavalta
 
 			//...ja sitten lähetetään pyyntö säikeiden lopettamiseksi ja muistin 
 			//vapauttamiseksi...
+			mLooperi.TyhjennaJono();
 			mLooperi.RunAndWait(this.SammutaCad);
 
 			//...ja lopuksi suljetaan RunOpenGL.dll
@@ -346,8 +349,8 @@ namespace Tasavalta
 			mSing = Singleton.AnnaIlmentyma;
 			for (int i = 0; i < mValintaListaC1.Length; i++)
 			{
-				mValintaListaC1[i] = Marshal.AllocHGlobal(60 * sizeof(byte));
-				mValintaListaC2[i] = Marshal.AllocHGlobal(60 * sizeof(byte));
+				mValintaListaC1[i] = Marshal.AllocHGlobal(30 * sizeof(char));
+				mValintaListaC2[i] = Marshal.AllocHGlobal(30 * sizeof(char));
 			}
 			mValintaListaB1 = Marshal.AllocHGlobal(1000 * sizeof(byte));
 			mValintaListaB2 = Marshal.AllocHGlobal(1000 * sizeof(byte));
@@ -371,7 +374,6 @@ namespace Tasavalta
 			layeriLista.Dock = DockStyle.Top;
 			layeriLista.Width = (int)(400 * leveysSuhde);
 			layeriLista.AllowDrop = false;
-//			layeriLista.AutoCompleteMode = AutoCompleteMode.None;
 			layeriLista.Items.Add("3D View");
 			layeriLista.Items.Add("2D X-projection");
 			layeriLista.Items.Add("2D Y-projection");
@@ -425,7 +427,7 @@ namespace Tasavalta
 
 		//Tämä funktio kellottaa OpenGL-näkymän päivitystä
 		private void Timeri_Tick(object sender, EventArgs e)
-		{ 
+		{
 
 			//toimintoja saa tehdä vain, jos OpenGLIkkuna on valmis
 			if (mValmis)
@@ -450,7 +452,7 @@ namespace Tasavalta
 					IntPtr wParam = (IntPtr)1;
 					uint viesti = (uint)WinM.WM_VASENALHAALLA;
 					if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
-					SendMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
+						SendMessage(mSing.mValikko.mAlasVetoValikkoIkkuna.Handle, viesti, wParam, lParam);
 
 					//Jotta layeriListan näkymät tekstikentässä eivät vaihdu hiiren keskipyörää rullatessa,
 					//vaan keskipyörää käyttämällä OpenGL näkymässä liikutaan, asetetaan focus
@@ -519,7 +521,7 @@ namespace Tasavalta
 				}
 				Marshal.Copy(siirto, 0, mValintaListaB1, mValintoja1);
 			}
-			
+
 
 			//sitten katsotaan osuiko indeksi sittenkin listoihin
 			if (index >= mValintoja1)
@@ -920,13 +922,31 @@ namespace Tasavalta
 		//CAD tiedostoa halutaan katsoa
 		public void AsetaOrientaatio(float[] orientaatio)
 		{
-			asetaOrientaatio1(orientaatio);
+
+			//tämä pitää suorittaa manageroimattomassa tilassa
+			unsafe
+			{
+				//sidotaan orientaatio mmuuttujan muisti, jotta roskienkerääjä ei siirtele sitä
+				fixed (float* p = orientaatio)
+				{
+					asetaOrientaatio1((IntPtr)p);
+				}
+			}
 		}
 
 		//Tällä funktiolla RunOpenGL.dll kertoo avoinna olevan CAD tiedoston kuvakulman
 		public void AnnaOrientaatio(float[] orientaatio)
 		{
-			annaOrientaatio1(out orientaatio);
+
+			//tämä pitää suorittaa manageroimattomassa tilassa
+			unsafe
+			{
+				//sidotaan orientaatio mmuuttujan muisti, jotta roskienkerääjä ei siirtele sitä
+				fixed (float* p = orientaatio)
+				{
+					annaOrientaatio1((IntPtr)p);
+				}
+			}
 		}
 
 		//Tämä metodi ottaa käyttäjän näppäimistön w tai s kirjaimen painalluksen
@@ -994,10 +1014,10 @@ namespace Tasavalta
 					this.pysayta.Enabled = false;
 				}
 				TuoValinnat();
-					
+
 				//alasVetoValikkoIkkuna pitää sulkea
 				if (mSing != null && mSing.mValikko.mAlasVetoValikkoIkkuna != null)
-				mSing.mValikko.mAlasVetoValikkoIkkuna.Hide();
+					mSing.mValikko.mAlasVetoValikkoIkkuna.Hide();
 				mOnkoAlhaalla = false;
 			}
 		}
@@ -1015,43 +1035,43 @@ namespace Tasavalta
 
 				eteenI(tiedosto, ref siirto1, ref siirto2, ref siirto3, mValintaListaB1, mValintaListaC1,
 						   mValintaListaB2, mValintaListaC2, ref mValintoja1, ref mValintoja2);
-					this.eteen.Enabled = siirto1;
-					this.taakse.Enabled = siirto2;
-					if (tiedosto.Length != 0)
-					{
-						string siirto = "CAD view - ";
-						this.Text = siirto + tiedosto;
-					}
-					else
-					{
-						this.Text = "CAD view";
-					}
-					if (siirto3 == (int)Anim.aja)
-					{
-						this.kaynnista.Enabled = true;
-						this.pysayta.Enabled = false;
-					}
-					else if (siirto3 == (int)Anim.seis)
-					{
-						this.kaynnista.Enabled = false;
-						this.pysayta.Enabled = true;
-					}
-					else if (siirto3 == (int)Anim.alkuun)
-					{
-						this.kaynnista.Enabled = true;
-						this.pysayta.Enabled = true;
-					}
-					else
-					{
-						this.kaynnista.Enabled = false;
-						this.pysayta.Enabled = false;
-					}
-					TuoValinnat();
+				this.eteen.Enabled = siirto1;
+				this.taakse.Enabled = siirto2;
+				if (tiedosto.Length != 0)
+				{
+					string siirto = "CAD view - ";
+					this.Text = siirto + tiedosto;
+				}
+				else
+				{
+					this.Text = "CAD view";
+				}
+				if (siirto3 == (int)Anim.aja)
+				{
+					this.kaynnista.Enabled = true;
+					this.pysayta.Enabled = false;
+				}
+				else if (siirto3 == (int)Anim.seis)
+				{
+					this.kaynnista.Enabled = false;
+					this.pysayta.Enabled = true;
+				}
+				else if (siirto3 == (int)Anim.alkuun)
+				{
+					this.kaynnista.Enabled = true;
+					this.pysayta.Enabled = true;
+				}
+				else
+				{
+					this.kaynnista.Enabled = false;
+					this.pysayta.Enabled = false;
+				}
+				TuoValinnat();
 
-					//alasVetoValikkoIkkuna pitää sulkea
-					if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
+				//alasVetoValikkoIkkuna pitää sulkea
+				if (mSing.mValikko.mAlasVetoValikkoIkkuna != null)
 					mSing.mValikko.mAlasVetoValikkoIkkuna.Hide();
-					mOnkoAlhaalla = false;
+				mOnkoAlhaalla = false;
 			}
 		}
 
@@ -1327,14 +1347,6 @@ namespace Tasavalta
 					}
 				}
 			}
-/*
-			if (Msg.Msg == (int)WinM.WM_LBUTTONDOWN && mSing.mValikko.mOpenGLIkkuna.mSaakoKlikata2)
-			{
-
-				//jos meillä on alasvetovalikkoikkuna jo avattuna, ei uutta avaamista pidä sallia.
-				return;
-			}
-*/
 			base.WndProc(ref Msg);
 		}
 	}
