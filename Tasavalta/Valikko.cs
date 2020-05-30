@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 
 
 
@@ -371,6 +365,8 @@ namespace Tasavalta
         {
 
             mHwnd = this.Handle;
+            IntPtr ich = Properties.Resources.logo.GetHicon();
+            this.Icon = Icon.FromHandle(ich);
 
             //pyydetään Singleton luokan ilmentymä ja annetaan Singletonille tämän luokan osoitin
             mSing = Singleton.AnnaIlmentyma;
@@ -445,9 +441,8 @@ namespace Tasavalta
                 muisti = new Muisti();
             }
 
-        //(5): pääikkunaan pitää luoda tiedostotietojen mukaiset valikot. Aloitetaan
-        //3D kentistä: palstat on luotava numerojärjestyksessä numerojärjestyksen aikaansaamiseksi
-        hyppy:
+            //(5): pääikkunaan pitää luoda tiedostotietojen mukaiset valikot. Aloitetaan
+            //3D kentistä: palstat on luotava numerojärjestyksessä numerojärjestyksen aikaansaamiseksi
             bool luotu = false;
             for (int i = 0; i < muisti.AnnaTiedostojenMaara(); i++)
             {
@@ -883,7 +878,6 @@ namespace Tasavalta
         private void tuhoaTiedosto(string tiedosto)
         {
             File.Delete(tiedosto);
-            int koe = 0;
         }
 
         //käyttäjä haluaa luoda kirjanmerkin

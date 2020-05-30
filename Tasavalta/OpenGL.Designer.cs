@@ -40,7 +40,7 @@
             this.eteen = new System.Windows.Forms.ToolStripButton();
             this.tulosta = new System.Windows.Forms.ToolStripButton();
             this.fokusaattori = new System.Windows.Forms.TextBox();
-            this.paneeli = new Tasavalta.Paneeli();
+            this.paneeli = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -151,6 +151,6 @@
         private System.Windows.Forms.ToolStripButton eteen;
         private System.Windows.Forms.ToolStripButton tulosta;
         private System.Windows.Forms.TextBox fokusaattori;
-        private Paneeli paneeli;
+        private System.Windows.Forms.Panel paneeli;
     }
 }

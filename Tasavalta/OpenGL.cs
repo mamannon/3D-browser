@@ -837,7 +837,9 @@ namespace Tasavalta
 									"integrated GPU is the only one, Tasavalta should run correctly.");
 						FreeLibrary(mDllKahva);
 						mDllKahva = IntPtr.Zero;
+						mSammutaCad = IntPtr.Zero;
 						this.Close();
+						return;
 					}
 					else
 					{

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Tasavalta
 {
@@ -122,6 +119,7 @@ namespace Tasavalta
         int mListanPituus;
         bool onkoVasenAlhaalla = false;
         int startY, uusiY, skaalaY;
+        Color mTaustaVari = Color.White;
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -233,6 +231,38 @@ namespace Tasavalta
                 this.taakse.Enabled = false;
                 this.eteen.Enabled = false;
             }
+        }
+        /*
+                //.NET 4.0 ei sisällä Task.Delay metodia, joten luodaan sellainen itse
+                protected static Task Delay(float millisekunteja)
+                {
+                    var tcs = new TaskCompletionSource<bool>();
+                    System.Timers.Timer timer = new System.Timers.Timer();
+                    timer.Elapsed += (object obj, ElapsedEventArgs e) =>
+                    {
+                        tcs.TrySetResult(true);
+                    };
+                    timer.Interval = millisekunteja;
+                    timer.AutoReset = false;
+                    timer.Start();
+                    return tcs.Task;
+                }
+
+                //tämä asynkrooninen metodi tarvitaan tekstinäkymän piirtämiseen vasta sitten,
+                //kun ikkuna on valmis
+                protected async Task PiirraViipeella()
+                {
+                    Task delay = Delay(100);
+                    delay.ContinueWith((Task x) => piirra());
+                }
+                */
+
+        //tämä asynkrooninen metodi tarvitaan tekstinäkymän piirtämiseen vasta sitten,
+        //kun ikkuna on valmis
+        protected async Task PiirraViipeella()
+        {
+            await Task.Delay(100);
+            piirra();
         }
 
         public Teksti()
@@ -491,11 +521,11 @@ namespace Tasavalta
                         //otsikon tietokin on saatu Teksti.dll:ltä
                         if (taustaVari != 0xFF000000)
                         {
-                            this.kanvaasi.BackColor = AnnaVari(taustaVari);
+                            this.kanvaasi.BackColor = mTaustaVari = AnnaVari(taustaVari);
                         }
                         else
                         {
-                            this.kanvaasi.BackColor = Color.White;
+                            this.kanvaasi.BackColor= mTaustaVari = Color.White;
                         }
                         char[] ots = new char[200];
                         Marshal.Copy(otsikko, ots, 0, 200);
@@ -516,12 +546,7 @@ namespace Tasavalta
                         TuoOtsikot();
 
                         //Pyydetään Teksti.dll:ää päivittämään näkymä
-                        //                        piirra();
-                        //                        MuutaKokoa(this, EventArgs.Empty);
-                        //                        piirra();
-                        //                        this.kanvaasi.Invalidate();
-                        piirra();
-                        //                        this.kanvaasi.Update();
+                        PiirraViipeella();
 
                         //Lopuksi pitää vielä varmistaa, voiko klikata eteen tai taakse nappia
                         this.taakse.Enabled = historyCanBack();
@@ -612,13 +637,12 @@ namespace Tasavalta
             //otsikon tietokin on saatu Teksti.dll:ltä
             if (taustaVari != 0xFF000000)
             {
-                this.paneeli.BackColor = AnnaVari(taustaVari);
+                this.paneeli.BackColor = mTaustaVari = AnnaVari(taustaVari);
             }
             else
             {
-                this.paneeli.BackColor = Color.White;
+                this.paneeli.BackColor = mTaustaVari = Color.White;
             }
-            this.Invalidate();
             char[] ots = new char[200];
             Marshal.Copy(otsikko, ots, 0, 200);
             string otsi = new string(ots, 0, ots.Length);
@@ -638,8 +662,8 @@ namespace Tasavalta
             TuoOtsikot();
 
             //Pyydetään Teksti.dll:ää päivittämään näkymä
-            //            MuutaKokoa(sender, EventArgs.Empty);
-            piirra();
+            MuutaKokoa(this, EventArgs.Empty);
+            PiirraViipeella();
 
             //Lopuksi pitää vielä varmistaa, voiko klikata eteen tai taakse nappia
             this.taakse.Enabled = historyCanBack();
@@ -685,11 +709,11 @@ namespace Tasavalta
             //otsikon tietokin on saatu Teksti.dll:ltä
             if (taustaVari != 0xFF000000)
             {
-                this.paneeli.BackColor = AnnaVari(taustaVari);
+                this.paneeli.BackColor = mTaustaVari = AnnaVari(taustaVari);
             }
             else
             {
-                this.paneeli.BackColor = Color.White;
+                this.paneeli.BackColor= mTaustaVari = Color.White;
             }
             char[] ots = new char[200];
             Marshal.Copy(otsikko, ots, 0, 200);
@@ -707,8 +731,8 @@ namespace Tasavalta
             }
 
             //Pyydetään Teksti.dll:ää päivittämään näkymä
-            //            MuutaKokoa(sender, EventArgs.Empty);
-            piirra();
+            MuutaKokoa(this, EventArgs.Empty);
+            PiirraViipeella();
 
             //Lopuksi pitää vielä varmistaa, voiko klikata eteen tai taakse nappia
             this.taakse.Enabled = historyCanBack();
@@ -744,10 +768,6 @@ namespace Tasavalta
                 annaKorkeusLeveys(ref siirto1, ref siirto2, ref siirto3, ref siirto4,
                     ref siirto5, ref siirto6, ref siirto7, ref siirto8);
 
-                //sitten pyydetään lataamaan uudelleen
-                //               bool vasenOikea=true;
-                //                lataaUudestaan(ref siirto5, ref siirto6, ref siirto3, ref siirto4, ref vasenOikea);
-
                 //tallennetaan takaisin mahdollisesti muutetut arvot
                 SuspendLayout();
                 this.kanvaasi.Size = new Size(siirto5, siirto6);
@@ -759,7 +779,7 @@ namespace Tasavalta
                 ResumeLayout();
 
                 //Pyydetään Teksti.dll:ää päivittämään näkymä
-                this.Invalidate();
+                this.kanvaasi.BackColor = mTaustaVari;
                 piirra();
             }
         }
@@ -851,13 +871,13 @@ namespace Tasavalta
                 this.paneeli.VerticalScroll.Value = siirto4;
                 this.paneeli.PerformLayout();
                 ResumeLayout();
-                /*
-                            //focus jää kiinni otsikkoListaan ja se pitää poistaa siitä
-                            otsikkoLista->Enabled = false;
-                            otsikkoLista->Enabled = true;
-                */
+
+                //focus jää kiinni otsikkoListaan ja se pitää poistaa siitä
+                this.fokusaattori.Focus();
+
                 //tämä suorittaa tarvittavat päivitykset, vaikka ikkunan kokoa ei olekaan muutettu
                 MuutaKokoa(this, EventArgs.Empty);
+                PiirraViipeella();
             }
         }
 
@@ -893,7 +913,7 @@ namespace Tasavalta
                     {
                         onkoVasenAlhaalla = true;
                         startY = y;
-                        skaalaY = this.paneeli.Height - this.Height;
+                        skaalaY = this.kanvaasi.Height - this.Height;
                     }
                     else
                     {
@@ -907,7 +927,10 @@ namespace Tasavalta
 
                     if (uusiY > 0 && uusiY < skaalaY)
                     {
+                        SuspendLayout();
                         this.paneeli.VerticalScroll.Value = uusiY;
+                        this.paneeli.PerformLayout();
+                        ResumeLayout();
                         siirto4 = uusiY;
                     }
                     else
@@ -968,6 +991,11 @@ namespace Tasavalta
         {
             paivitaOtsikkoLista(mOtsikot, ref mListanPituus);
             TuoOtsikot();
+
+            //focus jää kiinni otsikkoListaan ja se pitää poistaa siitä
+            //           otsikkoLista.Enabled = false;
+            //           otsikkoLista.Enabled = true;
+            this.fokusaattori.Focus();
         }
 
         //kirjanmerkki tarvitsee muistiinsa HTML-tiedoston näkymän
@@ -1023,14 +1051,15 @@ namespace Tasavalta
             mSing = Singleton.AnnaIlmentyma;
         }
 
-        private void InitializeComponent()
+        //jos tätä metodia ei määritellä uudestaan, paneeli siirtyy yläasentoon aina
+        //menettäessään focuksen
+        protected override System.Drawing.Point ScrollToControl(System.Windows.Forms.Control ac)
         {
-            this.SuspendLayout();
-            this.ResumeLayout(false);
-
+            return this.DisplayRectangle.Location;
         }
 
         //Teksti.dll haluaa ikkunaKahvan, joka pysyy samana koko ohjelman suorituksen ajan
+        //(EI TARVISE ENÄÄ SAMANA PYSYVÄÄ IKKUNAKAHVAA!)
         //Lisäksi halutaan, että vierintäpalkit ovat aina näkyvissä
         protected override CreateParams CreateParams
         {

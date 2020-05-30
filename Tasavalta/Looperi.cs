@@ -10,6 +10,7 @@ namespace Tasavalta
     {
 
         public delegate void funktio();
+        static readonly object lukko = new object();
         bool sammutus = true;
         bool lopetus = false;
         Thread saie;
@@ -31,8 +32,11 @@ namespace Tasavalta
                     //poistetaan se listasta
                     try
                     {
-                        delegaatit[0].DynamicInvoke(null);
-                        delegaatit.RemoveAt(0);
+                        lock (lukko)
+                        {
+                            delegaatit[0].DynamicInvoke(null);
+                            delegaatit.RemoveAt(0);
+                        }
                     }
                     catch (TargetInvocationException e)
                     {
@@ -53,8 +57,9 @@ namespace Tasavalta
         ~Looperi()
         {
 
-            //tämä ei ole välttämättä tarpeen, sillä säie on taustasäie,
+            //tämä ei ole välttämättä tarpeen, jos säie on taustasäie,
             //joka lopettaa toimintanasa ilmankin emosäikeen lopettaessa
+            //foreground säikeen tapauksessa tämä on välttämätön.
             lopetus = true;
         }
 
@@ -65,7 +70,7 @@ namespace Tasavalta
             delegaatit = new List<Delegate>();
             saie = new Thread(toiminta);
             saie.Name = "toiminta";
-            saie.IsBackground = true;
+            saie.IsBackground = false;
             saie.Priority = ThreadPriority.BelowNormal;
             saie.SetApartmentState(ApartmentState.MTA);
             saie.Start();
@@ -79,7 +84,10 @@ namespace Tasavalta
             if (sammutus) return false;
 
             //Annettu funktio liitetään jonon jatkoksi.
-            delegaatit.Add(f);
+            lock (lukko)
+            {
+                delegaatit.Add(f);
+            }
 
             //odotetaan, että jono on tyhjä
             while (delegaatit.Count != 0)
@@ -110,7 +118,10 @@ namespace Tasavalta
             {
 
                 //Annettu funktio liitetään jonon jatkoksi.
-                delegaatit.Add(f);
+                lock (lukko)
+                {
+                    delegaatit.Add(f);
+                }
                 return true;
             }
         }
@@ -136,7 +147,10 @@ namespace Tasavalta
         //tällä metodilla voidaan tyhjentää looperin funktiojono
         public void TyhjennaJono()
         {
-            delegaatit.Clear();
+            lock (lukko)
+            {
+                delegaatit.Clear();
+            }
         }
     }
 }
