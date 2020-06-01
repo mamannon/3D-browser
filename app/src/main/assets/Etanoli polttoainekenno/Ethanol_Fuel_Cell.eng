@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+  
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+  <title>Ethanol Fuel Cell</title>
+
+  
+</head><body>
+<h1 style="text-align: center;">Ethanol Fuel Cell<br>
+</h1>
+
+<h2><span style="font-style: italic;">Preface<br>
+</span></h2>
+
+<div style="text-align: justify;">Ethanol or ethyl alcohol or popularly liquor, a liquid people have drunk to get drunk through the history, has been chosen as the only liquid fuel in the text <span style="text-decoration: underline;">There ain't no World without Fuel</span>.
+Cars, households and local generation of electrity are powered by it:
+the primary use of ethanol is the generation of electricity. Cars don't
+burn ethanol by combustion engines, but they are electric cars and they
+produce the electricity they need by ethanol generator, for example by <a href="C#Ethanol_Generator">this one</a>. The concept is great, but the <span style="font-style: italic;">ethanol fuel cell</span> is missing.&nbsp; I'll introduce it next.<br>
+</div>
+
+<h2><span style="font-style: italic;">Chemistry of Ethanol Combustion<br>
+</span></h2>
+
+<div style="text-align: justify;">A device, which changes chemical energy into electric energy, is called as <span style="font-style: italic;">galvanic cell</span>. A device, which changes electric energy into chemical energy, is called as <span style="font-style: italic;">electrolytic cell</span>.
+Galvanic cell produces electric power and electrolytic cell consumes
+it. Galvanic cell does combustion and electrolytic cell does the
+reverse reaction of combustion, so this text is a story about the
+galvanic cell.<br>
+
+</div>
+
+<h3>Galvanic cell<br>
+</h3>
+
+<div style="text-align: justify;">Ethanol catch fire with a match if it
+is refined enough. For example, wine has usually about 15% ethanol and
+the rest is mainly water, and this mixture does not ignite. In this
+text ethanol is supposed to be pure, refined 95% sprii, where the rest
+5% is water. The thermal value of ethanol is 26.9 MJ/kg, whereas it is
+43.5 MJ/kg and 11-13 MJ/kg for gasoline and wood, respectively. When
+ethanol combusts with oxygen they will change into water and carbon
+dioxide as shown in reaction equation 1;<br>
+<br>
+<div style="text-align: center;"><img style="width: 268px; height: 18px;" alt="" src="Ethanol_Redox.bmp"><br>
+</div>
+<br>In equation 1 ethanol combusts perfectly, leaving no residue, no
+ash, as is the case practically always, when ethanol is burned in a
+proper burner. Then the ethanol will release heat 26.9 megajoules per
+kilogram. But we don't want that a combustion of ethanol produces heat,
+we want electric current. According to the thermal value of ethanol,
+the combustion of ethanol produces 8.03 kWh/kg electric power and we
+would like to get it as losslessly as possible to our use as an
+electric current. Therefore the combustion of ethanol must happen
+electrochemically in a cell, where ethanol doesn't combust with flame.
+Let's study the combustion process by dividing the reaction 1 into
+half-reactions 2 and 3:<br>
+<br>
+<div style="text-align: center;"><img style="width: 556px; height: 21px;" alt="" src="Ethanol_Reduction.bmp"><br>
+</div>
+<br>
+<div style="text-align: center;"><img style="width: 624px; height: 21px;" alt="" src="Ethanol_Oxidation.bmp"><br>
+</div>
+<br>
+THIS SAMPLE ENDS HERE...<br>
+</div>
+
+</body></html>

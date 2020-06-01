@@ -1,0 +1,60 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.mannonen.tasavalta.Aktiviteetti1">
+
+    <item
+        android:id="@+id/paavalikko"
+        android:title="@string/vakio_valikko"
+        android:enabled="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/tekstiruutu"
+        android:title="@string/vakio_teksti"
+        android:enabled="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/CADruutu"
+        android:title="@string/vakio_cad"
+        android:enabled="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about"
+        android:title="@string/vakio_about"
+        android:enabled="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/tulostaTeksti"
+        android:title="@string/vakio_tulostaT"
+        android:enabled="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/tulostaCAD"
+        android:title="@string/vakio_tulostaC"
+        android:enabled="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/help"
+        android:title="@string/vakio_apua"
+        android:enabled="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/luoKirjanMerkki"
+        android:title="@string/vakio_luo"
+        android:enabled="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sulje"
+        android:title="@string/vakio_sulje"
+        android:enabled="true"
+        app:showAsAction="never" />
+
+</menu>

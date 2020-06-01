@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Instructions</title>
+
+</head><body style="background-color: yellow; font-family: monospace;">
+<h1 style="text-align: center;">Instructions of Tasavalta
+application for Android </h1>
+<div style="text-align: justify;">Welcome
+to your stay with
+Tasavalta-application! This application could
+be described as a hybrid of an electronic book, a web browser and 3D
+virtual engine. It&nbsp;serves you stories, knowledge and thoughts
+you hardly find anywhere else. The information served by
+Tasavalta-application is meant to be taken seriously as a proposal how
+to improve living conditions of humankind and to secure the continuity
+of life on earth.&nbsp;&nbsp;<br>
+</div>
+<h2>Overview:</h2>
+<div style="text-align: justify;">Tasavalta is an offline
+application: this does not send or receive any
+data on web. All data, what Tasavalta uses, is installed to your device
+with an application package. Tasavalta won't use any other data than
+the original application package delivered. If someone has edited or
+changed original files, those files have different checksums and
+Tasavalta won't open them.&nbsp;<br>
+<br>
+Tasavalta for Android has three main views. First is Main menu, where
+you open files for CAD- and textview and also manage bookmarks, where
+you can save to memory present CAD- and textviews so you can easily be
+back to them:<br>
+&nbsp;<br>
+<center><img style="width: 30%;" alt="" src="MainMenuPysty.jpg"></center>
+<br>
+The user interface of Tasavalta is in English, but the contents of
+&nbsp;textview are available both in English and in Finnish and a
+choice can be made in Main menu button ENGLISH/FINNISH. There are also
+two other main views, namely CAD-view on the left and textview on the
+right, below:<br>
+<br>
+<center>
+<table style="text-align: left; width: 70%;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="width: 50%; text-align: center; vertical-align: middle;"><img style="width: 80%;" alt="" src="CADPysty.jpg"></td>
+<td style="width: 50%; text-align: center; vertical-align: middle;"><img style="width: 80%;" alt="" src="TextPysty.jpg"></td>
+</tr>
+</tbody>
+</table>
+<br>
+</center>
+<br>
+Both CAD- and textview have view history implemented: FORWARD and BACK
+buttons are in use when several files have been opened one after one.
+For example, touching a BACK button of a CAD-view on the left above the
+3D model changes something else which was shown earlier. The size of
+history is unlimited for textview, but CAD-view is able to rememder
+only three previous vies. If you open more, the oldest one ceases to
+exist.<br>
+<br>
+The LISTING button of CAD-view reveales a menu where perspective view
+or orthogonal X-, Y- or Z-view can be chosen. That menu also lists all
+the parts making the 3D model on the view and every part can be
+individually hide and show. If the 3D model is dynamic &#8211; meaning it has
+movements &#8211; you can touch PLAY button. <br>
+<br>
+The PARAGRAPHS button of textview reveales another menu where you see
+all the paragraphs of the current text. By touching a paragraph on a
+menu textview moves to that position .<br>
+<br>
+If you flip your device, Tasavalta-application shows two views side by
+side:<br>
+<br>
+<center><img style="width: 60%;" alt="" src="TextCADVaaka.jpg">
+</center>
+</div>
+<br>
+<h2>First time:</h2>
+<div style="text-align: justify;">When you launch
+Tasavalta first time, as you have already done, because
+you're reading this, the graphics of Tasavalta is simple: the pictures
+of textview are 16 bit and CAD-view does not have dynamic lightning. If
+your device is capable enough, Tasavalta is able to show elaborate
+graphics and you see 24 bit pictures and dynamic lightning. However,
+this requires that you close Tasavalta by touching "Close program" at
+actionbar menu. After that you should launch Tasavalta again and you
+see elaborate graphics if that is possible.&nbsp;<br>
+<br>
+At first time you have quite many stories and 3D models to choose to
+view on Main menu. But there's only a fraction of all the material that
+Tasavalta contains! To discover hidden material you need to touch links
+found on texts and 3D models and new text- and CAD-views will be shown
+to you. As you open hidden material, a new button will emerge on Main
+menu when restarting Tasavalta. Then you can open those views directly
+from Main menu.
+</div>
+<br>
+<h2>Touch gestures:</h2>
+<div style="text-align: justify;">There aren't anything
+special with touch gestures of Main menu and
+textview: they both work with one finger and the only means are either
+to scroll the view vertically and horizontally or to touch a button or
+a link. Operation is similar than to operate a web brobser of a smart
+phone, mutta there is such a difference that you cannot zoom the
+textview of Tasavalta.&nbsp;<br>
+<br>
+On the other hand CAD-view has one, two and three finger touch gestures:<br>
+<ul>
+<li>To slide one finger on the screen you can rotate the
+viewpoint if &nbsp;you're looking at perspective view and if the
+view is orthogonal, viewpoint moves on xy-plane. Moreover, if you touch
+a 3D model with one finger, the color of the model changes to white (or
+red, if the color already is white) in a case when 3D model has a link.</li>
+<li>To spread two fingers on the screen you can move forward if
+you're looking at perspective view and if the view is orthogonal,
+you're zooming in. Respectively, pinching two fingers move bacward or
+zoom out. Moreover, if you want to open a link of a 3d model, which is
+already white (or red) with one finger, by tapping a screen with second
+finger opens a menu, where are listed all the links belonging to the 3D
+model. If you tap some link on the list that link gets opened.</li>
+<li>To slide three finger on the screen vertically the
+viewpoint is on elevator, if you're looking at perspactive view: the
+viewpoint raises or lowers parallel to y-axis.</li>
+</ul>
+</div>
+<br>
+<h2>The quality of graphics:</h2>
+<div style="text-align: justify;">You need an efficient
+device if you're using elaborate graphics, so if
+Tasavalta responds with a lag, you may want to use simple graphics. You
+can do this by tapping &nbsp;USE ELABORATE GRAPHICS/USE SIMPLE
+GRAPHIS button, but the tap is effective only, if you don't have an
+open CAD-view. If you already have an open CAD-view, you need to
+restart Tasavalta before you can change the quality of graphics.
+Unfortunately there is a bug on elaborate graphics: when opening a
+first CAD-view with an elaborate graphics, Tasavalta may crash, and the
+application closes itself. If this happens, restart Tasavalta and
+reopen CAD-view with elaborate graphics. Sometimes you need to do this
+several times, but when you get the first view open, opening new views
+won't crash application anymore.
+</div>
+<br>
+<h2>Using bookmarks:</h2>
+<div style="text-align: justify;">Tasavaltaa selaillessasi
+saatat haluta palata myöhemmin, samalla tai
+jollain toisella Tasavallan käyttökerralla, johonkin tekstinkohtaan tai
+jonkin CAD mallin sijaintiin on ollut sen verran työlästä siirtyä, että
+haluat seuraavalla kerralla siirtyä sinne suoraan. Tällaisia tarpeita
+varten voit tallentaa enintään yhdeksän kirjanmerkkiä, jotka säilyvät
+tallessa suljettuasi Tasavallan. Kirjanmerkkiin tallentuu kirjanmerkin
+luontihetkellä aktiivisina olevat CAD- ja/tai tekstinäkymä (aktiivisuus
+ei tarkoita näkyvillä olemista, vaan että kyseinen näkymä on viimeinen
+avattuna oleva CAD- tai tekstinäkymä). Jos tallennat enemmän kuin
+yhdeksän kirjanmerkkiä, vanhin kirjanmerkki häviää. Jos olemassa olevat
+kirjanmerkit ovat tulleet tarpeettomiksi ja haluat tallentaa uusia
+alken ensimmäisestä kirjanmerkistä, voit hävittää kaikki olemassaolevat
+kirjnamerkit Main menun DELETE BOOKMARKS napista.
+</div>
+<br>
+<h2>Printing:</h2>
+<div style="text-align: justify;">
+Both textview and CAD-view have printing capabilities by options "Print
+text" and "Print CAD" of action bar menu. When printing a CAD-view you
+get a standard size jpg file whose width is 1748 pixels and height 1240
+pixels. When printing a text view you get a pdf document, which
+contains the whole html document shown on textview divided into needed
+amount of A4 sheets. The name of the jpg file is the name of 3D model
+with added running number, and it's location is:<br>
+<br>
+data/com.mannonen.tasavalta/files/images/<br>
+<br>
+The name of the pdf file is the title of textview and it's location is:<br>
+<br>
+data/com.mannonen.tasavalta/files/pdfs/<br>
+<br>
+It is difficult to get those files from their locations, and that's why
+Tasavalta will always suggests you to attach the printed file to an
+email attachment. You should also notify that printed files will fill
+up the memory of your device unless you close the
+Tasavalta-application: Tasavalta always destroys all printed files at
+locations above when closing. It is a good practice to always close
+Tasavalta after heavy printing, because the size of&nbsp;a single
+pdf file may be hundreds of megabytes.<br>
+</div>
+</body></html>

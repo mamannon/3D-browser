@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Ohjeet</title>
+
+</head>
+<body style="background-color: yellow; font-family: monospace;">
+<h1 style="text-align: center;">Tasavalta-sovelluksen
+Android version käyttöohje</h1>
+<div style="text-align: justify;">Tervetuloa viihtymään
+Tasavalta-sovelluksen parissa!&nbsp; Kyseessä
+on sovellus, jota voisi kuvailla elektronisen kirjan, internetselaimen
+ja 3D-virtuaaliselaimen hybridiksi ja joka tarjoaa Sinulle tarinoita,
+tietoa ja ajatuksia, joiden kaltaisia tuskin löydät mistään muualta.
+Tasavalta-sovelluksen tarjoama informaatio on tarkoitettu vakavasti
+otettavaksi ehdotukseksi korjata ihmiskunnan elinolosuhteita ja turvata
+elämän jatkuvuus maapallolla.
+</div>
+<br>
+<h2>Yleiskuvaus:</h2>
+<div style="text-align: justify;">Tasavalta on offline
+sovellus: tämä ei lähetä verkkoon eikä vastaanota
+verkosta mitään dataa. Kaikki data, mitä Tasavalta käyttää, asentuu
+laitteellesi sovelluspaketin mukana eikä Tasavalta suostu näyttämään
+mitään muuta dataa, kuin mitä alkuperäisen sovelluspaketin mukana on
+ollut. Jos joku on jossain vaiheessa muokannut tai vaihtanut
+datatiedostoja, näiden tarkastussummat eivät vastaa alkuperäisiä eikä
+Tasavalta avaa niitä. <br>
+<br>
+Tasavallan Android versiossa on kolme päänäkymää. Main menu näkymästä
+avataan tiedostoja sekä CAD- että tekstinäkymään ja hallitaan
+kirjanmerkkejä, joihin voi tallentaa muistiin senhetkiset CAD- ja
+tekstinäkymät, jolloin niihin voi helposti palata myöhemmin:<br>
+&nbsp;<br>
+<center><img style="width: 30%;" alt="" src="MainMenuPysty.jpg"></center>
+<br>
+Tasavalta on käyttöliittymältään englannin kielinen sovellus, mutta
+tekstinäkymän sisältö on saatavilla sekä englannin- että
+suomenkielisenä, minkä voi valita Main menun&nbsp;ENGLISH/FINNISH
+nappulasta.
+Main menun lisäksi päänäkymiä ovat alla olevat vasemman puoleinen
+CAD-näkymä ja oikealla oleva tekstinäkymä:<br>
+<br>
+<center>
+<table style="text-align: left; width: 70%;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="width: 50%; text-align: center; vertical-align: middle;"><img style="width: 80%;" alt="" src="CADPysty.jpg"></td>
+<td style="width: 50%; text-align: center; vertical-align: middle;"><img style="width: 80%;" alt="" src="TextPysty.jpg"></td>
+</tr>
+</tbody>
+</table>
+<br>
+</center>
+<br>
+Sekä CAD- että tekstinäkymässä on molemmissa käytössä tiedostohistoria:
+FORWARD ja BACK napit ovat käytössä silloin, kun useampi tiedosto on
+peräjälkeen avattuna. Esimerkiksi koskettamalla yllä vasemalla olevan
+CAD-näkymän BACK nappia esille tulee toinen, aiemmin avattu 3D malli.
+Tekstinäkymän tiedostohistorian koko on rajoittamaton, mutta
+CAD-näkymän tiedostohistoriaan mahtuu korkeintaan neljä 3D mallia.
+Avattaessa useampia malleja vanhin malli häviää.<br>
+<br>
+CAD-näkymän LISTING nappi paljastaa valikon, josta voi valita joko
+perspektiivinäkymän tai X-, Y-, tai Z-akselin suuntaisen
+ortogonaalinäkymän. Valikossa on myös listattuna kaikki osat, joista
+näkymän 3D malli koostuu, ja jokaisen osan voi erikseen poistaa
+näkymästä ja tuoda takaisin näkyville. Jos 3D malli on dynaaminen eli
+siihen sisältyy liikkeitä, nämä pystyy kytkemään päälle koskettamalla
+PLAY nappia.<br>
+<br>
+Tekstinäkymän PARAGRAPHS nappi paljastaa valikon, jossa on listattuna
+esillä olevan html asiakirjan väliotsikot. Koskettamalla väliotsikkoa
+tekstinäkymä siirtyy kyseisen otsikon kohdalle.<br>
+<br>
+Jos käännät älypuhelimesi vaaka-asentoon, Tasavalta-sovellus näyttää
+kaksi näkymää rinnakkain:<br>
+<br>
+<center><img style="width: 60%;" alt="" src="TextCADVaaka.jpg">
+</center>
+</div>
+<br>
+<h2>Ensimmäinen käyttökerta:</h2>
+<div style="text-align: justify;">Kun ensimmäisen kerran
+käynnistät
+Tasavallan, niin kuin olet jo tehnyt, koska luet tätä tekstiä,
+Tasavallan esittämä grafiikka on yksikertaista: tekstinäkymän kuvat
+&nbsp;ovat 16 bittisiä ja CAD-näkymästä puuttuu dynaaminen
+valaistus.
+Jos laitteesi ominaisuudet sallivat, Tasavalta voi esittää
+hienostunutta grafiikkaa, jolloin kuvat ovat 24-bittisiä ja 3D mallit
+ovat dynaamisesti valaistuja. Tämä kuitenkin edellyttää, että suljet
+Tasavallan ohjelmapalkin valikosta kohdasta "Close program" ja
+käynnistät ohjelman uudelleen, jolloin Tasavalta esittää
+automaattisesti hienostunutta grafiikkaa, jos se on mahdollista. <br>
+<br>
+Ensimmäisellä
+käyttökerralla sinulla on Main menussa valittavanasi kohtuullisen monta
+3D mallia ja tarinaa, joita voit vapaasti avata katseltavaksesi. Mutta
+näkyvillä on vasta murto-osa kaikesta materiaalista, jota Tasavalta
+pitää sisällään! Päästäksesi näkemään piilossa olevaa materiaalia,
+sinun täytyy koskettaa teksteissä ja 3D malleissa olevia linkkejä,
+jolloin avautuu uusia teksti- ja CAD-näkymiä. Linkatut
+näkymät&nbsp;ilmestyvät myös Main menuun uusina painikkeina
+Tasavallan uudelleen käynnistämisen jälkeen, jolloin
+voit myöhemmin avata kyseiset näkymät suoraan Main menusta.
+</div>
+<br>
+<h2>Kosketuseleet:</h2>
+<div style="text-align: justify;">Main
+menu- ja tekstinäkymän kosketuseleissä ei ole mitään ihmeellistä:
+kumpaakin käytetään yhdellä sormella ainoina tarkoituksina joko rullata
+näkymää vaaka- tai pystysuunnassa sekä koskettaa nappulaa tai linkkiä.
+Käyttö on siis täysin samanlaista kuin esimerkiksi internetselaimen
+käyttö älypuhelimessa on, mutta sillä erotuksella, että Tasavallan
+tekstinäkymää ei voi zoomata. <br>
+<br>
+Sen sijaan CAD-näkymä sisältää yhden, kahden ja kolmen sormen
+kosketuseleet:<br>
+<ul>
+<li>Yhtä
+sormea näytöllä liu'uttamalla CAD-näkymän kuvakulma kääntyy
+perspektiivinäkymässä ja liikkuu xy-tasossa ortogonaalinäkymässä.
+Lisäksi
+jos yhdellä sormella koskettaa CAD-näkymässä näkyvää 3D mallia, muuttuu
+mallin väri valkoiseksi (tai jos malli on valkoinen, väri muuttuu
+punaiseksi)siinä tapauksessa, että malli sisältää linkin. </li>
+<li>Kahta
+sormea loitontamalla liikutaan CAD-näkymässä eteenpäin
+perspektiivinäkymässä tai zoomataan lähemmäs ortogonaalinäkymässä ja
+vastaavasti
+sormia lähentämällä peruutetaan tai zoomataan poispäin. Lisäksi jos
+haluat avata linkin 3D mallissa, jonka
+olet jo yhdellä sormella muuttanut valkoiseksi (tai punaiseksi),
+napauttamalla näyttöä toisella sormella avautuu valikko, jossa on
+luetteloituna kaikki kyseisen 3D mallinlinkit. Koskettamalla jotain
+riviä luettelossa avaat kyseisen linkin. </li>
+<li>Liu'uttamalla
+kolmea sormea pystysuunnassa perspektiivinäkymässä ollaan 'hississä':
+kuvakulman
+sijainti nousee tai laskee y-akselin suunnassa.&nbsp;</li>
+</ul>
+</div>
+<br>
+<h2>Grafiikan laatu:</h2>
+<div style="text-align: justify;">Hienostuneen
+grafiikan esittäminen vaatii suorituskykyisen laitteen ja jos
+Tasavalta reagoi viipeellä, saatat haluta vaihtaa yksinkertaiseen
+grafiikkaan. Tämä onnistuu helposti koskettamalla&nbsp;USE
+ELABORATE
+GRAPHICS/USE SIMPLE GRAPHICS nappulaa, mutta valinnalla on vaikutusta
+ainoastaan silloin, jos et ole vielä avannut CAD-näkymää. Jos
+CAD-näkymä on jo avattu, sinun on käynnistettävä Tasavalta uudelleen
+ennen kuin voit vaihtaa grafiikan laatua. Hienostuneen grafiikan
+käyttöön liittyy sellainen hieman kiusallinen bugi, että avattaessa
+aivan ensimmäistä CAD-näkymää hienostuneella grafiikalla, Tasavalta
+saattaa kaatua, jolloin ohjelma sulkee itsensä. Jos näin pääsee
+käymään, käynnistä Tasavalta uudestaan ja avaa uudelleen CAD-näkymä
+hienostuneella grafiikalla. Joskus saatat joutua tekemään näin useamman
+kerran peräkkäin, mutta kun näkymä on kerran saatu avattua, uusien
+CAD-näkymien avaaminen ei enää kaada ohjelmaa.
+</div>
+<br>
+<h2>Kirjanmerkkien käyttö:</h2>
+<div style="text-align: justify;">Tasavaltaa
+selaillessasi saatat haluta palata myöhemmin, samalla tai jollain
+toisella Tasavallan käyttökerralla, johonkin tekstinkohtaan tai jonkin
+CAD mallin sijaintiin on ollut sen verran työlästä siirtyä, että haluat
+seuraavalla kerralla siirtyä sinne suoraan. Tällaisia tarpeita varten
+voit tallentaa enintään yhdeksän kirjanmerkkiä, jotka säilyvät tallessa
+suljettuasi Tasavallan. Kirjanmerkkiin tallentuu kirjanmerkin
+luontihetkellä aktiivisina olevat CAD- ja/tai tekstinäkymä (aktiivisuus
+ei tarkoita näkyvillä olemista, vaan että kyseinen näkymä on viimeinen
+avattuna oleva CAD- tai tekstinäkymä). Jos tallennat enemmän kuin
+yhdeksän kirjanmerkkiä, vanhin kirjanmerkki häviää. Jos olemassa olevat
+kirjanmerkit ovat tulleet tarpeettomiksi ja haluat tallentaa uusia
+alken ensimmäisestä kirjanmerkistä, voit hävittää kaikki olemassaolevat
+kirjnamerkit Main menun DELETE BOOKMARKS napista.
+</div>
+<br>
+<h2>Tulostaminen:</h2>
+<div style="text-align: justify;">Sekä
+tekstinäkymä että CAD-näkymä voidaan tulostaa ohjelmapalkin valikon
+"Print text" ja "Print CAD" valinnoista. CAD-näkymää tulostettaessa
+lopputuloksena on vakiokokoinen, leveydeltään 1748 pikseliä ja
+korkeudeltaan 1240 pikseliä oleva jpg-tiedosto. Tekstinäkymää
+tulostettaessa saadaan pdf-dokumentti, joka sisältää tulostetussa
+näkymässä olevan html-dokumentin kokonaisuudessaan jaoteltuna
+tarvittavalle määrälle A4 paperiarkkeja. Jpg tiedostot tallentuvat
+laitteesi muistiin tulostetun 3D mallin nimellä ja juoksevalla
+numerolla varustettuna seuraavaan sijaintiin:<br>
+<br>
+data/com.mannonen.tasavalta/files/images/<br>
+<br>
+Pdf tiedostot tallennetaan tekstinäkymän otsikon mukaisella nimellä
+varustettuna alla olevaan sijaintiin:<br>
+<br>
+data/com.mannonen.tasavalta/files/pdfs/<br>
+<br>
+Kyseisistä
+sijainneista tiedostoja on kuitenkin vaikea saada käyttöön, ja siksi
+Tasavalta ehdottaa aina tulostamisen yhteydessä tulostetun tiedoston
+liittämistä sähköpostin liitetiedostoksi. Lisäksi on huomionarvoista,
+että tulostetut tiedostot täyttävät laitteesi muistia, minkä vuoksi
+yllä mainittuihin sijaintehin tallennetut tiedostot hävitetään aina,
+kun suljet Tasavalta sovelluksen. Onkin hyvä käytäntö aina tulostelun
+jälkeen sulkea Tasavalta ja käynnistää se sitten vaikka saman tien
+uudestaan.
+</div>
+</body></html>
