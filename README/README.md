@@ -1,4 +1,4 @@
-<img src="https://imgur.com/LDjU8fp" title="3D-browser" alt="3D-browser">
+<img src="https://imgur.com/LDjU8fp.jpg" title="3D-browser" alt="3D-browser">
 
 # 3D-Browser for Android
 
@@ -11,6 +11,8 @@ Actually Tasavalta is not a real web browser because is is completely offline. T
 This branch is for Tasavalta for Android. There is another branch for Tasavalta for Windows also. They both share the same core: two independent libraries, one for 2D content and another for 3D. Tasavalta for Android uses libKirjasto1.so to render a 3D view and libKirjasto2.so to show a HTML document. 
 
 Tasavalta for Android itself is coded by Java 1.8.0_241. Kirjasto1 uses OpenGL ES 3.2 and OpenCL 1.2, or if those are not available, OpenGL ES 2.0. Kirjasto2 operates through Java Native Interface (JNI) utilizing Android Java functions to draw a HTML dokument to a canvas.
+
+Kirjasto1 includes a tiled forward rendering engine when using OpenGL ES 3.2. Kirjasto1 always uses a scenegraph to build complex view and also octree to skip everything outside the viewing frustum.
 
 Clone everything from branch Android New Tasavalta to your computer so you can build and develop code.
 
