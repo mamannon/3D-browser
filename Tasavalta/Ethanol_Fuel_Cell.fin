@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><title>Etanoli polttoainekenno</title></head><body>
+<h1 style="text-align: center;">Etanoli polttoainekenno</h1>
+<h2><span style="font-style: italic;">Johdanto</span></h2>
+<div style="text-align: justify;">
+Etanoli eli etyylialkoholi eli kansanomaisesti viina, neste, jota
+ihmiset ovat kautta historian käyttäneet päihtymistarkoituksessa, on
+tekstissä&nbsp;<a href="T#Fuel">Maailmaa ei ole ilman
+polttoainetta</a> valittu tasavallan ainoaksi nestemäiseksi
+polttoaineeksi. Sillä toimivat niin autot, kotitaloudet kuin
+paikallinen sähköntuotantokin: etanolin ensisijainen käyttötarkoitus on
+nimeomaan sähköntuotanto. Autoissakaan etanolia ei polteta
+polttomoottereissa, vaan autot ovat sähköautoja ja ne tuottavat
+tarvitsemansa sähkön etanoli generaattorilla, jollaisesta on esimerkki <a href="C#Ethanol_Generator">täällä</a>. Konsepti on
+hieno,
+mutta vain etanoli polttoainekenno puuttuu. Esittelen sen seuraavaksi.<br>
+</div>
+<h2><span style="font-style: italic;">Etanolin palamisen kemia</span></h2>
+<div style="text-align: justify;">
+Laitetta, jossa kemiallinen energia muutetaan sähköenergiaksi,
+kutsutaan galvaaniseksi kennoksi. Laitetta, joka muuttaa sähköenergian
+kemialliseksi energiaksi, kutsutaan elektrolyyttiseksi kennoksi.
+Galvaaninen kenno tuottaa sähköenergiaa ja elektrolyyttinen kuluttaa
+sitä. Galvaanisessa kennossa tapahtuu palamisreaktio ja
+elektrolyyttisessä kennossa palamisreaktion vastareaktio.
+</div>
+<h3>Galvaaninen kenno</h3>
+<div style="text-align: justify;">
+Etanoli syttyy palamaan esimerkiksi tulitikulla sytyttämällä, jos se
+on riittävän puhdasta. Esimerkiksi viinissä on tavallisesti noin15%
+etanolia lopun ollessa pääasiassa vettä, eikä tällainen seos syty
+tuleen. Tässä tekstissä etanolilla tarkoitetaan 95% apteekkipirtua,
+jossa loput 5% on vettä. Etanolin lämpöarvo on 26.9 MJ/kg
+&nbsp;kun esimerkiksi bensiinillä se on 43.5 MJ/kg ja puulla 11 -13
+MJ/kg. Etanolin palaessa eli reagoidessa hapen kanssa palamistuotteina
+syntyy vettä ja hiilidioksidia, kuten reaktioyhtälö 1 esittää:<br>
+<br>
+<div style="text-align: center;"><img style="width: 268px; height: 18px;" alt="" src="Ethanol_Redox.bmp"><br>
+</div>
+<br>
+Yhtälö 1 esittää esittää etanolin täydellisen palamisen, niin kuin
+tapahtuu käytännössä aina, kun etanolia poltetaan asianmukaisesti
+konstruoidussa polttimessa. Tällöin reaktiossa vapautuu lämpöä etanolin
+lämpöarvon mukainen määrää. Me emme kuitenkaan halua etanolin palamisen
+tuottavan lämpöä, vaan sähkövirtaa. Etanolin lämpöarvon mukaisesti
+etanolin palaminen tuottaa sähköenergiaa 8.03 kWh/kg, jonka me
+haluaisimme mahdollisimman häviöttömästi käyttöömme sähkövirtana. Siksi
+yhtälön 1 kemiallinen reaktio on siirrettävä toimimaan
+elektrokemiallisesti sitä varten rakennettuun kennoon, jossa palaminen
+ei tapahdu liekillä. Tutkitaan asiaa teoreettisesti jakamalla
+reaktioyhtälö 1 puoliyhtälöihin 2 ja 3:<br>
+<br>
+<div style="text-align: center;"><img style="width: 556px; height: 21px;" alt="" src="Ethanol_Reduction.bmp"><br>
+</div>
+<br>
+<div style="text-align: center;"><img style="width: 624px; height: 21px;" alt="" src="Ethanol_Oxidation.bmp"><br>
+</div>
+<br>NÄYTE PÄÄTTYY TÄHÄN...<br>
+</div></body></html>
