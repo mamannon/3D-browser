@@ -6,6 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tasavalta", "Tasavalta\Tasavalta.csproj", "{DDFC50FF-396B-400A-8E83-9302172829D7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F3A24501-CF7C-4C3E-8230-1DB1C86F46DA}"
+	ProjectSection(SolutionItems) = preProject
+		Tasavalta\README\Binary Windows.zip = Tasavalta\README\Binary Windows.zip
+		Tasavalta\README\README.md = Tasavalta\README\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
