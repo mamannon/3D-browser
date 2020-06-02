@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Tasavalta\README\Binary Windows.zip = Tasavalta\README\Binary Windows.zip
 		Tasavalta\README\README.md = Tasavalta\README\README.md
+		Tasavalta\README\stdafxRunOpenGL.h = Tasavalta\README\stdafxRunOpenGL.h
+		Tasavalta\README\stdafxTeksti.h = Tasavalta\README\stdafxTeksti.h
 	EndProjectSection
 EndProject
 Global
