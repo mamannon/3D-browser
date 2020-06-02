@@ -1,4 +1,4 @@
-<img src="https://imgur.com/3E3iPuF" title="3D-browser" alt="3D-browser">
+<img src="https://imgur.com/3E3iPuF.jpg" title="3D-browser" alt="3D-browser">
 
 # 3D-Browser for Windows
 
@@ -11,6 +11,8 @@ Actually Tasavalta is not a real web browser because is is completely offline. T
 This branch is for Tasavalta for Windows. There is another branch for Tasavalta for Android also. They both share the same core: two independent libraries, one for 2D content and another for 3D. Tasavalta for Windows uses RunOpenGL.dll to render a 3D view and Teksti.dll to show a HTML document. 
 
 Tasavalta for Windows itself is coded by C#. RunOpenGL uses OpenGL 5.0 and OpenCL 1.2 or CUDA 5.0, or if those are not available, OpenGL 1.5. Teksti utilizes Win32 API functions to draw a HTML dokument to a canvas.
+
+Kirjasto1 includes a tiled forward rendering engine when using OpenGL ES 3.2. Kirjasto1 always uses a scenegraph to build complex view and also octree to skip everything outside the viewing frustum.
 
 Clone everything from branch Windows New Tasavalta to your computer so you can build and develop code.
 
