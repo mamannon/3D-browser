@@ -1,8 +1,8 @@
 ## PLEASE NOTICE THAT THIS REPOSITORY DOESN'T COMPLY WITH THE USUAL GIT VERSION CONTROL: THE MASTER BRANCH IS NOT IN USE.
-## JUST GO STRAIGHT TO THE BRANCHES ANDROID_NEW_TASAVALTA OR WINDOWS_NEW_TASAVALTA. THERE ARE THE LATEST VERSIONS.
+## JUST GO STRAIGHT TO THE BRANCHES ANDROID_NEW_TASAVALTA_2 OR WINDOWS_NEW_TASAVALTA. THERE ARE THE LATEST VERSIONS.
 ## IF YOU DOWNLOAD A ZIP IN A MASTER BRANCH, YOU WONT'T GET ANY CODE. YOU NEED TO CHOOSE AN APPROPRIATE BRANCH.
 
-## THE TEXT BELOW IS FOR OLD VERSIONS. ANDROID_NEW_TASAVALTA AND WINDOWS_NEW_TASAVALTA HAVE THEIR OWN READMES.
+## THE TEXT BELOW IS FOR INITIAL VERSIONS. ANDROID_NEW_TASAVALTA_2 AND WINDOWS_NEW_TASAVALTA HAVE THEIR OWN READMES.
 
 Here are two versions of the same application, one for Microsoft Windows platform and another for Android platform. The purpose is to compare the relative performance of smartphones and laptop computers. Both versions are basically the same program, which is developed first for Windows and then ported to Android, same time editing both versions to keep the code as close as possible the same. Please keep in mind that these programs are under development phase: Windows version is (almost) stable, but Android still has some threading issues, which can cause crash when opening a CAD file. However, you can safely run them, but don't be surprised if they won't work on your machine. BTW, if you have some smart phone or computer where you cannot get these running, I'd like to hear what's your device. After all, when you have both a working Android and a Windows application, you probably get amazed how effective an average Android phone can be compared to the laptops.
 
