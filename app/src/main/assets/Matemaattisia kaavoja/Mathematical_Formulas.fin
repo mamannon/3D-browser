@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Matemaattisia kaavoja</title>
+
+</head>
+<body>
+<h1 style="text-align: center;">Matemaattisia kaavoja</h1>
+<div style="text-align: justify;">
+Tähän tekstiin on koottu
+valittuja paloja kansainvälisen tiedeyhteisön hyväksymästä
+matematiikasta ja fysiikasta, joita käytetään Tasavalta-sovelluksen
+teksteissä hyväksi.
+<br>
+</div>
+<h2><span style="font-style: italic;">Einsteinin erityinen suhteellisuusteoria</span></h2>
+<div style="text-align: justify;">
+Vasemmanpuoleiset yhtälöt (1-4) ovat muuntokaavoja ajalle t,
+etäisyydelle l, liikemassalle m ja liikemäärälle p paikallaan
+olevan&nbsp; A-havaitsijan koordinaatistosta liikkuvan
+B-havaitsijan koordinaatistoon, jossa vastaavat suureet ovat aika t',
+etäsyys l', liikemassa m' ja liikemäärä p' (kumpi havaitsija on toisen
+suhteen paikallaan, A vai B, on pelkkä mielipideasia). Oikeanpuoleiset
+yhtälöt (1-4) ovat muuntokaavoja B-havaitsijan maailmasta takaisin
+A-havaitsijan maailmaan. Kaavoissa v on liikkuvan havaitsijan nopeus ja
+c on valon nopeus.<br>
+<br>
+<center><img style="width: 290px; height: 80px;" alt="" src="Kaava_1_mk.jpg"></center>
+<br>
+<center><img style="width: 300px; height: 80px;" alt="" src="Kaava_2_mk.jpg"></center>
+<br>
+<center><img style="width: 290px; height: 80px;" alt="" src="Kaava_3_mk.jpg"></center>
+<br>
+<center><img style="width: 290px; height: 80px;" alt="" src="Kaava_4_mk.jpg"></center>
+<br>
+Suhteelisuusteoreettisissa laskuissa ei useinkaan pelkkä etäisyyden l
+tietäminen riitä, vaan tarvitaan täsmällinen sijainti x, y, z, t
+aika-avaruudessa. Näiden muuttujien kesken pätee differentiaaliyhtälö
+5, joka määrittää Lorentz-maailman metriikan:<br>
+<br>
+<center><img style="width: 251px; height: 18px;" alt="" src="Kaava_5_mk.jpg"></center>
+</div>
+<div style="page-break-before: always;"></div>
+<h2><span style="font-style: italic;">Einsteinin yleinen suhteellisuusteoria</span></h2>
+<div style="text-align: justify;">
+Erityinen suhteellisuusteoria, vaikka se sisältääkin kaavat 3 ja 4
+käytettäväksi pienien massojen kanssa, ei sisällä gravitaatiokenttää:
+erityisessä suhteellisuusteoriassa oletetaan avaruuden olevan massaton.
+Yleinen suhteellisuusteoria ottaa huomioon gravitaation ja siten myös
+massojen olemassaolon. Yleinen suhteellisuusteoria määritellään
+Einsteinin yhtälöllä 6:<br>
+<br>
+<center><img style="width: 421px; height: 37px;" alt="" src="Kaava_6_mk.jpg">
+</center>
+<br>
+<br>
+Yleiseen suhteellisuuteoriaan on kehitelty useita erilaisia
+metriikoita. Alkuperäinen Einsteinin käyttämä metriikka on
+differentiaaliyhtälössä 7:<br>
+<br>
+<center><img style="width: 164px; height: 20px;" alt="" src="Kaava_7_mk.jpg">
+</center>
+<br>
+<br>
+Yhtälö 7 kertoo lähinnä sen, että aika-avaruuden kaikkia neljää
+komponenttia, x, y, z ja t, kohdellaan laskutoimituksissa samalla
+tavalla. Mikä tämä tapa on, se määritellään metrisellä tensorilla g<sub>ab</sub>.
+Jotta saisimme selville Riccin tensorin R<sub>ab</sub> ja
+Riccin skalaarin R,
+meidän on ensin johdettava metrisestä tensorista g<sub>ab</sub>
+Riemannin
+kaarevuustensori R<sup>d</sup><sub>abc</sub><br>
+<br>
+<center><img style="width: 400px; height: 39px;" alt="" src="Kaava_8_mk.jpg">
+</center>
+<br>
+<br>
+missä merkintä<br>
+<br>
+<center><img style="width: 73px; height: 18px;" alt="" src="Kaava_9_mk.jpg">
+</center>
+<br>
+<br>
+tarkoittaa Christoffelin symbolia:<br>
+<br>
+<center><img style="width: 377px; height: 39px;" alt="" src="Kaava_10_mk.jpg">
+</center>
+<br>
+<br>
+Muokataan Riemannin kaarevuustensori kovariantiksi tensoriksi R<sub>dabc</sub>:<br>
+<br>
+<center><img style="width: 157px; height: 18px;" alt="" src="Kaava_11_mk.jpg">
+</center>
+<br>
+<br>
+Nyt saamme Riccin tensorin R<sub>ac</sub><br>
+<br>
+<center><img style="width: 144px; height: 20px;" alt="" src="Kaava_12_mk.jpg">
+</center>
+<br>
+<br>
+ja Riccin skalaarin R:<br>
+<br>
+<center><img style="width: 119px; height: 18px;" alt="" src="Kaava_13_mk.jpg">
+</center>
+</div>
+<div style="page-break-before: always;"></div>
+<h2><span style="font-style: italic;">Riemannin monistot</span></h2>
+<div style="text-align: justify;">
+Saksalainen matemaatikko Bernhard Riemann (1826-1866) kehitti Riemannin
+geometriaksi kutsutun matematiikan osa-alueen n-ulotteisten pintojen
+istuttamiseksi n+1 ulotteisiin avaruuksiin, joita kutsutaan
+monistoiksi. Edellä mainittu metrinen tensori, jota yleinen
+suhteellisuusteoria hyödyntää, on Riemannin geometrian ydin. Metrinen
+tensori on jokaisessa moniston pisteessä määritelty sisätulo, joka
+muuntuu sileällä tavalla pisteestä toiseen. Metrinen tensori on aina 2.
+astetta eli matriisi riippumatta ulottuvuuksien määrästä. Metrisen
+tensorin toisen kertaluvun osittaisderivaatoista voidaan muodostaa
+moniston kaarevuusmittari, Riemannin kaarevuustensori. Tällaisia
+sileästi Gaussin kaarevuuden mukaisesti kaareutuvia pintoja muodostavia
+tensoreita on lukemattomia
+erilaisia, mutta tässä tekstikokoelmassa meitä kiinnostavat ainoastaan
+sellaiset metriset tensorit, joissa pinta on yhtä kappaletta ja
+kaareutumisen määrä pisteestä toiseen on vakio. Mutta näitäkin
+tensoreita on useita! Esimerkiksi 3-ulotteisen avaruuden 2-ulotteisista
+pinnoista löytyy kuvien&nbsp;1 ja&nbsp;2 kaksi vaihtoehtoa,
+jotka täyttävät
+asetetut ehdot:<br>
+<br>
+<center>
+<table style="text-align: left; width: 80%;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="width: 50%;"><img style="width: 100%;" alt="" src="Kuva_1_mk.jpg"></td>
+<td style="width: 50%;"><img style="width: 100%;" alt="" src="Kuva_2_mk.jpg"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 1: pallon pinta on
+äärellinen ja rajaton.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva
+2: hyperbolisen paraboloidin pinta on ääretön ja rajaton. Kuvan pinta
+leviää äärettömiin kolmessa ulottuvuudessa, mutta tässä näytetään vain
+laatikon sisälle mahtuva osa pinnasta..</span></small></td>
+</tr>
+</tbody>
+</table>
+</center>
+<br>
+Mutta koska <a href="T#Universe#Unlimited%20and%20Finite%20Universe#Rajaton+ja+%E4%E4rellinen+universumi">äärellisen
+ja rajattoman</a> periaate edellyttää suljettua pintaa, vain
+pallopinta on mahdollinen. Siispä tässä tekstikokoelmassa meille ei
+riitä se, että kaareutumisen määrä on pisteestä toiseen vakio
+yhtenäisessä pinnassa, vaan meitä kiinnostaa ainoastaan
+kuvan&nbsp;1 tilanne, aina seitsemänteen ulottuvuuteen asti.
+</div>
+<div style="page-break-before: always;"></div>
+<h2><span style="font-style: italic;">Analyyttinen lukuteoria</span></h2>
+<div style="text-align: justify;">
+Luonnolliset luvut 1, 2, 3, 4, 5, 6, ... jakautuvat kahteen ryhmään:
+uniikkeihin alkulukuihin ja niistä koostuviin komposiittilukuihin.
+Alkulukuja ovat luvut, jotka ovat jaollisia vain itsellään ja luvulla
+1, eli alkulukuja ovat esimerkiksi 2, 3, 5, 7, 11, ... Alkulukuja on
+äärettömän monta. Mitkä luvut luonnollisista luvuista ovat alkulukuja
+ja miten ne sijoittuvat komposiittilukujen sekaan, se on analyyttisen
+lukuteorian sisältö. Käytännössä asiaa tutkitaan koordinaatistossa
+sijoittamalla kaikki luonnolliset luvut x-akselille ja merkitsemällä
+y-akselille löydettyjen alkulukujen lukumäärä, niin kuin <a href="T#Universe#Analytic%20Number%20Theory#Analyyttinen%20lukuteoria">täällä</a>
+on tehty.<br>
+<br>
+Analyyttinen lukuteoria perustuu Riemannin Zeta-funktioon &zeta;:<br>
+<br>
+<center><img style="width: 145px; height: 48px;" alt="" src="Kaava_14_mk.jpg">
+</center>
+<br>
+<br>
+Mutta kaavan&nbsp;14 versio Zeta-funktiosta &zeta; pätee vain
+reaalilukualueella s &gt; 1, eikä se siten sovi analyyttisen
+lukuteorian käyttöön, sillä
+kaikki nollakohdat sijaitsevat alueella s &lt; 1. Tässä
+tekstikokoelmassa tarvitaan nimenomaan kyseisiä nollakohtia. Onneksi
+Zeta-funktiosta on olemassa analyyttinen versio, joka
+kompleksifunktiona kattaa koko reaalilukualueen:<br>
+<br>
+<center><img style="width: 378px; height: 49px;" alt="" src="Kaava_15_mk.jpg">
+</center>
+<br>
+<br>
+Funktion&nbsp;15 itseisarvon kompleksiavaruuteen piirtämältä
+pinnalta
+löytyvät sekä triviaalit että epätriviaalit nollakohdat
+(Epätriviaaleista nollakohdista mainittakoon, että niihin liittyvä
+Riemannin hypoteesi on edelleen todistamatta, vaikka Bernhard Riemann
+esitti sen jo vuonna 1859. Kyseisellä hypoteesilla ei kuitenkaan ole
+vaikutusta analyyttiseen lukuteoriaan &#8211; ainakaan käytännön tasolla).
+Mutta entä millaisen kuvaajan Funktio&nbsp;15 piirtää
+kompleksiavaruuteen?
+Koska kyseessä on kompleksiarvoinen funktio, kuvaajia on itse asiassa
+kaksi: kompleksiluvun reaaliosa ja imaginaariosa kummatkin piirtävät
+oman kuvaajansa eli pinnan kompleksiavaruuteen. Jos nämä
+molemmat pinnat lävistävät kompleksitason samassa pisteessä, on
+kompleksiarvoisella funktiolla kyseisessä pisteessä nollakohta.
+Funktion&nbsp;15 piirtämät pinnat on näytetty
+kuvissa&nbsp;3,&nbsp;4 ja&nbsp;5:<br>
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="width: 33%;"><img style="width: 100%;" alt="" src="Kuva_3_mk.jpg"></td>
+<td style="width: 33%;"><img style="width: 100%;" alt="" src="Kuva_4_mk.jpg"></td>
+<td style="width: 33%;"><img style="width: 100%;" alt="" src="Kuva_5_mk.jpg"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 3: Riemannin Zeta-funktion
+itseisarvon piirtämä pinta.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 4: Riemannin Zeta-funktion
+reaaliosan piirtämä pinta.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 5: Riemannin Zeta-funktion
+imaginaariosan piirtämä pinta.</span></small></td>
+</tr>
+</tbody>
+</table>
+<br>
+</div>
+</body></html>

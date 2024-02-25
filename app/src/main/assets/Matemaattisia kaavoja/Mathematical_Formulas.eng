@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Mathematical Formulas</title>
+
+</head>
+<body>
+<h1 style="text-align: center;">Mathematical Formulas</h1>
+<div style="text-align: justify;">
+This text is a compilation of selected pieces of commonly accepted
+mathematics and physics to be referenced in the texts of
+Tasavalta-application.<br>
+</div>
+<h2><span style="font-style: italic;">Einstein's Special Relativity</span></h2>
+<div style="text-align: justify;">Left-side equations
+(1-4) are conversions for time t, distance l, moving mass m and
+momentum p from a stationary frame of&nbsp; A-observer to a moving
+frame of B-observer, where corresponding quantities are time t&#8217;,
+distance l&#8217;, moving mass m&#8217; and momentum p&#8217; (which one is stationary, A
+or B, is a matter of taste). Right-side equations (1-4) are counter
+conversions from B-observer world to A-observer world. Symbol v is the
+velocity of the moving observer and c is the speed of light in
+equations.<br>
+<br>
+<center><img style="width: 290px; height: 80px;" alt="" src="Kaava_1_mk.jpg"></center>
+<br>
+<center><img style="width: 300px; height: 80px;" alt="" src="Kaava_2_mk.jpg"></center>
+<br>
+<center><img style="width: 290px; height: 80px;" alt="" src="Kaava_3_mk.jpg"></center>
+<br>
+<center><img style="width: 290px; height: 80px;" alt="" src="Kaava_4_mk.jpg"></center>
+<br>
+Usually it is not enough to know a simple distance l in relativistic
+calculations, but rather we need an exact location with coordinates x,
+y, z, t in space-time. Between these variables we have a differential
+equation 5, which defines the metric of the Lorentz-world:<br>
+<br>
+<br>
+<center><img style="width: 251px; height: 18px;" alt="" src="Kaava_5_mk.jpg"></center>
+</div>
+<div style="page-break-before: always;"></div>
+<h2><span style="font-style: italic;">Einstein's General Relativity</span></h2>
+<div style="text-align: justify;">
+Although special relativity includes formulas 3 and 4 to be used with
+small masses, it does not include the gravity field: special relativity
+assumes space to be massless. However, general relativity takes gravity
+into account and therefore also notices masses to exist. General
+relativity is defined by Einstein&#8217;s equation (equation 6):<br>
+<br>
+<br>
+<center><img style="width: 421px; height: 37px;" alt="" src="Kaava_6_mk.jpg">
+</center>
+<br>
+<br>
+There are several different metrics to be used with general relativity.
+The original metric Einstein introduced is shown on the differential
+equation 7:<br>
+<br>
+<center><img style="width: 164px; height: 20px;" alt="" src="Kaava_7_mk.jpg">
+</center>
+<br>
+What equation 7 tells us is that all the four components of space-time,
+x, y, z and t, are to be treated equally manner in calculations. What
+is this manner is defined by the metric tensor&nbsp;g<sub>ab</sub>.
+To find out Ricci tensor R<sub>ab</sub> and Ricci scalar R,
+we must first derive from a metric tensor g<sub>ab</sub> an
+expression of the Riemann curvature tensor R<sup>d</sup><sub>abc</sub>
+(equation 8)<br>
+<br>
+<center><img style="width: 400px; height: 39px;" alt="" src="Kaava_8_mk.jpg">
+</center>
+<br>
+<br>
+where notation<br>
+<br>
+<center><img style="width: 73px; height: 18px;" alt="" src="Kaava_9_mk.jpg">
+</center>
+<br>
+<br>
+means Christoffel symbol (equation 10):<br>
+<br>
+<center><img style="width: 377px; height: 39px;" alt="" src="Kaava_10_mk.jpg">
+</center>
+<br>
+<br>
+Let us write the Riemann curvature tensor as a covariant tensor R<sub>dabc</sub>:<br>
+<br>
+<center><img style="width: 157px; height: 18px;" alt="" src="Kaava_11_mk.jpg">
+</center>
+<br>
+<br>
+Now we get Ricci tensor R<sub>ac</sub><br>
+<br>
+<center><img style="width: 144px; height: 20px;" alt="" src="Kaava_12_mk.jpg">
+</center>
+<br>
+<br>
+and Ricci scalar R:<br>
+<br>
+<center><img style="width: 119px; height: 18px;" alt="" src="Kaava_13_mk.jpg">
+</center>
+</div>
+<div style="page-break-before: always;"></div>
+<h2><span style="font-style: italic;">Riemann Manifolds</span></h2>
+<div style="text-align: justify;">German mathematician
+Bernhard Riemann (1826-1866 A.D.) developed a branch of mathematics
+called Riemann Geometry, which plants n-dimensional surfaces into the
+n+1 dimensional spaces called manifolds. Previously mentioned metric
+tensor used with the general relativity, for example, is the core of
+Riemann Geometry: metric tensor is the inner product defined on every
+point of the manifold and it changes smoothly from point to point.
+Metric tensor is always second rank or order i.e. it is a matrix
+regardless of the number of dimensions in space. One can derive the
+manifold curvature meter, called Riemann curvature tensor, from the
+second rank partial derivatives of the metric tensor. There exists
+numerous such tensors obeying the Gaussian curvature, but in this text
+collection we are only interested in those metric tensors, which form a
+single surface into the space and also which have constant curvature.
+But still there are several tensors available! For example, three
+dimensional space has two surface candidates fulfilling the
+requirements, and those are shown on figures 1 and 2:<br>
+<br>
+<center>
+<table style="text-align: left; width: 80%;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="width: 50%;"><img style="width: 100%;" alt="" src="Kuva_1_mk.jpg"></td>
+<td style="width: 50%;"><img style="width: 100%;" alt="" src="Kuva_2_mk.jpg"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 1 The surface of the sphere
+is finite and unlimited.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 2. The surface of the
+hyperbolic paraboloid is infinite and unlimited. The surface will
+expand infinitely in three dimensions, but you can only see the part of
+the surface, which is drawn inside a box on the figure.</span></small></td>
+</tr>
+</tbody>
+</table>
+</center>
+<br>
+But because the principle of <a href="T#Universe#Unlimited%20and%20Finite%20Universe#Rajaton+ja+%E4%E4rellinen+universumi"><span style="text-decoration: underline;">unlimited and finite</span></a>
+requires a closed surface, only possible surface is the sphere.
+Therefore it is not enough for this text collection that we have a
+constant curvature on a single surface, but we are interested in the
+situation on the figure 1 only, all the way to the seventh dimension of
+the universe.&nbsp;
+</div>
+<div style="page-break-before: always;"></div>
+<h2><span style="font-style: italic;">Analytic Number Theory</span></h2>
+<div style="text-align: justify;">
+Natural numbers 1, 2, 3, 4, 5, 6, ... divide into two groups: unique
+prime numbers and composite numbers. Prime numbers are divisible only
+by itself and a number 1, so prime numbers are for example 2, 3, 5, 7,
+11, ... There exists infinite many prime numbers. Which ones of the
+natural numbers are prime and which doesn't and how primes are
+scattered across the composite numbers, that's the contents of analytic
+number theory. In practice one study prime numbers on xy-coordinate
+system by considering all natural numbers on x-axis while the number of
+found primes is the y-coordinate, as you can see <a href="T#Universe#Analytic%20Number%20Theory#Analyyttinen%20lukuteoria">here</a>.&nbsp;<br>
+<br>
+Analytic number theory is based on the Riemann Zeta-function &zeta; (formula 14):<br>
+<br>
+<center><img style="width: 145px; height: 48px;" alt="" src="Kaava_14_mk.jpg">
+</center>
+<br>
+<br>
+But the formula 14 is a version of Zeta-function &zeta; which applies only if
+s &gt; 1, hence it is not suitable for analytic number theory,
+because all zero points lie where s &lt; 1. We need those zero
+points in this text collection. Fortunately there exists another
+version (formula 15) of Riemann Zeta-function covering all real numbers:<br>
+<br>
+<center><img style="width: 378px; height: 49px;" alt="" src="Kaava_15_mk.jpg">
+</center>
+<br>
+<br>
+The surface of absolute values drawn by function 15 includes both
+trivial and nontrivial zero points (as&nbsp; a side note, the
+Riemann Hypotheses affecting on nontrivial zero points is still without
+a proof though Riemann himself presented it on 1859. However, that
+hypotheses does not have practical influence on analytic number
+theory). But how look like the graph in complex space drawn by function
+15? Because&nbsp; the function 15 is an analytic i.e. complex
+function, it has in fact two graphs: complex numbers are actually
+number of pairs and both real and imaginary parts draw their own
+surface to the complex space. If both of these surfaces penetrate the
+zero complex plane at a same point, then the analytic function has a
+zero point at that point. The surfaces drawn by function 15 are shown
+on figures 3, 4 and 5:<br>
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="width: 33%;"><img style="width: 100%;" alt="" src="Kuva_3_mk.jpg"></td>
+<td style="width: 33%;"><img style="width: 100%;" alt="" src="Kuva_4_mk.jpg"></td>
+<td style="width: 33%;"><img style="width: 100%;" alt="" src="Kuva_5_mk.jpg"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 3. The surface drawn by
+absolute values&nbsp;of Riemann Zeta-function.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 4. The surface drawn by
+real values of Riemann Zeta-function.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 5. The surface drawn by
+imaginary values of Riemann Zeta-function.</span></small></td>
+</tr>
+</tbody>
+</table>
+<br>
+</div>
+</body></html>

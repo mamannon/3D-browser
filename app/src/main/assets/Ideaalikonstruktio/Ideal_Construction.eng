@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+  
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+  <title>Ideal Construction</title>
+
+  
+</head><body>
+<h1 style="text-align: center;">Ideal Construction<br>
+</h1>
+
+<h2 style="font-weight: normal;"><span style="font-style: italic;">Preface<br>
+</span></h2>
+
+<div style="text-align: justify;">Whether it is a machine, vehicle,
+building, bridge or any human made object, it must withstand stress and
+strain caused by usage: the object must be built by a suitable material
+and designed correctly. But even after this we're left with a question
+how much material is needed or what material thickness is needed so
+that the object will last in use? This question is subject to <span style="font-style: italic;">strength of materials</span> and it is
+important, because materials are not free and the less material is
+needed, the more space is left for utilization. Think about a house,
+whose walls are one meter thick and another house, whose walls are 10
+centimeters thick. Which one has bigger rooms?&nbsp;<br>
+<br>
+In this text we are focusing building construction and specially wood
+construction, although in principle the theory to be presented, <span style="font-style: italic;">ideal construction</span>, is applicable
+to any material. Wood is a perfect material to build living houses, for
+example, but present 2010's production methods raises two obstacles to
+prevent large-scale building use of wood:<br>
+<ul>
+  <li>Wood is an expensive construction material.
+Furthermore, the forest resources of the Earth decreases all the time
+and the forests left are needed to preserve present ecosystems alive
+and to produce the oxygen we all need to breathe.<br>
+  </li>
+  <li>In order to use present construction methods to build spans
+required by ideal construction from wood, we had to use extremely
+massive wooden bars, which are both expensive and also they would fill
+the space, which is meant for utilization. And furtehrmore, the
+carrying capasity of the structure would be low because of massive
+wooden balks need to carry their own heavy mass.</li>
+</ul>
+To use wood as construction material in an environmentally sustainable
+way, wood on the market must be goods grown in nursery stock, not wood
+of wild. In this case the adequancy and low price of wood can be
+guaranteed only if there are several reasons for cultivation of trees,
+like using <span style="text-decoration: underline;">tree as an energy
+source</span> and <span style="text-decoration: underline;">town
+planning</span> and of course the relatively low need for wood, for
+which we need the ideal construction. The reader may wonder how to
+consume wood for several means would increase the adequancy of wood:
+the final answer is found that the existence of the <span style="text-decoration: underline;">republic</span> requires
+afforestation of the whole country. Besides, novadays only the bole of
+a tree is recovered, but springs, leaves, crust and the rootstock are
+abandoned, although they are excellent material for energy production
+as are also sawdust and wastewood from wood industry. But let's get to
+the heart of the matter so how can we radically reduce the need for
+construction wood or any construction material?<br>
+</div>
+
+<h2 style="font-style: italic; font-weight: normal;">Basics of Stength
+Theory<br>
+</h2>
+
+Any solid body, which is burdened somehow, experiences <span style="font-style: italic;">stress</span>. According to the basics of
+the strength theory stress is divided into <span style="font-style: italic;">normal-</span> and <span style="font-style: italic;">shear stress</span>, which are introduced
+in figures 1 and 2 and also formulas 1 and 2:<br>
+
+<span style="font-style: italic;"></span><span style="font-style: italic;"></span><span style="font-style: italic;"></span><br>
+
+<table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="width: 50%;"><img style="width: 100%;" alt="" src="normaalijannitys.JPG"></td>
+      <td style="width: 50%;"><img style="width: 100%;" alt="" src="leikkausjannitys.JPG"></td>
+    </tr>
+    <tr>
+      <td><img style="width: 420px; height: 18px;" alt="" src="normaalijannitys.bmp"></td>
+      <td align="undefined" valign="undefined"><img style="width: 425px; height: 18px;" alt="" src="leikkausjannitys.bmp"></td>
+    </tr>
+    <tr>
+      <td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 1. Normal stress is either pressing
+or pulling, whose quantity is pressure in Pascals. Normal stress tries
+to change the volume of a body.<br>
+      </span></small></td>
+      <td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 2. Shear stress tries to change the
+shape of a body. Its quantity is also pressure in Pascals. Bending
+stress is combined shear and normal stress.<br>
+      </span></small></td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<div style="text-align: justify;">We don't use the formulas 1 and 2 in
+this text, they are shown only to help the reader to link this text to
+the strength of materials in his/her mind. However, it is important to
+know, that almost all materials have significantly better endurance
+against normal stress (i.e. pulling or pressing) than against shear or
+bending stress. But wood is an exceptional material in the sense that
+its flexural strength and tensile strength are usually up to two times
+bigger than compressive strength while shear strength is only one tenth
+compared to the tensile strength (this is the case along the grain of
+wood, but not across the grain). I'm going to concentrate on
+compressive strength in this text, because the idea of the ideal
+construction is to transform all shear stress to compression. Wood has
+significant compressive strength along the grain reaching the same
+level than concrete: the compressive strength of wood varies from
+species to species between 40 - 100 MPa while the typical compressive
+strength of concrete is between 30 - 80 MPa and some fiber reinforced
+special concretes are between 150 - 250 MPa.<br>
+</div>
+
+<br>
+
+<table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: bottom; width: 47%;"><img style="width: 100%;" alt="" src="Akvedukti.jpg"></td>
+      <td style="vertical-align: bottom; width: 53%;"><img style="width: 100%;" alt="" src="Parkkitalo.jpg"></td>
+    </tr>
+    <tr>
+      <td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 3. An aqueduct is primitive ideal
+construction.<br>
+      </span></small></td>
+      <td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Fig. 4. A parking garage which has
+exceptional thin straight vaults.<br>
+      </span></small></td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<div style="text-align: justify;">A construction is called as an ideal
+construction, if it experiences purely and only compression or tension.
+For example the aqueduct in figure 3 experiences only compression. This
+is possible by building arch vaults, but the problems of an arch vault
+are it takes space, it is difficult to build and it is primitive as a
+whole. If we compare it to the parking garage of figure 4, we can
+notice, that a straight vault gives both more space and savings on
+material costs, albeit that parking garage is not an ideal
+construction: there's both normal and shear stresses existing. But is
+possible to build a building like the parking garage of figure 4 such a
+way it wold be an ideal consturction? The answer is that by using
+stressed tendons mainly yes, but the details shown by the figure 4
+makes the complete ideal construction impossible: shear stresses
+experienced by concrete cannot be avoided. But this text introduces an
+example of an <a href="C#Frame_of_Sampo">ideal construction</a>, which has straight vaults and whose material and space consumption is as effective as is on the parking garage in figure 4.<br>
+<br>
+THIS SAMPLE ENDS HERE...<br>
+</div>
+
+<br>
+
+<br>
+
+</body></html>

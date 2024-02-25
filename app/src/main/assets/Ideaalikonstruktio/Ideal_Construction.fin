@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><title>Ideaalikonstruktio</title></head><body>
+<h1 style="text-align: center;">Ideaalikonstruktio</h1>
+<h2 style="font-weight: normal;"><span style="font-style: italic;">Johdanto</span></h2>
+<div style="text-align: justify;">Olkoon
+kyseessä kone, kulkuväline, rakennus, silta tai mikä hyvänsä ihmisen
+rakentama esine, sen täytyy kestää sille käytössä aiheutuvat
+rasitukset: esineen pitää olla sopivasta materiaalista valmistettu ja
+oikein muotoiltu. Mutta tämän jälkeenkin jää kysymys, että kuinka
+paljon materiaalia tarvitaan eli kuinka suuria ainevahvuuksia on
+käytettävä, jotta esine kestäisi käytössä? Tämä <span style="font-style: italic;">lujuusopin</span> piiriin
+kuuluva kysymys on tärkeä, koska
+materiaalit eivät ole ilmaisia ja mitä vähemmän materiaalia tarvitaan,
+sitä enemmän jää tyhjää tilaa hyötykäyttöön. Ajattele vaikka taloa,
+jonka seinät ovat metrin paksuiset taloon, jonka seinät ovat kymmenen
+senttiä paksut. Kummassa on tilavammat huoneet?&nbsp;<br>
+<br>
+Tässä
+tekstissä keskitytään talonrakennukseen ja siinä aivan erityisesti
+puurakentamiseen, vaikka esitettävä teoria, ideaalikonstruktio, onkin
+sovellettavissa periaatteessa mille hyvänsä materiaalille. Puu on
+erinomainen materiaali esimerkiksi asuintalojen rakentamiseen, mutta
+nykyisillä 2010-luvun valmistusmenetelmillä puun käytössä on kaksi puun
+laajamittaista rakennuskäyttöä estävää tekijää:<br>
+<ul>
+<li>Puu on kallis rakennusmateriaali.
+Lisäksi maapallon metsävarat vähenevät kaiken aikaa, ja jäljellä olevat
+metsät tarvitaan vielä olemassa olevien ekosysteemien säilyttämiseen ja
+meidän kaikkien elääksemme hengittämän hapen tuottamiseen.</li>
+<li>Jotta
+nykyisin käytössä olevilla rakennusmenetelmillä voitaisiin rakentaa
+puusta ideaalikonstruktion edellyttämiä jännevälejä, tarvittaisiin
+erittäin massiivisia puupalkkeja, jotka, paitsi että ne ovat kalliita,
+myös täyttäisivät tilan, joka on tarkoitettu hyötykäyttöön. Ja edelleen
+rakenteen kantavuus olisi heikko, koska massiiviset puupalkit
+joutuisivat kannattelemaan omaa valtavaa massaansa.</li>
+</ul>
+<br>
+Jotta
+puuta voitaisiin käyttää rakennusmateriaalina ekologisesti kestävästi,
+markkinoilla olevan puutavaran pitää olla kasvatustaimikoissa viljeltyä
+tavaraa eikä luonnonvaraista puuta. Tällöin puun riittävyys ja
+edullinen hinta voidaan taata vain, jos puiden viljelyyn on useita
+syitä, kuten <span style="text-decoration: underline;">puun käyttö energianlähteenä</span>&nbsp; ja <span style="text-decoration: underline;">kaavoitus</span>
+sekä puumateriaalin suhteellisen vähäinen tarve, johon tarvitaan
+ideaalikonstruktiota. Lukija saattaa kummastella, että miten puun
+käyttö useampiin eri käyttötarkoituksiin voisi lisätä puun tarjontaa:
+lopullinen selitys löytyykin siitä, että <span style="text-decoration: underline;">tasavallan</span>
+olemassaolo
+edellyttää koko maan metsittämistä.
+Sitäpaitsi nykyisinhän puusta otetaan talteen ainoastaan sen runko,
+mutta oksat,
+lehdet, juurakko sekä kuori jätetään hyödyntämättä, vaikka ne
+soveltuvat erinomaisesti energiakäyttöön kuten myös puun työstämisestä
+syntyvät sahanpuru ja hukkapalat.&nbsp; Mutta siirrytään nyt asian
+ytimeen
+eli miten rakennuspuun tai periaatteessa minkä hyvänsä
+rakennusmateriaalin tarvetta
+voidaan radikaalisti vähentää?
+</div>
+<div style="page-break-before: always;"></div>
+<h2 style="font-style: italic; font-weight: normal;">Lujuusopin perusteet</h2>
+Kaikissa kappaleissa, joita jollain tavalla rasitetaan, vaikuttaa <span style="font-style: italic;">jännitys</span>.
+Lujuussopin perusteiden mukaisesti jännitys jaetaan<span style="font-style: italic;"> normaali-</span> ja <span style="font-style: italic;">leikkausjännityksiksi</span>,
+jotka esitellään kuvissa sekä kaavoissa 1 ja 2:<br>
+<table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="width: 50%;"><img style="width: 100%;" alt="" src="normaalijannitys.JPG"></td>
+<td style="width: 50%;"><img style="width: 100%;" alt="" src="leikkausjannitys.JPG"></td>
+</tr>
+<tr>
+<td><img style="width: 420px; height: 18px;" alt="" src="normaalijannitys.bmp"></td>
+<td align="undefined" valign="undefined"><img style="width: 425px; height: 18px;" alt="" src="leikkausjannitys.bmp"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 1: normaalijännitys on
+vetoa tai puristusta, jonka suureena on paine. Normaalijännitys pyrkii
+muuttamaan kappaleen tilavuutta.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 2: leikkausjännitys pyrkii
+muuttamaan kappaleen muotoa. Myös sen suureena on paine.
+Taivutusjännitys on yhdistettyä leikkaus- ja normaalijännitystä.</span></small></td>
+</tr>
+</tbody>
+</table>
+<br>
+<div style="text-align: justify;">Emme
+tässä tekstissä käytä kaavoja 1 tai 2 mihinkään, ne ovat esitetyt vain
+siksi, että niiden avulla lukija voi yhdistää tämän tekstin
+lujuusoppiin. Sen sijaan oleellista on tietää, että jotakuinkin
+kaikilla materiaaleilla normaalijännityksen kestäminen eli veto- tai
+puristuslujuus on huomattavasti suurempi kuin taivutus- tai
+leikkauslujuus. Puu tosin on siitä erikoinen materiaali, että sen
+taivutuslujuus sekä vetolujuus ovat usein jopa kaksi kertaa suurempia
+kuin puristuslujuus, leikkauslujuuden ollessa niinkin mitätön kuin
+kymmenesosa taivutuslujuudesta (näin asia siis on puun syiden
+suuntaisesti, mutta ei poikittain). Tässä tekstissä olen
+kiinnostunut nimenomaan puristuslujuudesta, sillä ideaalikonstruktion
+idea on muuttaa leikkausjännitykset puristukseksi. Puulla on syiden
+suuntaisesti huomattavan suuri puristuslujuus, sillä se on samaa
+luokkaa kuin betonillla: puun puristuslujuus vaihtelee puulajeittain 40
+- 100 MPa kun taas betonin tyypillinen puristuslujuus on 30 -80 MPa,
+joillakin kuituvahvisteisilla erikoisbetoneilla 150 - 250 MPa. <br>
+</div>
+<br>
+<table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="vertical-align: bottom; width: 47%;"><img style="width: 100%;" alt="" src="Akvedukti.jpg"></td>
+<td style="vertical-align: bottom; width: 53%;"><img style="width: 100%;" alt="" src="Parkkitalo.jpg"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 3: akvedukti on alkeellinen
+ideaalikonstruktio.</span></small></td>
+<td style="text-align: left; vertical-align: top;"><small><span style="font-style: italic;">Kuva 4: &nbsp;parkkihalli,
+jossa on eritysen ohuet suorat holvit.</span></small></td>
+</tr>
+</tbody>
+</table>
+<div style="text-align: justify;">Rakennetta, jossa
+materiaaliin vaikuttaa pelkästään normaalijännitys
+eli puristus tai veto, kutsutaan <span style="font-style: italic;">ideaalikonstruktioksi</span>.
+Esimerkiksi kuvan 3 akveduktiin kohdistuu pelkästään puristusta. Tämä
+onnistuu rakentamalla kaariholveja, mutta kaariholvin ongelmina ovat,
+että se vie tilaa, on vaikea rakentaa ja on ylipäätään alkeellinen
+konstruktio. Jos verrataan kuvan 4 parkkihalliin, huomataan, suora
+holvi tuo sekä tila- että materiaalisäästöjä. Tosin kuvan 4 parkkihalli
+ei kylläkään ole ideaalikonstruktio, sillä sen rakenteissa vaikuttavat
+sekä normaali- että leikkausjännitykset. &nbsp;Mutta olisiko
+mahdollista rakentaa kuvan 4 parkkihallin kaltainen kappale siten, että
+se olisi ideaalikonstruktio? Vastaus on, että jännitettäviä
+punosvaijereita käyttäen pääpiirteittäin kyllä, mutta kuvan 4
+parkkihallin rakenteiden muotoilu tekee ideaalikonstruktion
+toteuttamisen kyseisessä tapauksessa mahdottomaksi: betoniin
+kohdistuvilta
+leikkausjännityksiltä ei voida välttyä. Sen sijaan tässä tekstissä
+esitellään esimerkki&nbsp;<a href="C#Frame_of_Sampo">ideaalikonstruktiosta</a>,
+jossa on
+suorat holvit ja jonka materiaalin ja tilankäyttö on yhtä tehokasta
+kuin kuvan 4 parkkihallissa.<br>
+<br>
+NÄYTE PÄÄTTYY TÄHÄN...<br>
+</div><br>
+</body></html>
